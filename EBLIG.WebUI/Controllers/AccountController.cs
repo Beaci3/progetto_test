@@ -55,6 +55,7 @@ namespace EBLIG.WebUI.Controllers
                 await IsEmailConfirmed(user);
 
                 //commento di leila
+                //commento bea
 
                 // Questa opzione non calcola il numero di tentativi di accesso non riusciti per il blocco dell'account
                 // Per abilitare il conteggio degli errori di password per attivare il blocco, impostare shouldLockout: true
