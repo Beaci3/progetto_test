@@ -30,6 +30,8 @@ namespace EBLIG.WebUI.Controllers
             HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
             HttpContext.Response.Cache.SetNoStore();
 
+            //commento di commit con cose
+
             ViewBag.ReturnUrl = returnUrl;
             return AjaxView();
         }
