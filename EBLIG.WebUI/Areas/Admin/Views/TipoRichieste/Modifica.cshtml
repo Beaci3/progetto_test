@@ -1,0 +1,132 @@
+﻿@model EBLIG.DOM.Entitys.TipoRichiesta
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Modifica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessModifica"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.TextBoxFor(model => model.TipoRichiestaId, new { @hidden = true, @readonly = true })
+
+    <div class="form-horizontal">
+        <div class="row">
+
+            <h4>
+                <b>
+                    (@Model.Anno)
+                    @Html.HiddenFor(model => model.Anno)
+                    @Html.ValidationMessageFor(model => model.Anno, "", new { @class = "text-danger" })
+                </b>
+                @Html.EditorFor(model => model.Descrizione, new { htmlAttributes = new { @style = "border-width : 0; width:90%" }, @maxlength = "125" })
+                @Html.ValidationMessageFor(model => model.Descrizione, "", new { @class = "text-danger" })
+            </h4>
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label" })
+                <div>
+                    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+                    <script src="~/Scripts/tinymce/langs/it.js"></script>
+                    @Html.TextAreaFor(model => model.Note)
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                    <script>
+                        tinymce.init({
+                            selector: '#Note',
+                            width: 1008,
+                            height: 300,
+                            //plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect code',
+                            toolbar: 'forecolor backcolor | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat ',
+                            promotion: false,
+                            language: 'it'
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Contributo (€)", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.Contributo, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Contributo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Massimo richieste annue", htmlAttributes: new { @class = "control-label col-md-2", @style = "width:auto" })
+                <div>
+                    @Html.EditorFor(model => model.MaxRichiesteAnno, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MaxRichiesteAnno, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Aliquota IRPEF (€)", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.AliquoteIRPEF, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AliquoteIRPEF, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Copertura per Matricola INPS", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @if (Model.CoperturaMatricolaInps == null)
+                    {
+                        Model.CoperturaMatricolaInps = false;
+                    }
+                    @Html.CheckBoxFor(model => model.CoperturaMatricolaInps.Value, new { @style = "margin-bottom:30px", @Id = "CoperturaMatricolaInps", @Name = "CoperturaMatricolaInps" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Abilitato per nuova richiesta", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @if (Model.AbilitatoNuovaRichiesta == null)
+                    {
+                        Model.AbilitatoNuovaRichiesta = false;
+                    }
+
+                    @Html.CheckBoxFor(model => model.AbilitatoNuovaRichiesta.Value, htmlAttributes: new { @style = "margin-bottom:30px", @Id = "AbilitatoNuovaRichiesta", @Name = "AbilitatoNuovaRichiesta" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Prestazioni Regionali Dipendenti", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @if (Model.IsTipoRichiestaDipendente == null)
+                    {
+                        Model.IsTipoRichiestaDipendente = false;
+                    }
+
+                    @Html.CheckBoxFor(model => model.IsTipoRichiestaDipendente.Value, htmlAttributes: new { @style = "margin-bottom:30px", @Id = "IsTipoRichiestaDipendente", @Name = "IsTipoRichiestaDipendente" })
+                </div>
+            </div>
+
+            <div class="modal-footer row">
+                <div class="col-md-12 text-center">
+                    <input type="submit" value="Modifica" class="btn btn-success" />
+                    <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function onSuccessModifica(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>
+
+<style>
+    input[type=checkbox] {
+        transform: scale(2);
+        -ms-transform: scale(2);
+        -webkit-transform: scale(2);
+        margin-left: 7px;
+    }
+</style>

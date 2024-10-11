@@ -1,0 +1,17 @@
+﻿
+
+@Html.RicercaModulo("Bonifica dati", false)
+
+<div class="row">
+
+    <div>
+        @Ajax.ActionLink("Bonifica dipendenti", "AnagraficaDipendenti", "BonificaDati", new AjaxOptions
+{
+   OnBegin = "alertWaid()",
+   OnSuccess = "alertSuccess(data.message)",
+   OnFailure = "handleError"
+}, new { @class = "btn btn-primary" })
+    </div>
+
+</div>
+

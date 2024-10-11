@@ -1,0 +1,157 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.AziendaAssociaRicercaViewModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("AssociaAzienda", new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAssociaAzienda",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.DocumentoIdentita)
+    @Html.HiddenFor(m => m.DelegaAzienda)
+
+    <div class="row">
+
+        <div class="col-md-12 mb-2">
+            <div class="alert alert-info">
+                Inserire tutti i dati neccessari e clicca poi su <strong>"Associa Azienda"</strong> per creare il collegamento
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.DocumentoIdentita, new { @class = "control-label" })
+
+            <div class="custom-file">
+                <input type="file" class="form-control" id="fileUpload1" accept=".pdf"
+                       data-fileupload-tipoallegato="DocumentoIdentita">
+                <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.DocumentoIdentita, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.DelegaAzienda, new { @class = "control-label" })
+
+            <div class="custom-file">
+                <input type="file" class="form-control" id="fileUpload2" accept=".pdf"
+                       data-fileupload-tipoallegato="DelegaAzienda">
+                <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.DelegaAzienda, "", new { @class = "text-danger" })
+
+        </div>
+
+    </div>
+
+
+    <div style="max-height:300px; overflow:scroll" class="mt-4">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-fixed">
+                <tr class="text-center bg-dark text-white">
+                    <th>Ragione sociale</th>
+                    <th>Matricola Inps</th>
+                    <th>Codice Fiscale</th>
+                    <th>Partita Iva</th>
+                    <th>Tipologia</th>
+                    <th>CSC</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Aziende)
+                {
+                    <tr>
+                        <td>@item.RagioneSociale</td>
+                        <td>@item.MatricolaInps</td>
+                        <td>@item.CodiceFiscale</td>
+                        <td>@item.PartitaIva</td>
+                        <td>@Html.CropText(item.Tipologia?.Descrizione, 50)</td>
+                        <td>@item.CSC</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" type="submit" id="AziendaId" name="AziendaId"
+                                    value="@item.AziendaId">
+                                Associa Azienda
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+
+        </table>
+
+    </div>
+}
+
+
+<div class="modal-footer mt-4">
+
+    @Ajax.EncodedAjaxActionLink("Nuova ricerca", "AssociaAziendaRicerca", "Azienda", null, new AjaxOptions
+{
+   OnBegin = "alertWaid()",
+   OnSuccess = "showModal_NoFooter('Associa Azienda',data); alertClose()",
+   OnFailure = "handleError"
+}, new { @class = "btn btn-primary" })
+
+    <button class="btn btn-danger" onclick="hideModal()">Chiudi finestra</button>
+
+</div>
+
+<script>
+
+    function onSuccessAssociaAzienda(data) {
+        if (data.isValid) {
+            updateListRicerca();
+            hideModal();
+            alertSuccess(data.message);
+        }
+        else {
+            alertDanger(data.message);
+        }
+    }
+
+    $('input[type=file]').on('change', function () {
+
+        var _tipoAllegato = $(this).data("fileupload-tipoallegato");
+
+        var _span = $("span[data-valmsg-for='" + _tipoAllegato + "']");
+
+        const file = document.querySelector("[data-fileupload-tipoallegato='" + _tipoAllegato + "']").files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+            if (!myRe.exec(getFileExtension(file.name))) {
+                _span.addClass("field-validation-error");
+                _span.html("Estensione non valida");
+                _span.show();
+                return;
+            }
+
+            if (getFileSize(file.size) > 1) {
+                _span.addClass("field-validation-error");
+                _span.html("Dimensione massima 1MB");
+                _span.show();
+                return;
+            }
+
+            $("#" + _tipoAllegato).val(reader.result);
+
+            _span.hide();
+            _span.html("");
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+        //$(this).val('');
+    });
+
+</script>

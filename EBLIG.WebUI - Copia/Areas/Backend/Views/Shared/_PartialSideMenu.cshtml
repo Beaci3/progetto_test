@@ -1,0 +1,141 @@
+﻿@model IEnumerable<EBLIG.WebUI.Areas.Backend.Models.MenuViewModel>
+
+
+@functions
+    {
+
+    public void CalcolaPosition(int codmenu, ref int index)
+    {
+        var _currentMenu = Model.FirstOrDefault(x => x.Codmenu == codmenu);
+
+        if (_currentMenu.CodmenuPadre.GetValueOrDefault() != 0)
+        {
+            index++;
+            CalcolaPosition(_currentMenu.CodmenuPadre.GetValueOrDefault(), ref index);
+        }
+    }
+
+
+    public string GetMenu(int padre)
+    {
+        var _out = "";
+
+        var _m = Model.ToList().Where(x => x.CodmenuPadre == padre);
+
+        var _menu = Model.ToList().FirstOrDefault(x => x.Codmenu == padre);
+
+        if (_m.Count() == 0)
+        {
+            var _url = "javascript:#";
+            var _onclick = "return false";
+
+            if (!string.IsNullOrWhiteSpace(_menu.Controller) && !string.IsNullOrWhiteSpace(_menu.Action))
+            {
+                _url = Url.Action(_menu.Action, _menu.Controller, new { area = _menu.Area });
+                _onclick = "loadContent('" + _url + "'); return false";
+            }
+
+            _out = "<a href=\"" + _url + "\" onclick=\"" + @_onclick + "\">";
+
+            if (!string.IsNullOrWhiteSpace(_menu.IconFa))
+            {
+                int index = 0;
+                CalcolaPosition(_menu.Codmenu, ref index);
+
+                _out += "<i style=\"margin-left:" + index * 15 + "px !important\" class=\"" + _menu.IconFa + " mr-2" + "\"></i>";
+            }
+
+            _out += _menu.Descrizione;
+            _out += "</a>";
+
+        }
+
+        if (_m.Count() > 0)
+        {
+            int index = 0;
+            CalcolaPosition(_menu.Codmenu, ref index);
+
+            _out += "<a href=\"#sidemenu_" + _menu.Codmenu + "\"  data-backend-menu=\"1\" data-bs-toggle=\"collapse\" aria-expanded=\"false\"";
+            _out += "class=\"dropdown-toggle\">";
+            _out += "<span style=\"margin-left:" + index * 15 + "px !important\">";
+
+            if (!string.IsNullOrWhiteSpace(_menu.IconFa))
+            {
+                _out += "<i class=\"" + _menu.IconFa + " mr-2\"></i>";
+            }
+
+            _out += _menu.Descrizione;
+            _out += "</span></a>";
+
+            _out += "<ul class=\"collapse list-unstyled\" id=\"sidemenu_" + _menu.Codmenu + "\">";
+
+            foreach (var figlio in _m.OrderBy(o => o.Ordine).ToList())
+            {
+                _out += "<li>";
+                _out += GetMenu(figlio.Codmenu);
+                _out += "</li>";
+            }
+
+            _out += "</ul>";
+        }
+
+        return _out;
+    }
+}
+
+@{
+    if (Model == null)
+    {
+        <div class="text-info mt-5 text-center font-weight-bold">Menu non disponibile</div>
+        return;
+    }
+
+    var _menupadre = Model.Where(x => (x.CodmenuPadre == 0));
+}
+
+
+<ul class="list-unstyled components sidemenubackend">
+
+    @*<li>
+
+            <a class="" href="@Url.Action("Index", "Home", new { area="Backend" })"
+               onclick="loadContent('@Url.Action("Index","Home", new { area="Backend" })'); return false">
+                <i class="fas fa-home"></i> Home
+            </a>
+
+        </li>*@
+
+    @foreach (var item in _menupadre.ToList())
+    {
+        <li>
+            @Html.Raw(GetMenu(item.Codmenu))
+        </li>
+    }
+
+</ul>
+
+
+@if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+{
+    <div class="text-center fw-bold mb-5">
+        <a href="/Admin/Home/Useronline" data-ajax="true"
+           data-ajax-success="alertClose();showModal('Utenti online', data)"
+           data-ajax-begin="alertWaid()"
+           class="text-info">Utenti online: <span class="statususeronline">@EBLIG.WebUI.Filters.UserOnlineAttribute.Useronline.Select(x => x.Item1).Distinct().Count()</span></a>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            $(this).tooltip("hide");
+            if ($("#sidebar").hasClass("active")) {
+                $('#sidebarCollapseText').text("Apri menu");
+            }
+            else {
+                $('#sidebarCollapseText').text("Chiudi menu");
+            }
+        });
+    });
+</script>

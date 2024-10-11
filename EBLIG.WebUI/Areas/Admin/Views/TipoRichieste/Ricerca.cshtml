@@ -1,0 +1,5 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.TipoRichiesteRicercaModel
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Tipo Richieste")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "TipoRichieste"), true)

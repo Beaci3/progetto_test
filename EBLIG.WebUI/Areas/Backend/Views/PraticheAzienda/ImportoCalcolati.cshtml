@@ -1,0 +1,37 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_ImportoCalcolatiModel
+
+@using EBLIG.DOM
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="row">
+    <h4>
+        <span class="badge bg-info">Importi calcolati</span>
+    </h4>
+
+    <div class="col-md-12 mt-3" >
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Importo lordo</th>
+                    <th>Aliquota IRPEF %</th>
+                    <th>Importo IRPEF</th>
+                    <th>Importo richiesto</th>
+                </tr>
+            </thead> 
+            <tbody>
+                <tr class="text-center">
+                    <td>@Html.ToImporto(Model.ImportoContributo)</td>
+                    <td>@Html.ToImporto(Model.AliquoteIRPEF) %</td>
+                    <td>@Html.ToImporto(Model.ImportoIRPEF)</td>
+                    <td class="text-success doubleunderline fw-bold">@Html.ToImporto(Model.ImportoContributoNetto)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+<hr />

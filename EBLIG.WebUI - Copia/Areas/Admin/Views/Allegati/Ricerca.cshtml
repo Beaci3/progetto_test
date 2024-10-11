@@ -1,0 +1,16 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.AllegatiClass
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        @Ajax.EncodedAjaxActionLink("Nuovo Allegato", "Nuovo", "Allegati", null, new AjaxOptions
+                {
+                OnBegin = "alertWaid()",
+                OnSuccess = "showModal_NoHeaderFooter(data); alertClose()",
+                OnFailure = "handleError"
+                }, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Allegati")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Allegati"), true)

@@ -1,0 +1,39 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.InsTipoImpiego
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Nuovo", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessNuovo"
+}))
+{
+    @Html.AntiForgeryToken()
+<h3>Nuovo Tipo Impiego</h3>
+    <hr />
+    <div class="form-horizontal">
+        <div class="row">
+
+            <div class="form-group col-md-12">
+                @Html.Label("Descrizione", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.Descrizione, new { htmlAttributes = new { @class = "form-control", @maxlength = "490" } })
+                    @Html.ValidationMessageFor(model => model.Descrizione, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="modal-footer row" style="margin-top: 30px">
+                <div class="col-md-12 text-center">
+                    <input type="submit" value="Nuovo" class="btn btn-success" />
+                    <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function onSuccessNuovo(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>
+

@@ -1,0 +1,40 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.Duplica
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Duplica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessDuplica"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.TipoRichiestaId)
+
+<div class="form-horizontal">
+    <h4>
+        @Html.Label("Scegli l'anno desiderato", new { htmlAttributes = new { @style = "border-width : 0; width: -webkit-fill-available;" } })
+    </h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.Anno, new { @class = "form-control", @maxlength = "4" } )
+            @Html.ValidationMessageFor(model => model.Anno, "", new { @class = "text-danger"})
+        </div>
+    </div>
+    
+    <div class="modal-footer row" style="margin-top: 30px">
+        <div class="col-md-12 text-center">
+            <input type="submit" value="Duplica" class="btn btn-success" />
+            <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+        </div>
+    </div>
+</div>
+}
+<script>
+    function onSuccessDuplica(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>

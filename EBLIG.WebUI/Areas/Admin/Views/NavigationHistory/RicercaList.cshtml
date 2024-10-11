@@ -1,0 +1,71 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.NavigationHistoryRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Log trovato");
+    return;
+}
+else
+{
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Username</th>
+                    <th>Data</th>
+                    <th>Pagina</th>
+                    <th>Browser name</th>
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Username)
+                        </td>
+                        <td>
+                            @item.Data
+                        </td>
+
+                        <td>
+                            @Html.CropText(item.CurrentUrl, 50)
+                        </td>
+
+                        <td>
+                            @item.BrowserName
+                        </td>
+
+                        <td class="text-center">
+
+                            @Ajax.EncodedAjaxActionLink("Dettaglio", "Dettaglio", "NavigationHistory", new
+                       {
+                           id = item.NavigatioHistoryId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModal('Dettaglio navigazione', data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class = "btn btn-primary btn-sm " })
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

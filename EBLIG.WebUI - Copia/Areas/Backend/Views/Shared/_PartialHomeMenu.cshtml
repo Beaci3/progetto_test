@@ -1,0 +1,77 @@
+﻿@model IEnumerable<EBLIG.WebUI.Areas.Backend.Models.MenuViewModel>
+@using Microsoft.AspNet.Identity
+
+@functions
+    {
+
+    string card(string menu, string icon, string action, string controller, string area, string titolo = null)
+    {
+
+        var _url = Url.Action(action, controller, new { area = area});
+        var _onclick = "loadContent('" + _url + "'); return false";
+
+        var _card = "";
+        _card += "<div class=\"col-md-4 mb-2\">";
+        _card += "<a href=\"" + _url + "\" onclick=\"" + _onclick + "\">";
+        _card += "<div class=\"card  h-100 myli\" style=\"min-height:170px\">";
+        _card += "<div class=\"card-body text-center\">";
+        _card += "<h5 class=\"card-title\">" + menu;
+        _card += "</h5>";
+        _card += "<i class=\"" + icon + " mt-3 mb-3 fa-2x\"></i>";
+
+        if (titolo != null)
+        {
+            _card += "<br/><small>" + titolo + "</small>";
+        }
+        _card += "</div>";
+
+        _card += "</div>";
+        _card += "</a>";
+        _card += "</div>";
+
+        return _card;
+    }
+
+    public string GetMenu(int padre, string titolo = null)
+    {
+        var _out = "";
+
+        var _m = Model.ToList().Where(x => x.CodmenuPadre == padre);
+
+        var _menu = Model.ToList().FirstOrDefault(x => x.Codmenu == padre);
+
+        if (_m.Count() == 0)
+        {
+            _out += card(_menu.Descrizione, _menu.IconFa, _menu.Action, _menu.Controller, _menu.Area, titolo);
+        }
+
+        if (_m.Count() > 0)
+        {
+            foreach (var figlio in _m.OrderBy(o => o.Ordine).ToList())
+            {
+                //_out += card(figlio.MENU, figlio.IMAGE);
+                _out += GetMenu(figlio.Codmenu, _menu.Descrizione);
+            }
+        }
+
+        return _out;
+    }
+}
+
+@{
+    if (Model == null)
+    {
+        return;
+    }
+
+    var _menupadre = Model.Where(x => x.CodmenuPadre == 0 && x.Codmenu != 1);
+}
+
+<div class="row">
+    @foreach (var item in _menupadre.ToList())
+    {
+        @Html.Raw(GetMenu(item.Codmenu))
+    }
+</div>
+
+

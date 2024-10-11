@@ -1,0 +1,206 @@
+﻿@using EBLIG.DOM.Importer
+
+
+@Html.RicercaModulo("Importazione dati")
+
+@{
+    Dictionary<string, string> _dic = new Dictionary<string, string>();
+    _dic.Add(ImportProvider.ImportKey.Aziende.ToString(), "Aziende");
+    _dic.Add(ImportProvider.ImportKey.ConsulenteCs.ToString(), "Consulenti / Sportello Datoriale");
+    _dic.Add(ImportProvider.ImportKey.Dipendenti.ToString(), "Dipendenti");
+    //_dic.Add("DipendentiAziendeAssociate", "Dipendenti Aziende Associate");
+}
+
+<hr />
+
+<div class="row mt-3">
+
+    <h4>
+        <span class="badge bg-secondary">Importazione Anagrafica</span>
+    </h4>
+
+    <div class="col-md-12">
+        <hr />
+    </div>
+
+    @foreach (var item in _dic.OrderBy(o => o.Key))
+    {
+        var _tipofile = "file" + item.Key;
+
+        <div class="col-md-2">
+            <label class="control-label">@item.Value</label>
+
+        </div>
+
+        <div class="col-md-5">
+            <div class="custom-file">
+                <input type="file" class="form-control"
+                       id="@_tipofile"
+                       name="@_tipofile"
+                       accept=".json">
+
+                <label class="badge badge-info"> in formato .json</label>
+
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <input type="button" class="btnUpload btn btn-primary" value="Inizia Importazione"
+                   data-fileupload-tipoimport="@item.Key"
+                   data-fileupload-element="@_tipofile" />
+
+            <div>
+                <progress id="fileProgress-@_tipofile" style="display: none"></progress>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <hr />
+        </div>
+    }
+
+</div>
+
+
+<div class="row mt-3">
+    <h4>
+        <span class="badge bg-secondary">Importazione Uniemens</span>
+    </h4>
+
+    <div class="col-md-12">
+        <hr />
+    </div>
+
+    <div class="col-md-2">
+        <label class="control-label">Uniemens</label>
+
+    </div>
+
+    <div class="col-md-1">
+        <input type="number" class="form-control" placeholder="Anno del Uniemens" value="@DateTime.Now.Year" id="Anno" name="Anno" />
+    </div>
+
+    <div class="col-md-5">
+        <div class="custom-file">
+            <input type="file" class="form-control"
+                   id="@ImportProvider.ImportKey.Uniemens.ToString()"
+                   name="@ImportProvider.ImportKey.Uniemens.ToString()"
+                   accept=".json">
+
+            <label class="badge badge-info"> in formato .json</label>
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <input type="button" class="btnUpload btn btn-primary" value="Inizia Importazione"
+               data-fileupload-tipoimport="@ImportProvider.ImportKey.Uniemens.ToString()"
+               data-fileupload-element="@ImportProvider.ImportKey.Uniemens.ToString()" />
+
+        <div>
+            <progress id="fileProgress-@ImportProvider.ImportKey.Uniemens.ToString()" style="display: none"></progress>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <hr />
+    </div>
+
+</div>
+
+<div class="row mt-3">
+    <h4>
+        <span class="badge bg-secondary">Importazione Coperture</span>
+    </h4>
+
+    <div class="col-md-12">
+        <hr />
+    </div>
+
+    <div class="col-md-2">
+        <label class="control-label">Coperture</label>
+
+    </div>
+
+
+    <div class="col-md-5">
+        <div class="custom-file">
+            <input type="file" class="form-control"
+                   id="@ImportProvider.ImportKey.Coperture.ToString()"
+                   name="@ImportProvider.ImportKey.Coperture.ToString()"
+                   accept=".json">
+
+            <label class="badge badge-info"> in formato .json</label>
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <input type="button" class="btnUpload btn btn-primary" value="Inizia Importazione"
+               data-fileupload-tipoimport="@ImportProvider.ImportKey.Coperture.ToString()"
+               data-fileupload-element="@ImportProvider.ImportKey.Coperture.ToString()" />
+
+        <div>
+            <progress id="fileProgress-@ImportProvider.ImportKey.Coperture.ToString()" style="display: none"></progress>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <hr />
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+    $("body").on("click", ".btnUpload", function (event) {
+
+        event.preventDefault();
+
+        var elent = $(this).data("fileupload-element")
+        var tipoimport = $(this).data("fileupload-tipoimport")
+
+        if (tipoimport == "@ImportProvider.ImportKey.Uniemens.ToString()" && $("#Anno").val() == "") {
+            return;
+        }
+
+        if ($("#" + elent)[0].files[0] == undefined) {
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("file", $("#" + elent)[0].files[0]);
+        formData.append("tipoimport", tipoimport);
+        formData.append("anno", $("#Anno").val());
+        $.ajax({
+            url: "@Url.Action("Import")",
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#fileProgress-" + elent).hide();
+                if (!data.isValid) {
+                    alertWarning(data.message);
+                }
+            },
+            xhr: function () {
+                var fileXhr = $.ajaxSettings.xhr();
+                if (fileXhr.upload) {
+                    $("progress#fileProgress-" + elent).show();
+                    fileXhr.upload.addEventListener("progress#fileProgress-" + elent, function (e) {
+                        if (e.lengthComputable) {
+                            $("#fileProgress-" + elent).attr({
+                                value: e.loaded,
+                                max: e.total
+                            });
+                        }
+                    }, false);
+                }
+                return fileXhr;
+            }
+        });
+    });
+</script>

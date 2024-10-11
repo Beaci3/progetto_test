@@ -1,0 +1,104 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.AllegatiModel
+
+@if (Model.Allegati == null || Model.Allegati.Count() == 0)
+{
+    @Html.AlertDanger("Nessun Tipo richiesta trovata");
+    return;
+}
+else
+{
+    using (Ajax.BeginForm("Allegati", new AjaxOptions
+    {
+        OnBegin = "alertWaid()",
+        OnSuccess = "onSuccessAllegati"
+    }))
+    {
+        @Html.Hidden("tipoRichiestaId", Model.TipoRichiestaId)
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr class="text-center bg-dark text-white">
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Obbligatorio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var item in Model.Allegati.OrderBy(x => x.Nome))
+                    {
+                        var _s = item.Selezionato ? "checked" : "";
+                        var _o = item.Obbligatorio ? "checked" : "";
+                        <tr>
+                            <td class="text-center">
+
+                                <input @_s type="checkbox" name="Allegati[@i].Selezionato" onchange="disableenable('@item.AllegatoId')" value="true" data-allegato-sel-id="@item.AllegatoId" />
+
+                            </td>
+                            <td>
+                                @item.Nome
+                                <input type="hidden" name="Allegati[@i].AllegatoId" value="@item.AllegatoId" />
+
+                            </td>
+                            @if (item.Selezionato != true)
+                            {
+                                <td class="text-center">
+
+                                    <input @_o type="checkbox" name="Allegati[@i].Obbligatorio" value="true" disabled data-allegato-ob-id="@item.AllegatoId" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center">
+
+                                    <input @_o type="checkbox" name="Allegati[@i].Obbligatorio" value="true" data-allegato-ob-id="@item.AllegatoId" />
+
+                                </td>
+                            }
+
+                        </tr>
+                        i++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer row">
+            <div class="col-md-12 text-center">
+                <input type="submit" value="Modifica" class="btn btn-success" />
+                <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+            </div>
+        </div>
+
+    }
+}
+
+<script>
+        function disableenable(allegatoid) {
+
+            if ($("[data-allegato-sel-id='" + allegatoid + "']").is(":checked")) {
+                $("[data-allegato-ob-id='" + allegatoid + "']").removeAttr("disabled");
+            }
+            else {
+                $("[data-allegato-ob-id='" + allegatoid + "']").attr("disabled", "disabled");
+
+            }
+
+        }
+
+        function onSuccessAllegati(data) {
+           @Html.OnSuccessHideModal()
+        }
+
+</script>
+<style>
+    input[type=checkbox] {
+        transform: scale(2);
+        -ms-transform: scale(2);
+        -webkit-transform: scale(2);
+        margin-left: 7px;
+    }
+</style>

@@ -1,0 +1,5 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.StatoPraticaModel
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Stato Pratica")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "StatoPratica"), true)

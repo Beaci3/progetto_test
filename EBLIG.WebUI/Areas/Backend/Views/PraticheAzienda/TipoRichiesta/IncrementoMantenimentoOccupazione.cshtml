@@ -1,0 +1,67 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_IncrementoMantenimentoOccupazione
+@using EBLIG.WebUI.Areas.Backend.Models
+
+
+@Html.Hidden("ImportoRiconosciutoTotale", Model.ImportoRiconosciutoTotale)
+@Html.Hidden("RichiedentiTotale", Model.ChildClass?.Count())
+
+<div class="row">
+    <h4>
+        <span class="badge bg-secondary">Dati Richiedente</span>
+    </h4>
+
+
+    <div id="containerIncrementoMantenimentoOccupazione_RichiedentiLista">
+        @{
+            var _model = new PraticheAzienda_IncrementoMantenimentoOccupazione.RichiedentiViewModel();
+            _model.ChildClass = Model.ChildClass;
+            _model.ReadOnly = Model.ReadOnly;
+            _model.ImportoRiconosciutoTotale = Model.ImportoRiconosciutoTotale;
+        }
+
+        @{ Html.RenderPartial("~/Areas/Backend/Views/PraticheAzienda/TipoRichiesta/IncrementoMantenimentoOccupazione_RichiedentiLista.cshtml", _model);}
+    </div>
+    @if (!Model.ReadOnly.GetValueOrDefault())
+    {
+        <div class="col-md-12 mt-3">
+
+            <div class="alert alert-info">
+                <strong>Per aggiungere un richiedente clicca il pulsante "Aggiungi richiedente"</strong> <br />
+                <a href="javascript:void(0)" onclick="modalIncrementoMantenimentoOccupazione_EventoAddShow()"
+                   class="btn btn-sm btn-outline-info mt-3">Aggiungi richiedente</a>
+            </div>
+
+            @Html.ValidationMessageFor(m => m.ImportoRiconosciutoTotale, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(m => m.RichiedentiTotale, "", new { @class = "text-danger" })
+
+        </div>
+
+    }
+
+
+    <script>
+        function modalIncrementoMantenimentoOccupazione_EventoAddShow() {
+            alertWaid();
+
+            var formData = $("#PraticheAzienda_IncrementoMantenimentoOccupazione_Richiedenti :input").serialize();
+            formData= formData + "&modalId="+ getModalGenerateUUID();
+
+            $.post("@Html.EncodedAction("IncrementoMantenimentoOccupazione_RichiedenteNuovo", "PraticheAzienda", new { richiestaId = Model.RichiestaId,aziendaId = Model.AziendaId,tipoRichiestaId = Model.TipoRichiestaId})", formData, function (data) {
+                showModal_NoFooter("Aggiungi Lavoratore", data);
+                alertClose();
+            })
+        }
+    </script>
+</div>
+
+<hr />
+
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+

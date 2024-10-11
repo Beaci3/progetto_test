@@ -1,0 +1,95 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteRicercaModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Ricerca", new AjaxOptions
+{
+    UpdateTargetId = "resultRicerca",
+    OnBegin = "onBeginRicerca",
+    OnSuccess = "alertClose",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Cognome", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.DipendenteRicercaModel_Cognome, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DipendenteRicercaModel_Cognome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Codice Fiscale", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.DipendenteRicercaModel_CodiceFiscale, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DipendenteRicercaModel_CodiceFiscale, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="col-md-4">
+                <div class="form-group">
+                    @Html.Label("Comune", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.DipendenteRicercaModel_ComuneId, Html.SelectList(Model.Comuni.OrderBy(o => o.DENCOM), "ComuneId", "DENCOM", true), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DipendenteRicercaModel_ComuneId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>*@
+
+    </div>
+
+    @{
+        var _listOrderBy = new Dictionary<string, string>();
+        _listOrderBy.Add("Cognome", "Cognome");
+        _listOrderBy.Add("CodiceFiscale", "Codice Fiscale");
+
+        //var _l = Html.SelectListOrderBy(_listOrderBy);
+        //_l.Insert(2, new SelectListItem { Text= "Cognome, Nome ascendente",Value= "CASE WHEN  Cognome + ' ' + Nome IS NULL or Cognome + ' ' + Nome = ''  THEN '' ELSE 'ZZZZZ' END DESC, Cognome + ' ' + Nome asc" });
+        //_l.Insert(3, new SelectListItem { Text= "Cognome, Nome discendente", Value= "CASE WHEN  Cognome + ' ' + Nome IS NULL or Cognome + ' ' + Nome = ''  THEN '' ELSE 'ZZZZZ' END DESC, Cognome + ' ' + Nome desc" });
+        //_l.Insert(4, new SelectListItem { Text= "Nome Cognome ascendente", Value= "CASE WHEN  Cognome + ' ' + Nome IS NULL or Nome + ' ' + Cognome = ''  THEN '' ELSE 'ZZZZZ' END DESC, Nome + ' ' + Cognome asc" });
+        //_l.Insert(5, new SelectListItem { Text= "Nome Cognome discendente", Value= "CASE WHEN  Cognome + ' ' + Nome IS NULL or Nome + ' ' + Cognome = ''  THEN '' ELSE 'ZZZZZ' END DESC, Nome + ' ' + Cognome desc" });
+
+
+    }
+    <div class="row mt-1">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Ordina per", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.DropDownListFor(model => model.Ordine, Html.SelectListOrderBy(_listOrderBy), new { @class = "form-control" })
+                </div>
+            </div>
+
+
+        </div>
+        @*<div class="col-md-4">
+
+            <div class="form-group">
+                @Html.Label("Righe da visualizzare", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.DropDownListFor(model => model.PageSize, Html.SelectListPageSize(), new { @class = "form-control" })
+                </div>
+            </div>
+
+        </div>*@
+    </div>
+
+    <hr />
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Avvia ricerca</button>
+    </div>
+</div>
+}
+
+
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/checksumCFPiva.js"></script>

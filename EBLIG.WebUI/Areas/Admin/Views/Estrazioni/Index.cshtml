@@ -1,0 +1,73 @@
+﻿
+
+
+@Html.RicercaModulo("Estrazioni", false)
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="text-center bg-dark text-white">
+                <th>Tipo estrazione</th>
+                <th style="width:150px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Consulente / Sportello datoriale, richieste per stato richiesta</td>
+                <td class="text-center">
+                    <a href="@Url.Action("RichiesteConsulente", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Consulente / Sportello datoriale, richieste Bonifica anagrafica aziende</td>
+                <td class="text-center">
+                    <a href="@Url.Action("RichiesteConsulenteBonificaAnagraficaAzienda", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Sportello sindacale, richieste per stato richiesta</td>
+                <td class="text-center">
+                    <a href="@Url.Action("RichiesteSportelloSindacale", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Sportello sindacale, richieste Bonifica anagrafica dipendenti</td>
+                <td class="text-center">
+                    <a href="@Url.Action("RichiesteSportelloBonificaAnagraficaDipendente", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totale accessi piattaforma per data</td>
+                <td class="text-center">
+                    <a href="@Url.Action("TotaleAccessiData", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totale richieste per tipo richiesta</td>
+                <td class="text-center">
+                    <a href="@Url.Action("TotaleRichieste", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totale importi richieste, per tipo richiesta</td>
+                <td class="text-center">
+                    <a href="@Url.Action("ImportiRichiestaPerTipoRichiesta", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totale richieste per stato richiesta</td>
+                <td class="text-center">
+                    <a href="@Url.Action("TotaleRichiestePerStato", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totale richieste per data invio</td>
+                <td class="text-center">
+                    <a href="@Url.Action("TotaleRichiesteDataInvio", "Estrazioni")" target="_blank" class="btn btn-sm btn-primary">Salva excel</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

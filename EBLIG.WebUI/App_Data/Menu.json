@@ -1,0 +1,611 @@
+[
+  {
+    "Codmenu": 1,
+    "CodmenuPadre": 0,
+    "Descrizione": "Home",
+    "IconFa": "fa-solid fa-home",
+    "Action": "Index",
+    "Controller": "Home",
+    "Area": "Backend",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": null
+  },
+  {
+    "Codmenu": 2,
+    "CodmenuPadre": 0,
+    "Descrizione": "Informazioni Personali",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "Anagrafica",
+    "Controller": "Azienda",
+    "Area": "Backend",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Azienda" ]
+  },
+  {
+    "Codmenu": 3,
+    "CodmenuPadre": 0,
+    "Descrizione": "Informazioni Personali",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "Anagrafica",
+    "Controller": "ConsulenteCs",
+    "Area": "Backend",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "ConsulenteCs" ]
+  },
+  {
+    "Codmenu": 4,
+    "CodmenuPadre": 0,
+    "Descrizione": "Informazioni Personali",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "Anagrafica",
+    "Controller": "Dipendente",
+    "Area": "Backend",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Dipendente" ]
+  },
+  {
+    "Codmenu": 304,
+    "CodmenuPadre": 0,
+    "Descrizione": "Informazioni Personali",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "Anagrafica",
+    "Controller": "Sportello",
+    "Area": "Backend",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Sportello" ]
+  },
+  {
+    "Codmenu": 305,
+    "CodmenuPadre": 0,
+    "Descrizione": "Anagrafiche Dipendenti",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "Ricerca",
+    "Controller": "Dipendente",
+    "Area": "Backend",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Sportello" ]
+  },
+
+  {
+    "Codmenu": 5,
+    "CodmenuPadre": 0,
+    "Descrizione": "Aziende associate",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "AziendeAssociateRicerca",
+    "Controller": "Dipendente",
+    "Area": "Backend",
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Dipendente", "Sportello" ]
+  },
+  {
+    "Codmenu": 6,
+    "CodmenuPadre": 0,
+    "Descrizione": "Utenti registrati",
+    "IconFa": "fa-solid fa-user-group",
+    "Action": "Ricerca",
+    "Controller": "Utenti",
+    "Area": "Backend",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 7,
+    "CodmenuPadre": 0,
+    "Descrizione": "Anagrafiche Aziende",
+    "IconFa": "fa-solid fa-user-tie",
+    "Action": "Ricerca",
+    "Controller": "Azienda",
+    "Area": "Backend",
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Admin", "ConsulenteCs" ]
+  },
+  {
+    "Codmenu": 8,
+    "CodmenuPadre": 0,
+    "Descrizione": "Anagrafiche Dipendenti",
+    "IconFa": "fa-solid fa-user",
+    "Action": "Ricerca",
+    "Controller": "Dipendente",
+    "Area": "Backend",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 9,
+    "CodmenuPadre": 0,
+    "Descrizione": "Anagrafiche Consulente / Sportello Datoriale",
+    "IconFa": "fa-solid fa-building-user",
+    "Action": "Ricerca",
+    "Controller": "ConsulenteCs",
+    "Area": "Backend",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 409,
+    "CodmenuPadre": 0,
+    "Descrizione": "Anagrafiche Sportello Sindacale",
+    "IconFa": "fa-solid fa-users",
+    "Action": "Ricerca",
+    "Controller": "Sportello",
+    "Area": "Backend",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 10,
+    "CodmenuPadre": 0,
+    "Descrizione": "Prestazioni Regionali",
+    "IconFa": "fa-solid fa-heartbeat",
+    "Action": "Ricerca",
+    "Area": "Backend",
+    "Controller": "PraticheAzienda",
+    "Ordine": 6,
+    "Visible": true,
+    "Ruoli": [ "Admin", "Azienda", "ConsulenteCs", "Dipendente", "Sportello" ]
+  },
+
+
+  {
+    "Codmenu": 80,
+    "CodmenuPadre": 0,
+    "Descrizione": "Liquidazione",
+    "IconFa": "fa-solid fa-comment-dollar",
+    "Action": null,
+    "Controller": null,
+    "Area": "Backend",
+    "Ordine": 8,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 82,
+    "CodmenuPadre": 80,
+    "Descrizione": "Lista Liquidazioni",
+    "IconFa": "fa fa-solid fa-file-invoice",
+    "Action": "Ricerca",
+    "Controller": "Liquidazione",
+    "Area": "Backend",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 81,
+    "CodmenuPadre": 80,
+    "Descrizione": "Prestazioni Regionali da liquidare",
+    "IconFa": "fa fa-euro-sign",
+    "Action": "RicercaDaLiquidare",
+    "Controller": "Liquidazione",
+    "Area": "Backend",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 83,
+    "CodmenuPadre": 0,
+    "Descrizione": "Contributi",
+    "IconFa": "fa fa-cash-register",
+    "Action": "Ricerca",
+    "Controller": "Uniemens",
+    "Area": "Backend",
+    "Ordine": 8,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 90,
+    "CodmenuPadre": 0,
+    "Descrizione": "Admin Panel",
+    "IconFa": "fas fa-edit",
+    "Action": null,
+    "Controller": null,
+    "Area": null,
+    "Ordine": 9,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 895,
+    "CodmenuPadre": 90,
+    "Descrizione": "Estrazioni",
+    "IconFa": "fa-solid fa-file-arrow-down",
+    "Action": "Index",
+    "Controller": "Estrazioni",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 95,
+    "CodmenuPadre": 90,
+    "Descrizione": "Logs errori",
+    "IconFa": "fas fa-exclamation-triangle",
+    "Action": "Ricerca",
+    "Controller": "Logs",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 195,
+    "CodmenuPadre": 90,
+    "Descrizione": "Bonifica dati",
+    "IconFa": "fa-solid fa-wrench",
+    "Action": "Index",
+    "Controller": "BonificaDati",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 198,
+    "CodmenuPadre": 90,
+    "Descrizione": "Messaggio istantaneo",
+    "IconFa": "fa-solid fa-comment",
+    "Action": "Index",
+    "Controller": "InstantMessage",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 199,
+    "CodmenuPadre": 90,
+    "Descrizione": "Avvisi per utenti",
+    "IconFa": "fa-solid fa-comments",
+    "Action": "Ricerca",
+    "Controller": "AvvisoUtente",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 98,
+    "CodmenuPadre": 90,
+    "Descrizione": "Importazione dati",
+    "IconFa": "fas fa-file-import",
+    "Action": "Index",
+    "Controller": "Importer",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+
+  {
+    "Codmenu": 298,
+    "CodmenuPadre": 90,
+    "Descrizione": "Navigation history",
+    "IconFa": "fa-brands fa-internet-explorer",
+    "Action": "Ricerca",
+    "Controller": "NavigationHistory",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+
+  {
+    "Codmenu": 110,
+    "CodmenuPadre": 90,
+    "Descrizione": "Configurazione",
+    "IconFa": "fa-solid fa-gear",
+    "Action": null,
+    "Controller": null,
+    "Area": null,
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 111,
+    "CodmenuPadre": 110,
+    "Descrizione": "Ragione Sociale",
+    "IconFa": "fa-solid fa-user-cog",
+    "Action": "RagioneSociale",
+    "Controller": "Configuration",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 112,
+    "CodmenuPadre": 110,
+    "Descrizione": "Email settings",
+    "IconFa": "fa-solid fa-envelope",
+    "Action": "Email",
+    "Controller": "Configuration",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 113,
+    "CodmenuPadre": 110,
+    "Descrizione": "Sepa",
+    "IconFa": "fa-solid fa-building-columns",
+    "Action": "Sepa",
+    "Controller": "Configuration",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 114,
+    "CodmenuPadre": 110,
+    "Descrizione": "FTP importazione",
+    "IconFa": "fa-regular fa-window-maximize",
+    "Action": "Ftp",
+    "Controller": "Configuration",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+
+  {
+    "Codmenu": 130,
+    "CodmenuPadre": 90,
+    "Descrizione": "Gestione Prestazioni Regionali",
+    "IconFa": "fa-solid fa-heart-circle-bolt",
+    "Action": null,
+    "Controller": null,
+    "Area": null,
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 131,
+    "CodmenuPadre": 130,
+    "Descrizione": "Tipo Richieste",
+    "IconFa": "fa-solid fa-keyboard",
+    "Action": "Ricerca",
+    "Controller": "TipoRichieste",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 132,
+    "CodmenuPadre": 130,
+    "Descrizione": "Motivazioni",
+    "IconFa": "fa-solid fa-ruler",
+    "Action": "Ricerca",
+    "Controller": "Motivazioni",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 133,
+    "CodmenuPadre": 130,
+    "Descrizione": "Motivazioni Richieste",
+    "IconFa": "fa-solid fa-receipt",
+    "Action": "Ricerca",
+    "Controller": "MotivazioniRichiesta",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 134,
+    "CodmenuPadre": 130,
+    "Descrizione": "Allegati",
+    "IconFa": "fa-solid fa-paperclip",
+    "Action": "Ricerca",
+    "Controller": "Allegati",
+    "Area": "Admin",
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 135,
+    "CodmenuPadre": 130,
+    "Descrizione": "Stato Liquidazione",
+    "IconFa": "fa-solid fa-ravelry",
+    "Action": "Ricerca",
+    "Controller": "StatoLiquidazione",
+    "Area": "Admin",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 136,
+    "CodmenuPadre": 130,
+    "Descrizione": "Stato Pratica",
+    "IconFa": "fa-solid fa-cogs",
+    "Action": "Ricerca",
+    "Controller": "StatoPratica",
+    "Area": "Admin",
+    "Ordine": 6,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+
+  {
+    "Codmenu": 100,
+    "CodmenuPadre": 90,
+    "Descrizione": "Metropolitane",
+    "IconFa": "fa-solid fa-globe",
+    "Action": null,
+    "Controller": null,
+    "Area": null,
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 101,
+    "CodmenuPadre": 100,
+    "Descrizione": "Regioni",
+    "IconFa": "fa-solid fa-mountain-city",
+    "Action": "Ricerca",
+    "Controller": "Regioni",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 102,
+    "CodmenuPadre": 100,
+    "Descrizione": "Province",
+    "IconFa": "fa-solid fa-tree-city",
+    "Action": "Ricerca",
+    "Controller": "Province",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 103,
+    "CodmenuPadre": 100,
+    "Descrizione": "Comuni",
+    "IconFa": "fa-solid fa-building",
+    "Action": "Ricerca",
+    "Controller": "Comuni",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 104,
+    "CodmenuPadre": 100,
+    "Descrizione": "Località",
+    "IconFa": "fa-solid fa-city",
+    "Action": "Ricerca",
+    "Controller": "Localita",
+    "Area": "Admin",
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 150,
+    "CodmenuPadre": 90,
+    "Descrizione": "Configurazione Generale",
+    "IconFa": "fa-solid fa-cog",
+    "Action": null,
+    "Controller": null,
+    "Area": null,
+    "Ordine": 6,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 151,
+    "CodmenuPadre": 150,
+    "Descrizione": "Parentela",
+    "IconFa": "fa-solid fa-user-plus",
+    "Action": "Ricerca",
+    "Controller": "Parentela",
+    "Area": "Admin",
+    "Ordine": 1,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 152,
+    "CodmenuPadre": 150,
+    "Descrizione": "Tempo Lavoro",
+    "IconFa": "fa-solid fa-person-digging",
+    "Action": "Ricerca",
+    "Controller": "TempoLavoro",
+    "Area": "Admin",
+    "Ordine": 2,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 153,
+    "CodmenuPadre": 150,
+    "Descrizione": "Tipo Contratto",
+    "IconFa": "fa-solid fa-file-contract",
+    "Action": "Ricerca",
+    "Controller": "TipoContratto",
+    "Area": "Admin",
+    "Ordine": 3,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 154,
+    "CodmenuPadre": 150,
+    "Descrizione": "Tipo Impiego",
+    "IconFa": "fa-solid fa-briefcase",
+    "Action": "Ricerca",
+    "Controller": "TipoImpiego",
+    "Area": "Admin",
+    "Ordine": 4,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 155,
+    "CodmenuPadre": 150,
+    "Descrizione": "Tipologia",
+    "IconFa": "fa-solid fa-leaf",
+    "Action": "Ricerca",
+    "Controller": "Tipologia",
+    "Area": "Admin",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  },
+  {
+    "Codmenu": 156,
+    "CodmenuPadre": 150,
+    "Descrizione": "Coperture",
+    "IconFa": "fa-solid fa-file-signature",
+    "Action": "Ricerca",
+    "Controller": "Coperture",
+    "Area": "Admin",
+    "Ordine": 5,
+    "Visible": true,
+    "Ruoli": [ "Admin" ]
+  }
+]

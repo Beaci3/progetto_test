@@ -1,0 +1,67 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendentePrestazioniRegionaliViewModel
+
+@{ Layout = null;}
+
+@if (Model==null)
+{
+    return;
+}
+
+<div class="row">
+    <h4>
+        <span class="badge bg-secondary">Dati Dipendente</span>
+    </h4>
+
+    <div class="col-md-3">
+
+        <div class="form-group">
+            @Html.Label("Nominativo", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Model.Nome @Model.Cognome
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+
+        <div class="form-group">
+            @Html.Label("Codice Fiscale", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12 text-uppercase">
+                @Model.CodiceFiscale
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="form-group">
+            @Html.Label("Data nascita", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Model.Datanascita.GetValueOrDefault().ToShortDateString()
+            </div>
+        </div>
+
+
+    </div>
+
+    @if (Model.IbanRequired)
+    {
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.Label("Iban Dipendente", htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.Iban, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Iban, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+    </div>
+
+<hr />

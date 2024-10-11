@@ -1,0 +1,48 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.LocalitaModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Ricerca", new AjaxOptions
+{
+    UpdateTargetId = "resultRicerca",
+    OnBegin = "onBeginRicerca",
+    OnSuccess = "alertClose",
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.Label("Denominazione", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.DenLoc, new { @class = "form-control", @maxlength = "100" })
+                        @Html.ValidationMessageFor(model => model.DenLoc, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.Label("Cap", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Cap, new { @class = "form-control", type = "search", @maxlength = "5" })
+                        @Html.ValidationMessageFor(model => model.Cap, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Avvia ricerca</button>
+        </div>
+    </div>
+
+    @*@Html.HiddenFor(x=>x.CodCom)*@
+}
+
+@*@Html.Autocomplete("DenCom", "CodCom", "DenCom", "Comuni", "DENCOM", "CODCOM", Url.Action("GetComuni", "Localita"), "phrase")*@
+

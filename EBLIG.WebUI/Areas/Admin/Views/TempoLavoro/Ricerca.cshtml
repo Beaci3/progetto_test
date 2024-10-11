@@ -1,0 +1,16 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.TempoLavoroSearchModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        @Ajax.EncodedAjaxActionLink("Nuovo Tempo Lavoro", "Nuovo", "TempoLavoro", null, new AjaxOptions
+                {
+                OnBegin = "alertWaid()",
+                OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                OnFailure = "handleError"
+                }, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Tempo Lavoro")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "TempoLavoro"), true)

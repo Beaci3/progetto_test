@@ -1,0 +1,140 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneRicercaViewModel
+@using EBLIG.DOM
+@using EBLIG.WebUI
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessuna liquidazione trovata");
+    return;
+}
+else
+{
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Stato</th>
+                    <th>Liquidazione n°</th>
+                    <th>Importo richiesto</th>
+                    <th>Data Creaazione</th>
+                    <th>Data Lavorazione</th>
+                    <th>Errore invio mail</th>
+                    <th style="width:145px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    <tr>
+                        <td class="text-center" style="width:150px">
+                            <h5>
+                                <label class="badge bg-@Html.GetLiquidazioneStatoCss(item.StatoLiquidazioneId) text-start">
+                                    @if (item.StatoLiquidazione != null)
+                                    {
+                                        @item.StatoLiquidazione.Descrizione
+                                    }
+                                </label>
+                            </h5>
+                        </td>
+                        <td class="text-center text-primary fw-bold">
+                            @item.LiquidazioneId.ToString().PadLeft(7, '0')
+                        </td>
+                        <td class="text-end">
+                           @Html.ToImporto(item.LiquidazionePraticheRegionali?.Sum(x => x.PraticheRegionaliImprese.ImportoContributoNetto))
+                        </td>
+                        <td class="text-center">@item.DataCreazione.ToShortDateString()</td>
+                        <td class="text-center">@Html.ToShortDate(item.DataLavorazione)</td>
+                        <td class="text-center">@Html.ToShortDate(item.DataLavorazione)</td>
+                        <td class="text-center">
+
+                            @if (item.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.Annullata)
+                            {
+                                @Ajax.EncodedAjaxActionLink("Apri Liquidazione", "ApriLiquidazione", "Liquidazione", new
+                                                               {
+                                                                   id = item.LiquidazioneId
+                                                               }, new AjaxOptions
+                                                               {
+                                                                   OnBegin = "alertWaid()",
+                                                                   OnSuccess = "showModalFullScreen_NoHeaderFooter(data);alertClose();",
+                                                                   OnFailure = "handleError"
+                                                               }, new { @class = "btn btn-sm btn-primary" })
+
+                            }
+                            else
+                            {
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Azioni
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li>
+
+                                            @Ajax.EncodedAjaxActionLink("Apri Liquidazione", "ApriLiquidazione", "Liquidazione", new
+                                            {
+                                            id = item.LiquidazioneId
+                                            }, new AjaxOptions
+                                            {
+                                            OnBegin = "alertWaid()",
+                                            OnSuccess = "showModalFullScreen_NoHeaderFooter(data);alertClose();",
+                                            OnFailure = "handleError"
+                                            }, new { @class = "dropdown-item" })
+
+                                        </li>
+
+                                        <li>
+                                            <a href="@Html.EncodedAction("DownloadSepa", "Liquidazione", new { liquidazioneId = item.LiquidazioneId })"
+                                               target="_blank" class="dropdown-item">Salva Sepa Xml</a>
+
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            }
+
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+            <tfoot>
+              
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Totale Importo</td>
+                    <td class="text-end text-primary doubleunderline">@Model.ImportoDaLiquidare.GetValueOrDefault().ToString("n")</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Totale Importo Liquidato</td>
+                    <td class="text-end text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.Liquidata) doubleunderline">@Model.ImportoLiquidato.GetValueOrDefault().ToString("n")</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Totale Importo in Liquidazione</td>
+                    <td class="text-end text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.InLiquidazione) doubleunderline">@Model.ImportoInLiquidazione.GetValueOrDefault().ToString("n")</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Totale Importo annullato</td>
+                    <td class="text-end text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.Annullata) doubleunderline">@Model.ImportoAnnullato.GetValueOrDefault().ToString("n")</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+
+}
+

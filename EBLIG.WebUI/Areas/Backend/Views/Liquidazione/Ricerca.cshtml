@@ -1,0 +1,9 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneRicercaModel
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Lista Liquidazioni")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Liquidazione"), true)
+

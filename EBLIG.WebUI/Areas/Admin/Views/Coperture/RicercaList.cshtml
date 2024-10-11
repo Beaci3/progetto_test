@@ -1,0 +1,58 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.CoperturaModelRicercaViewModel
+@using EBLIG.DOM;
+
+ @{ 
+     EBLIG.DOM.DAL.UnitOfWork unitofwork = new EBLIG.DOM.DAL.UnitOfWork();
+ }
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Record Copertura trovato");
+    return;
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Azienda/Matricola</th>
+                    <th>Copertura</th>
+                    <th style="width:150px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Result)
+                {
+                <tr>
+                    <td>@item.Azienda.RagioneSociale<br />(@item.Azienda.MatricolaInps)</td>
+                    <td class="text-center">@Html.Si_No(item.Coperto)</td>
+                    <td class="text-center">
+                        <div class="dropdown">
+                            @Ajax.EncodedAjaxActionLink("Modifica", "Modifica", "Coperture", new
+                       {
+                           id = item.CoperturaId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class = "btn btn-sm btn-primary" })
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+
+
+@Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+      Url.Action("Ricerca"), Model.Filtri,
+      new AjaxOptions
+      {
+          UpdateTargetId = "resultRicerca",
+          HttpMethod = "post",
+          OnFailure = "handleError"
+      }, Url.Action("RicercaExcel"))

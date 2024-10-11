@@ -1,0 +1,16 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.CoperturaSearchModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        @Ajax.EncodedAjaxActionLink("Nuova Copertura", "Nuovo", "Coperture", null, new AjaxOptions
+                {
+                OnBegin = "alertWaid()",
+                OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                OnFailure = "handleError"
+                }, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Copertura")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Coperture"), true)

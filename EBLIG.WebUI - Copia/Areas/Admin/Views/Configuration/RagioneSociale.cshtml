@@ -1,0 +1,173 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.RagioneSocialeConfigModel
+
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Html.RicercaModulo("Configurazione Ragione sociale")
+
+<hr />
+
+@using (Ajax.BeginForm("RagioneSociale", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessRagioneSociale",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EnteId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.EnteId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.EnteId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PartitaIva, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PartitaIva, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PartitaIva, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SitoWeb, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.SitoWeb, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SitoWeb, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UriPortale, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.UriPortale, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.UriPortale, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Indirizzo, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Indirizzo, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Indirizzo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Citta, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Citta, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Citta, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Cap, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Cap, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Cap, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Regione, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Regione, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Regione, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Provincia, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Provincia, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Provincia, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Fax, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Fax, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Fax, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Pec, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.Pec, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Pec, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <hr />
+
+    <div class="form-group row">
+        <div class="col-md-12 text-center">
+            <input type="submit" value="Aggiorna" class="btn btn-primary" />
+        </div>
+    </div>
+
+}
+
+
+<script>
+    function onSuccessRagioneSociale(data) {
+        @Html.OnSuccess();
+    }
+</script>

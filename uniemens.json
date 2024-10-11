@@ -1,0 +1,1569 @@
+{
+   "_id":{
+      "$oid":"605f38eb0329f18e53248686"
+   },
+   "id_ebt":13,
+   "id_azienda":1386939,
+   "id_centro_servizi":9379,
+   "ragione_sociale":"SIMPLE STYLE DI RIZZITELLO ADRIANA",
+   "matricola_inps":"3903939217",
+   "codice_fiscale":"RZZDRN71B65A561G",
+   "partita_iva":"01457990115",
+   "csc":"41801",
+   "tipo":{
+      "ikey":"0",
+      "ivalue":"CSC 4 + Artigianato Edilizia (Installazione impianti 41306 - 41307 - 41308)"
+   },
+   "comune":"SARZANA",
+   "mensilita":[
+      {
+         "mese":"01",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"605f38eb65a2c8060038e160"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.69,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"5735538",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"604259b8eab2900cd4ae6e96"
+                  },
+                  "date_update":{
+                     "$date":"2021-03-27T13:53:47.316+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+          {
+            "id_dovuto": {
+              "$oid": "607b82cd6fe44827a4c37153"
+            },
+            "id_dipendente": 1736989,
+            "id_iscritto": 3778850,
+            "codice_fiscale": "SBNDVD94D01B042O",
+            "nome": "DAVIDE",
+            "cognome": "SABINI",
+            "codice_contratto": "021",
+            "qualifica1": "1",
+            "qualifica2": "F",
+            "qualifica3": "I",
+            "causale": {
+              "ikey": "3",
+              "ivalue": "Inserimento UnieMens"
+            },
+            "imponibile": 2000.0,
+            "quote": [
+              {
+                "id_quota": 8,
+                "quota": "FSBA (Azienda)",
+                "ordine": 0,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 6.03
+              },
+              {
+                "id_quota": 9,
+                "quota": "FSBA (Dipendenti)",
+                "ordine": 1,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 2.01
+              },
+              {
+                "id_quota": 5,
+                "quota": "Ebna (2016)",
+                "ordine": 3,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 7.65
+              }
+            ],
+            "rel_source": {
+              "id_uniemens": "25649805",
+              "id_flusso": {
+                "$oid": "60780c263dd64b1a040381fc"
+              },
+              "date_update": {
+                "$date": "2021-04-18T00:52:29.759+0000"
+              },
+              "user_update": "Flussi"
+            },
+            "data_update": {
+              "$date": "2021-04-18T00:52:29.759+0000"
+            }
+          },
+          {
+            "id_dovuto": {
+              "$oid": "607b82cd6fe44827a4c37153"
+            },
+            "id_dipendente": 1736989,
+            "id_iscritto": 3778850,
+            "codice_fiscale": "SBNDVD94D01B042O",
+            "nome": "DAVIDE",
+            "cognome": "SABINI",
+            "codice_contratto": "021",
+            "qualifica1": "1",
+            "qualifica2": "F",
+            "qualifica3": "I",
+            "causale": {
+              "ikey": "3",
+              "ivalue": "Inserimento UnieMens"
+            },
+            "imponibile": 5000.0,
+            "quote": [
+              {
+                "id_quota": 8,
+                "quota": "FSBA (Azienda)",
+                "ordine": 0,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 6.03
+              },
+              {
+                "id_quota": 9,
+                "quota": "FSBA (Dipendenti)",
+                "ordine": 1,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 2.01
+              },
+              {
+                "id_quota": 5,
+                "quota": "Ebna (2016)",
+                "ordine": 3,
+                "data_rendicontazione": "2022-02-22T11:59:52.044239+01:00",
+                "data_copertura": null,
+                "importo": 7.65
+              }
+            ],
+            "rel_source": {
+              "id_uniemens": "25649805",
+              "id_flusso": {
+                "$oid": "60780c263dd64b1a040381fc"
+              },
+              "date_update": {
+                "$date": "2021-04-18T00:52:29.759+0000"
+              },
+              "user_update": "Flussi"
+            },
+            "data_update": {
+              "$date": "2021-04-18T00:52:29.759+0000"
+            }
+          }
+         ],
+         "totali":{
+            "entrate":15.69,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.03
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.01
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"02",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"607a0aa0998f73263cda0009"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.29,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"5986564",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"6077f828bb10d71aa02ba16a"
+                  },
+                  "date_update":{
+                     "$date":"2021-04-16T22:07:28.344+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"60aae14c1895691994aec7f9"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1273.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":5.73
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":1.91
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"26646880",
+                  "id_flusso":{
+                     "$oid":"60780c493b0d062838bda912"
+                  },
+                  "date_update":{
+                     "$date":"2021-05-23T23:12:12.585+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-05-23T23:12:12.585+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.29,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":5.73
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":1.91
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"03",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"60b8bf695360e123f4b3e5b4"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.69,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"6280036",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"60b6670fdf2ffe1a58df226b"
+                  },
+                  "date_update":{
+                     "$date":"2021-06-03T11:39:21.359+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"60bfdd6d19d16811ec86fab7"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1339.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.03
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.01
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"27422074",
+                  "id_flusso":{
+                     "$oid":"60b667b713c6f61db0ae2918"
+                  },
+                  "date_update":{
+                     "$date":"2021-06-08T21:13:17.238+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-06-08T21:13:17.238+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.69,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.03
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.01
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"04",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"60bab06b41616926a86240e3"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":16.25,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"6452767",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"60b6670f344e0709c4088e42"
+                  },
+                  "date_update":{
+                     "$date":"2021-06-04T22:59:55.114+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"60d0519da856252230b8cfe9"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1433.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.45
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.15
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"28410556",
+                  "id_flusso":{
+                     "$oid":"60b667b63e4d2726005cd35e"
+                  },
+                  "date_update":{
+                     "$date":"2021-06-21T08:45:17.722+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-06-21T08:45:17.722+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":16.25,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.45
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.15
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"05",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"60fb25cef249ad0ce460c4a6"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.35,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"6680680",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"60f6e073cd1ca1183041b867"
+                  },
+                  "date_update":{
+                     "$date":"2021-07-23T20:25:50.699+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"611a720d18a82b3258b4d94b"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1283.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":5.77
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":1.92
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"29576388",
+                  "id_flusso":{
+                     "$oid":"60f6e7c0dbe48f203ce50a7a"
+                  },
+                  "date_update":{
+                     "$date":"2021-08-16T14:11:25.789+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-08-16T14:11:25.789+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.35,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":5.77
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":1.92
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"06",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"6130e9a74478733804ac0d4b"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.69,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"6980619",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"612f7d1491d0282c88464a08"
+                  },
+                  "date_update":{
+                     "$date":"2021-09-02T15:11:35.357+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"613346961bfacb3050ddff0e"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1339.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.03
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.01
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"30481944",
+                  "id_flusso":{
+                     "$oid":"612f7e6767d4d32d3499f3ad"
+                  },
+                  "date_update":{
+                     "$date":"2021-09-04T10:12:38.431+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-09-04T10:12:38.431+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.69,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.03
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.01
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"07",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61499b1219cf332da40849a1"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":16.02,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"7140115",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"6140ac7a280fd82bece43928"
+                  },
+                  "date_update":{
+                     "$date":"2021-09-21T08:42:58.395+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"61546baabd17b01c34a54468"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1396.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.28
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.09
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"31620170",
+                  "id_flusso":{
+                     "$oid":"6140ac7a1fd86b2ba4687d10"
+                  },
+                  "date_update":{
+                     "$date":"2021-09-29T13:35:38.886+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-09-29T13:35:38.886+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":16.02,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.28
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.09
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"08",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61685df4dbd8a721c85f5847"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.63,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"7449952",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"6156c01892cc3233e0aafa7b"
+                  },
+                  "date_update":{
+                     "$date":"2021-10-14T16:42:28.806+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"61697b3901415414a81a73de"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1330.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":5.98
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.0
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"32438078",
+                  "id_flusso":{
+                     "$oid":"6156c018da17361be4773c80"
+                  },
+                  "date_update":{
+                     "$date":"2021-10-15T12:59:37.006+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-10-15T12:59:37.006+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.63,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":5.98
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.0
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"09",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61893be46a55d90d287c5fb4"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.69,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"7667419",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"6188fa4d00614a1fecf748ab"
+                  },
+                  "date_update":{
+                     "$date":"2021-11-08T15:01:56.512+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"6192776c7af3d5196864939d"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1339.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.03
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.01
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"33499786",
+                  "id_flusso":{
+                     "$oid":"6188fa4df33d9f1da027125d"
+                  },
+                  "date_update":{
+                     "$date":"2021-11-15T15:06:20.633+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-11-15T15:06:20.633+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.69,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.03
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.01
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"10",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61c4633133dbcc14d4390e0c"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":15.69,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"7943875",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"61c3500862b28b1ee4f254cd"
+                  },
+                  "date_update":{
+                     "$date":"2021-12-23T11:53:21.059+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"61b22f0a6760b41e5c2007e2"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1339.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.03
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.01
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"34513196",
+                  "id_flusso":{
+                     "$oid":"61a75d511b740f079c1cc233"
+                  },
+                  "date_update":{
+                     "$date":"2021-12-09T16:30:02.872+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2021-12-09T16:30:02.872+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":15.69,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.03
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.01
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"11",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61d44e9e7324cb28744e893f"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":16.25,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"8139387",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"61d42327da2797151c78ef6e"
+                  },
+                  "date_update":{
+                     "$date":"2022-01-04T13:41:50.440+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"61d5b8d5beda6a3a5c50a81a"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1433.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.45
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.15
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"35663618",
+                  "id_flusso":{
+                     "$oid":"61d42327389d5f2ed4fd2806"
+                  },
+                  "date_update":{
+                     "$date":"2022-01-05T15:27:17.972+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2022-01-05T15:27:17.972+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":16.25,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.45
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.15
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      },
+      {
+         "mese":"12",
+         "entrate":[
+            {
+               "id_entrata":{
+                  "$oid":"61fd2c690f3b952fc0a9eb52"
+               },
+               "descrizione":"Inserimento F24",
+               "importo":16.3,
+               "metodo_pagamento":{
+                  "ikey":"2",
+                  "ivalue":"F24"
+               },
+               "causale":{
+                  "ikey":"2",
+                  "ivalue":"Inserimento F24"
+               },
+               "tipo_pagamento":{
+                  "ikey":"1",
+                  "ivalue":"Ordinario"
+               },
+               "rel_source":{
+                  "id_f24":"8367462",
+                  "id_f24_anticipato":null,
+                  "id_flusso":{
+                     "$oid":"61fcfc4f13c4a11ef4d3f7bd"
+                  },
+                  "date_update":{
+                     "$date":"2022-02-04T13:38:49.942+0000"
+                  },
+                  "user_update":"Flussi"
+               }
+            }
+         ],
+         "movimenti":[
+            
+         ],
+         "dovuti":[
+            {
+               "id_dovuto":{
+                  "$oid":"6214c22835532a303420dc03"
+               },
+               "id_dipendente":1736989,
+               "id_iscritto":3778850,
+               "codice_fiscale":"SBNDVD94D01B042O",
+               "nome":"DAVIDE",
+               "cognome":"SABINI",
+               "codice_contratto":"021",
+               "qualifica1":"1",
+               "qualifica2":"F",
+               "qualifica3":"I",
+               "causale":{
+                  "ikey":"3",
+                  "ivalue":"Inserimento UnieMens"
+               },
+               "imponibile":1442.0,
+               "quote":[
+                  {
+                     "id_quota":8,
+                     "quota":"FSBA (Azienda)",
+                     "ordine":0,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":6.49
+                  },
+                  {
+                     "id_quota":9,
+                     "quota":"FSBA (Dipendenti)",
+                     "ordine":1,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":2.16
+                  },
+                  {
+                     "id_quota":5,
+                     "quota":"Ebna (2016)",
+                     "ordine":3,
+                     "data_rendicontazione":"2022-02-22T11:59:52.044239+01:00",
+                     "data_copertura":null,
+                     "importo":7.65
+                  }
+               ],
+               "rel_source":{
+                  "id_uniemens":"36599814",
+                  "id_flusso":{
+                     "$oid":"61fcfc4fc4b6df27944d59e0"
+                  },
+                  "date_update":{
+                     "$date":"2022-02-22T10:59:52.036+0000"
+                  },
+                  "user_update":"Flussi"
+               },
+               "data_update":{
+                  "$date":"2022-02-22T10:59:52.036+0000"
+               }
+            }
+         ],
+         "totali":{
+            "entrate":16.3,
+            "movimenti":0.0,
+            "dovuti":[
+               {
+                  "id_quota":8,
+                  "quota":"FSBA (Azienda)",
+                  "ordine":0,
+                  "importo":6.49
+               },
+               {
+                  "id_quota":9,
+                  "quota":"FSBA (Dipendenti)",
+                  "ordine":1,
+                  "importo":2.16
+               },
+               {
+                  "id_quota":5,
+                  "quota":"Ebna (2016)",
+                  "ordine":3,
+                  "importo":7.65
+               }
+            ]
+         }
+      }
+   ],
+   "totali":{
+      "entrate":189.54,
+      "movimenti":0.0,
+      "dovuti":[
+         {
+            "id_quota":8,
+            "quota":"FSBA (Azienda)",
+            "ordine":0,
+            "importo":73.3
+         },
+         {
+            "id_quota":9,
+            "quota":"FSBA (Dipendenti)",
+            "ordine":1,
+            "importo":24.429999999999996
+         },
+         {
+            "id_quota":5,
+            "quota":"Ebna (2016)",
+            "ordine":3,
+            "importo":91.80000000000001
+         }
+      ]
+   },
+   "data_update":{
+      "$date":"2022-02-22T10:59:52.036+0000"
+   }
+}

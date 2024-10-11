@@ -1,0 +1,153 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_ContributoIscrizioneScuolaMaterna
+
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="alert alert-info fw-bold">
+            Consapevole che in caso di dichiarazione mendace sarà punito ai sensi del Codice Penale secondo quanto prescritto dall’art. 76 del D.P.R. 445/2000 e che, inoltre, qualora dal controllo effettuato emerga la non veridicità del contenuto di taluna delle dichiarazioni rese, decadrà dai benefici conseguenti al provvedimento eventualmente emanato sulla base della dichiarazione non veritiera (art. 75 D.P.R. 445/2000)
+        </div>
+        <hr />
+
+    </div>
+
+    <h4>
+        <span class="badge bg-secondary">Dichiara</span>
+    </h4>
+
+
+    <div class="col-md-12 mt-3">
+
+
+        <div class="form-check form-switch">
+            @if (!Model.ReadOnly.GetValueOrDefault())
+            {
+                @Html.CheckBox(nameof(Model.StatoFamigliaComposto), new { @class = "form-check-input" })
+
+                <label class="form-check-label" style="margin-left:10px" for="StatoFamigliaComposto">
+                    che lo stato di famiglia è composto, oltre che dal dichiarante, dalle seguenti persone:
+                </label>
+            }
+            else
+            {
+                <span style="margin-top:-10px">
+                    <span class="form-check-input border-0">
+                        <img src="~/Content/images/checkbox_checked.png" style="float:left" />
+                    </span>
+                    <span class="ml-1">che lo stato di famiglia è composto, oltre che dal dichiarante, dalle seguenti persone:</span>
+                </span>
+                @Html.HiddenFor(m => m.StatoFamigliaComposto)
+            }
+
+        </div>
+        @*@Html.ValidationMessageFor(model => model.StatoFamigliaComposto, "")*@
+    </div>
+
+    <div id="containerDipendente_Parentela" class="mt-3">
+
+        @{
+            var _model = new EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_Parentela.PraticheAzienda_Dipendente_Parenti();
+            _model.ChildClass = Model.ChildClass;
+            _model.ReadOnly = Model.ReadOnly;
+        }
+
+        @{ Html.RenderPartial("~/Areas/Backend/Views/PraticheAzienda/TipoRichiesta/Dipendente_Parentela.cshtml", _model);}
+    </div>
+    <div class="col-md-4">
+        @Html.Hidden("Parenti", "0")
+        @Html.ValidationMessageFor(m => m.Parenti, "", new { @class = "text-danger" })
+
+    </div>
+</div>
+
+<hr />
+
+<div class="row mt-3">
+
+    <div class="col-md-2">
+
+        <div class="form-check form-switch @(!Model.ReadOnly.GetValueOrDefault() ? "mt-2":"")">
+            @if (!Model.ReadOnly.GetValueOrDefault())
+            {
+                @Html.CheckBox(nameof(Model.ProprioFiglio), new { @class = "form-check-input" })
+
+                <label class="form-check-label fw-bold" style="margin-left:10px" for="ProprioFiglio">
+                    si dichiara
+                </label>
+            }
+            else
+            {
+                <span style="margin-top:-10px">
+                    <span class="form-check-input border-0">
+                        <img src="~/Content/images/checkbox_checked.png" style="float:left" />
+                    </span>
+                    <span class="ml-1">si dichiara </span>
+                </span>
+                @Html.HiddenFor(m => m.ProprioFiglio)
+            }
+
+        </div>
+
+    </div>
+
+    <div class="col-md-10">
+        che il proprio figlio @Html.TextBoxForReadOnlyAsSpan(model => model.NomeCognomeFiglio, new { @class = "form-control-custom ml-3 w-50 mr-3", placeholder = "Nome e Cognome figlio" })
+
+        è stato iscritto nell’anno
+    </div>
+
+    <div class="col-md-12 mt-3">
+        solare di richiesta all’asilo nido/materna
+        @Html.TextBoxForReadOnlyAsSpan(model => model.AsiloNome, new { @class = "form-control-custom ml-3 mr-3", placeholder = "Nome dell asilo nido/materna" })
+
+        @Html.TextBoxForReadOnlyAsSpan(model => model.AsiloIndirizzo, new { @class = "form-control-custom", placeholder = "Indirizzo dell asilo nido/materna" })
+    </div>
+
+
+</div>
+
+<hr />
+
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        Luogo @Html.TextBoxForReadOnlyAsSpan(model => model.Luogo, new { @class = "form-control-custom ml-3 mr-3" })
+
+    </div>
+    <div class="col-md-6">
+        Data @Html.TextBoxForReadOnlyAsSpan(model => model.Data, new { @class = "form-control-custom ml-3 mr-3" }, "{0:dd/MM/yyyy}")
+
+    </div>
+</div>
+
+<hr />
+
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+    <script>
+    $("input[type='hidden'][name='@nameof(Model.StatoFamigliaComposto)']").remove();
+    $("input[type='hidden'][name='@nameof(Model.ProprioFiglio)']").remove();
+
+    $('#@nameof(Model.Data)').inputmask();
+
+    flatpickr('#@nameof(Model.Data)', {
+        locale: "it",
+        dateFormat: "d/m/Y",
+        disableMobile: "true",
+        allowInput: true,
+        maxDate:"@DateTime.Now",
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+
+    </script>
+}

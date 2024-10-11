@@ -1,0 +1,136 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.UniemensRicercaViewModel
+
+@using Newtonsoft.Json
+@using EBLIG.DOM.Models
+@using EBLIG.Utils
+
+@functions
+{
+    public UniemensModel getUniemenModel(string uniemensBson)
+    {
+        return JsonConvert.DeserializeObject<UniemensModel>(uniemensBson);
+    }
+}
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Uniemens trovato");
+    return;
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover accordion">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Espandi</th>
+                    <th>Anno</th>
+                    <th>Ragione sociale</th>
+                    <th>Versamenti</th>
+                    <th>Movimenti</th>
+
+                    @foreach (var colonne in ConfigurationProvider.Instance.GetConfiguration().Uniemens.Colonna)
+                    {
+                        <th>@colonne</th>
+                    }
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    var _uniemens = getUniemenModel(item.UniemensBson);
+                    var _azienda = item.Azienda == null ? new EBLIG.DOM.Entitys.Azienda() : item.Azienda;
+                    var _totaleVersato = 0m;
+
+                    var _totaleVersMov = Html.GetDecimal(_uniemens.totali.entrate) + Html.GetDecimal(_uniemens.totali.movimenti);
+
+                    <tr style="cursor:pointer;text-align:center"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#panelUniemens-@item.UniemensId"
+                        aria-expanded="false"
+                        aria-controls="panelUniemens-@item.UniemensId"
+                        onclick="changePanelIcon('@item.UniemensId')">
+                        <td style="width:50px;">
+                            <span id="iconUniemens-@item.UniemensId" class="fa fa-fw fa-chevron-down"></span>
+                        </td>
+
+                        <td>@item.Anno</td>
+                        <td class="text-start">
+                            @_azienda.RagioneSociale<br />
+                            <small class="badge bg-info">Maricola Inps: @_azienda.MatricolaInps - Codice Fiscale: @_azienda.CodiceFiscale</small>
+                        </td>
+
+                        <td class="text-center">
+                            @Html.ToImporto(_uniemens.totali.entrate)
+                        </td>
+                        <td class="text-center">
+                            @Html.ToImporto(_uniemens.totali.movimenti)
+                        </td>
+
+                        @foreach (var colonne in ConfigurationProvider.Instance.GetConfiguration().Uniemens.Colonna)
+                        {
+                            var _versato = Html.GetDecimal(_uniemens.totali?.dovuti?.FirstOrDefault(x => x.quota == colonne)?.importo);
+
+                            _totaleVersato += _versato;
+
+                            <td>@Html.ToImporto(_versato)</td>
+                        }
+
+                      
+                        @if ((_totaleVersato - ConfigurationProvider.Instance.GetConfiguration().Uniemens.Scoperto) > _totaleVersMov)
+                        {
+                            <td class="text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Risulta non coperto @Html.ToImporto(_totaleVersato-_totaleVersMov)">
+                                <i class="fas fa-exclamation-triangle text-danger"></i><br />
+                                <strong class="text-info">@Html.ToImporto(_totaleVersato - _totaleVersMov)</strong>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </td>
+                        }
+                    </tr>
+
+                    <tr id="panelUniemens-@item.UniemensId" class="accordion-collapse collapse" aria-labelledby="panelUniemens-headingTwo">
+                        <td colspan="10">
+                            @{
+                                Html.RenderPartial("RigaUniemens", new EBLIG.WebUI.Areas.Backend.Models.UniemensViewModel
+                                {
+                                    Uniemens = item,
+                                    UniemensModel = _uniemens
+                                });
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}
+
+<script>
+    function changePanelIcon(id) {
+        if ($("#iconUniemens-" + id).hasClass("fa-chevron-up")) {
+            $("#iconUniemens-" + id).removeClass("fa-chevron-up");
+            $("#iconUniemens-" + id).addClass("fa-chevron-down");
+        }
+        else {
+            $("#iconUniemens-" + id).removeClass("fa-chevron-down");
+            $("#iconUniemens-" + id).addClass("fa-chevron-up");
+        }
+    }
+</script>

@@ -1,0 +1,118 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.InsComuni
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Modifica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessModifica"
+}))
+
+{
+
+@Html.AntiForgeryToken()
+@Html.TextBoxFor(model => model.ComuneId, new { @hidden = true, @readonly = true })
+
+
+<h3>Modifica Comune</h3>
+<hr />
+<div class="form-horizontal">
+    <div class="row">
+
+        <div class="form-group col-md-12">
+            @Html.Label("Denominazione", htmlAttributes: new { @class = "control-label" })
+            <div>
+                @Html.EditorFor(model => model.DenCom, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                @Html.ValidationMessageFor(model => model.DenCom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.Label("Codice Comune", htmlAttributes: new { @class = "control-label" })
+            <div>
+                @Html.EditorFor(model => model.CodCom, new { htmlAttributes = new { @class = "form-control", @maxlength = "4" } })
+                @Html.ValidationMessageFor(model => model.CodCom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.Label("Regione", htmlAttributes: new { @class = "control-label" })
+            <div>
+                @Html.DropDownListFor(model => model.CodReg, Html.SelectList(Model.Regioni, "CODREG", "DENREG", true), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CodReg, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.Label("Provincia", htmlAttributes: new { @class = "control-label" })
+            <div>
+                @{
+                    List<SelectListItem> _s = new List<SelectListItem>();
+                }
+                @*<select id="SigPro1" name="SigPro1" ></select>*@
+                @Html.DropDownList("SiglaPro", Html.SelectList(_s, "", ""), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SiglaPro, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group col-md-2">
+            @Html.Label("Stato", htmlAttributes: new { @class = "control-label" })
+            <div>
+                @Html.TextBoxForReadOnly(model => model.CodSta, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CodSta, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+        @Html.TextBoxFor(model => model.CodSta, new { @hidden = true, @readonly = true })
+
+
+        <div class="modal-footer row" style="margin-top: 30px">
+            <div class="col-md-12 text-center">
+                <input type="submit" value="Modifica" class="btn btn-success" />
+                <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+}
+<script>
+    $().ready(function () {
+        loadProvince("@Model.CodReg", "@Model.SiglaPro")
+    })
+
+    $("#CodReg").on("change", function () {
+        $("#CodSta").val("IT");
+        if ($("#CodReg").val() == "99") {
+            $("#CodSta").val("ZZ");
+        }
+        loadProvince($("#CodReg").val(), true);
+    })
+
+    function loadProvince(codReg, selected) {
+        $.get("@Url.Action("GetProvinceByCodReg", "Metropolitane", new { area="Backend"})", { codreg: codReg }, function (data) {
+            $("#SiglaPro").empty();
+            $.each(data, function (i, item) {
+                filloption(item.provinciaid, item.DENPRO, selected);
+            });
+        })
+    }
+
+    function filloption(provinciaid, sigpro, selected) {
+        $("<option/>", {
+            value: provinciaid,
+            text: sigpro,
+            selected: selected
+        }).appendTo("#SiglaPro");
+    }
+
+</script>
+
+<script>
+    function onSuccessModifica(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>
+
+
+
+
+

@@ -1,0 +1,766 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.AziendaViewModel
+@using EBLIG.WebUI
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Anagrafica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAnagrafica",
+    OnFailure = "handleError"
+}))
+{
+    var _matricolaReadOnly = Model.AziendaId != 0 || Model.ReadOnly.GetValueOrDefault() ? true
+        : (User.IsInRole(IdentityHelper.Roles.Azienda.ToString()) ? true : false);
+
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.AziendaId)
+    @Html.HiddenFor(model => model.ConsulenteCSId)
+    @Html.Hidden("DataIscrizione", Model.DataIscrizione.ToShortDateString())
+
+    <h3>Dati Anagrafici Azienda</h3>
+    <hr />
+
+    <div class="form-horizontal mt-4">
+
+        <div class="row">
+            <h4>
+                <span class="badge bg-secondary">Dati Azienda</span>
+            </h4>
+
+            @if (Model.Copertura != null && Model.Copertura.FirstOrDefault()?.Coperto == false)
+            {
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle mr-3"></i><strong>L'azienda non risulta in regola con i contributi</strong>
+                    </div>
+                </div>
+            }
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RagioneSociale, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RagioneSociale, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RagioneSociale, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NomeTitolare, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.NomeTitolare, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NomeTitolare, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CognomeTitolare, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.CognomeTitolare, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CognomeTitolare, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row mt-3">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CodiceFiscale, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.CodiceFiscale, new { @class = "form-control text-uppercase" })
+                        @Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PartitaIva, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PartitaIva, new { @class = "form-control", data_val_maxlength_max = "11", maxlength = "11" })
+                        @Html.ValidationMessageFor(model => model.PartitaIva, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.MatricolaInps, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.MatricolaInps, new { @class = "form-control", data_val_maxlength_max = "10", maxlength = "10" }, readOnly: _matricolaReadOnly)
+                        @Html.ValidationMessageFor(model => model.MatricolaInps, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AttivitaEconomica, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.AttivitaEconomica, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AttivitaEconomica, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Classificazione, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Classificazione, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Classificazione, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CSC, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.CSC, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CSC, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CodiceIstat, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.TextBoxForReadOnly(model => model.CodiceIstat, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CodiceIstat, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-5">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TipologiaId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+
+                        @if (!Model.ReadOnly.GetValueOrDefault())
+                        {
+                            <select class="form-control"
+                                    data-val="false"
+                                    @*data-val-number="Il campo Tipologia deve essere un numero."
+                                    data-val-required="Il campo Tipologia è obbligatorio."*@
+                                    id="TipologiaId"
+                                    name="TipologiaId"
+                                    aria-describedby="TipologiaId-error"
+                                    aria-invalid="false">
+                                <option value="">[Seleziona un Valore]</option>
+                                @foreach (var item in Model.Tipologie.OrderBy(o => o.Descrizione))
+                                {
+                                    <option value="@item.TipologiaId"
+                                            @(Model.TipologiaId == item.TipologiaId ? "selected" : "")
+                                            data-partisociali="@item.Partesociale">
+                                        @item.Descrizione
+                                    </option>
+                                }
+
+                            </select>
+                            @Html.ValidationMessageFor(model => model.TipologiaId, "", new { @class = "text-danger" })
+
+                        }
+                        else
+                        {
+                            if (Model.Tipologia != null)
+                            {
+                                @Model.Tipologia.Descrizione
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Iban, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Iban, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Iban, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DataCessazione, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.DataCessazione, new
+                   {
+                       @class = "form-control",
+                       data_inputmask_alias = "datetime",
+                       data_inputmask_inputformat = "dd/mm/yyyy"
+                   }, "{0:dd/MM/yyyy}")
+                        @Html.ValidationMessageFor(model => model.DataCessazione, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3" data-partisociali-note>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Partesociale, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextAreaForReadOnly(model => model.Partesociale, 5, 4, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Partesociale, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Pec, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Pec, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Pec, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+
+            @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+                {
+                    ReadOnly = Model.ReadOnly,
+                    IncludiRegioni = false,
+                    Col = 3,
+                    IndirizzoElement = "Indirizzo",
+                    ProvinciaElement = "ProvinciaId",
+                    ComuneElement = "ComuneId",
+                    LocalitaElement = "LocalitaId",
+                    RegioneElement = "RegioneId",
+
+                    Sigpro = Model.Provincia?.SIGPRO,
+                    Codcom = Model.Comune?.CODCOM,
+                    Codreg = Model.Regione?.CODREG,
+
+                    Indirizzo = Model.Indirizzo,
+                    ComuneId = Model.ComuneId,
+                    RegioneId = Model.RegioneId,
+                    LocalitaId = Model.LocalitaId,
+                    ProvinciaId = Model.ProvinciaId
+                });}
+
+        </div>
+
+
+
+        <hr class="mb-4" />
+
+        <div class="row">
+
+            <h4>
+                <span class="badge bg-secondary">Dati Referente</span>
+            </h4>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferenteCognome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.ReferenteCognome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReferenteCognome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferenteNome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.ReferenteNome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReferenteNome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferenteEmail, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.ReferenteEmail, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReferenteEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferentePec, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.ReferentePec, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReferentePec, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferenteCellulare, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.ReferenteCellulare, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReferenteCellulare, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @*<div class="row mt-3">
+
+                @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+                    {
+                        ReadOnly = Model.ReadOnly,
+                        IncludiRegioni = true,
+                        IndirizzoElement = "ReferenteIndirizzo",
+                        ProvinciaElement = "ReferenteProvinciaId",
+                        ComuneElement = "ReferenteComuneId",
+                        LocalitaElement = "ReferenteLocalitaId",
+                        RegioneElement = "ReferenteRegioneId",
+
+                        Sigpro = Model.ReferenteProvincia?.SIGPRO,
+                        Codcom = Model.ReferenteComune?.CODCOM,
+                        Codreg = Model.ReferenteRegione?.CODREG,
+
+                        Indirizzo = Model.ReferenteIndirizzo,
+                        ComuneId = Model.ReferenteComuneId,
+                        RegioneId = Model.ReferenteRegioneId,
+                        LocalitaId = Model.ReferenteLocalitaId,
+                        ProvinciaId = Model.ReferenteProvinciaId,
+
+
+                    });}
+
+            </div>*@
+
+        <hr class="mb-4" />
+
+        <div class="row">
+
+            <h4>
+                <span class="badge bg-secondary">Dati Legale Rappresentante</span>
+            </h4>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RappresentanteCognome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RappresentanteCognome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RappresentanteCognome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RappresentanteNome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RappresentanteNome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RappresentanteNome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RappresentanteEmail, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RappresentanteEmail, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RappresentanteEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RappresentantePec, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RappresentantePec, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RappresentantePec, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RappresentanteCellulare, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.RappresentanteCellulare, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RappresentanteCellulare, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+                {
+                    ReadOnly = Model.ReadOnly,
+                    IncludiRegioni = true,
+                    IndirizzoElement = "RappresentanteIndirizzo",
+                    ProvinciaElement = "RappresentanteProvinciaId",
+                    ComuneElement = "RappresentanteComuneId",
+                    LocalitaElement = "RappresentanteLocalitaId",
+                    RegioneElement = "RappresentanteRegioneId",
+
+                    Sigpro = Model.RappresentanteProvincia?.SIGPRO,
+                    Codcom = Model.RappresentanteComune?.CODCOM,
+                    Codreg = Model.RappresentanteRegione?.CODREG,
+
+                    Indirizzo = Model.RappresentanteIndirizzo,
+                    ComuneId = Model.RappresentanteComuneId,
+                    RegioneId = Model.RappresentanteRegioneId,
+                    LocalitaId = Model.RappresentanteLocalitaId,
+                    ProvinciaId = Model.RappresentanteProvinciaId,
+
+
+                });}
+
+        </div>
+
+        <hr />
+
+        @{
+            var _consulente = Model.DelegheConsulenteCS?.FirstOrDefault(x => x.DelegaAttiva == true && x.ConsulenteCSId == Model.ConsulenteCSId);
+        }
+
+        @if (Model.AziendaId != 0 && _consulente != null)
+        {
+            <div class="row mt-3">
+                <h4>
+                    <span class="badge bg-warning">Dati Delegato</span>
+                </h4>
+
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        @Html.Label("Ragione Sociale", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @_consulente.ConsulenteCS.RagioneSociale
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Codice Fiscale", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12 text-uppercase">
+                            @_consulente.ConsulenteCS.CodiceFiscalePIva
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Documento Identità", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+
+                            <a data-toggle="tooltip" title="Scarica allegato"
+                               data-placement="top"
+                               href='@Html.EncodedAction("DownloadAllegato", "Azienda", new {delegaId= _consulente.DelegheConsulenteCSAziendaId , area="Backend", allegato="DocumentoIdentita" })'
+                               target="_blank">
+                                <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                            </a>
+
+                            @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()) || User.IsInRole(IdentityHelper.Roles.ConsulenteCs.ToString()))
+                            {
+                                <div class="mt-2 text-primary">
+                                    <a data-toggle="tooltip" title="Aggiorna Documento Identità"
+                                       data-placement="top"
+                                       href='@Html.EncodedAction("UploadAllegato", "Azienda", new {delegaId= _consulente.DelegheConsulenteCSAziendaId , area="Backend", allegato="DocumentoIdentita" })'
+                                       data-ajax="true"
+                                       data-ajax-begin="alertWaid()"
+                                       data-ajax-failure="handleError"
+                                       data-ajax-success="showModal_NoFooter('Aggiorna Documento Identità', data); alertClose()">
+                                        <i class="fa-solid fa-upload mr-3"></i>Aggiorna Documento Identità
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Delega Azienda", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <a data-toggle="tooltip" title="Scarica allegato"
+                               data-placement="top"
+                               href='@Html.EncodedAction("DownloadAllegato", "Azienda", new { delegaId= _consulente.DelegheConsulenteCSAziendaId, area="Backend", allegato="DelegaAzienda" })'
+                               target="_blank">
+                                <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                            </a>
+
+                            @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()) || User.IsInRole(IdentityHelper.Roles.ConsulenteCs.ToString()))
+                            {
+                                <div class="mt-2 text-primary">
+                                    <a data-toggle="tooltip" title="Aggiorna Delega Azienda"
+                                       data-placement="top"
+                                       href='@Html.EncodedAction("UploadAllegato", "Azienda", new { delegaId = _consulente.DelegheConsulenteCSAziendaId, area = "Backend", allegato = "DelegaAzienda" })'
+                                       data-ajax="true"
+                                       data-ajax-begin="alertWaid()"
+                                       data-ajax-failure="handleError"
+                                       data-ajax-success="showModal_NoFooter('Aggiorna Delega Azienda', data); alertClose()">
+                                        <i class="fa-solid fa-upload mr-3"></i>Aggiorna Delega Azienda
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <hr />
+        }
+
+        @if (Model.AziendaId == 0 && User.IsInRole(IdentityHelper.Roles.ConsulenteCs.ToString()))
+        {
+            @Html.HiddenFor(m => m.DocumentoIdentita)
+            @Html.HiddenFor(m => m.DelegaAzienda)
+
+            <div class="row mt-3">
+                <h4>
+                    <span class="badge bg-warning">Documenti Delegato</span>
+                </h4>
+
+                <div class="col-md-6">
+                    <label class="control-label">Documento di identità del legale rappresentante</label>
+
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="fileUpload1" accept=".pdf"
+                               data-fileupload-tipoallegato="DocumentoIdentita">
+                        <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DocumentoIdentita, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="col-md-6">
+                    <label class="control-label">Delega dell'azienda</label>
+
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="fileUpload2" accept=".pdf"
+                               data-fileupload-tipoallegato="DelegaAzienda">
+                        <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DelegaAzienda, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>
+            <hr />
+
+            <script>
+                $('input[type=file]').on('change', function () {
+
+                    var _tipoAllegato = $(this).data("fileupload-tipoallegato");
+
+                    var _span = $("span[data-valmsg-for='" + _tipoAllegato + "']");
+
+                    const file = document.querySelector("[data-fileupload-tipoallegato='" + _tipoAllegato + "']").files[0];
+                    const reader = new FileReader();
+
+                    reader.addEventListener("load", function () {
+                        var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+                        if (!myRe.exec(getFileExtension(file.name))) {
+                            _span.addClass("field-validation-error");
+                            _span.html("Estensione non valida");
+                            _span.show();
+                            return;
+                        }
+
+                        if (getFileSize(file.size) > 1) {
+                            _span.addClass("field-validation-error");
+                            _span.html("Dimensione massima 1MB");
+                            _span.show();
+                            return;
+                        }
+
+                        $("#" + _tipoAllegato).val(reader.result);
+
+                        _span.hide();
+                        _span.html("");
+                    }, false);
+
+                    if (file) {
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+            </script>
+        }
+
+
+
+        <div class="row mt-3">
+            <div class="col-md-12 text-danger">
+                <strong>* Campi obbligatori</strong>
+            </div>
+        </div>
+
+        <div class="form-group text-center mt-5">
+            <hr />
+            <button type="submit" class="btn btn-primary">
+                @if (Model.AziendaId == 0)
+                {
+                    <span>Inserisci Azienda</span>
+                }
+                else
+                {
+                    <span>Aggiorna dati Anagrafici</span>
+                }
+            </button>
+
+            <button id="buttonCloseModal" type="button" onclick="hideModal()" class="btn btn-danger">
+                Chiudi finestra
+            </button>
+
+
+        </div>
+
+    </div>
+}
+
+
+
+<script>
+    $().ready(function () {
+
+        @if (Model.Tipologia!= null && Model.Tipologia.Partesociale.GetValueOrDefault())
+        {
+            @:$("[data-partisociali-note]").show();
+        }
+        else
+        {
+            @:$("[data-partisociali-note]").hide();
+        }
+
+    });
+
+    @Html.ButtonCloseModal(false)
+
+</script>
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+    <script>
+
+        $("#TipologiaId").on("change", function () {
+
+
+        if ($("#TipologiaId option:selected").data("partisociali")) {
+            $("[data-partisociali-note]").show();
+        }
+        else {
+            $("[data-partisociali-note]").hide();
+        }
+    });
+
+    function onSuccessAnagrafica(data) {
+        if (data.isValid) {
+
+            var _ismodal = $(".modal").hasClass('show');
+            if (_ismodal) {
+                updateListRicerca();
+            }
+
+            var _message = data.message;
+
+            $.get("@Url.Action("Anagrafica", "Azienda")", { id:data.aziendaId}, function (data) {
+                if (_ismodal) {
+                    showModalFullScreen_NoHeaderFooter(data);
+                    alertSuccess(_message);
+                }
+                else {
+                    $("#contentrenderbody").html(data);
+                    alertSuccess(_message);
+                }
+            });
+        }
+        else {
+            alertDanger(data.message);
+        }
+    }
+
+    @if (!Model.InformazioniPersonaliCompilati.GetValueOrDefault() && User.IsInRole(IdentityHelper.Roles.Azienda.ToString()))
+    {
+        @:alertInfo("Per proseguire è necessario compilare la scheda Anagrafica")
+    }
+
+    $('#DataCessazione').inputmask();
+
+    flatpickr('#DataCessazione', {
+        locale: "it",
+        dateFormat: "d/m/Y",
+        disableMobile: "true",
+        allowInput: true,
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+
+
+    </script>
+
+    <script src="~/Scripts/unobtrusiveParseForm.js"></script>
+    <script src="~/Scripts/checksumCFPiva.js"></script>
+    <script src="~/Scripts/ifIban.js"></script>
+}

@@ -1,0 +1,8 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_RiduzionePremioInail
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}

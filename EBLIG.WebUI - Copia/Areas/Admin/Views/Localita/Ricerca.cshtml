@@ -1,0 +1,16 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.LocalitaModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        @Ajax.EncodedAjaxActionLink("Nuova Località", "Nuovo", "Localita", null, new AjaxOptions
+                {
+                OnBegin = "alertWaid()",
+                OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                OnFailure = "handleError"
+                }, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Località")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Localita"), true)

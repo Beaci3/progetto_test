@@ -1,0 +1,208 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaRicercaModel
+@using EBLIG.WebUI
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Ricerca", new AjaxOptions
+{
+    UpdateTargetId = "resultRicerca",
+    OnBegin = "onBeginRicerca",
+    OnSuccess = "alertClose",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+    {
+        Model.StatoPratica.Insert(0, new EBLIG.DOM.Entitys.StatoPratica { Descrizione = "Da Lavorare (Inviata e Inviata Revisionata)", StatoPraticaId = -1 });
+    }
+
+<div class="form-horizontal">
+
+
+    <div class="row">
+
+        <div class="col-md-3 mb-1">
+            <div class="form-group">
+                @Html.Label("Stato richiesta", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.DropDownListFor(model => model.PraticheAziendaRicercaModel_StatoPraticaId, Html.SelectList(Model.StatoPratica.OrderBy(o => o.Ordine), "StatoPraticaId", "Descrizione", true), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_StatoPraticaId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4 mb-1">
+            <div class="form-group">
+                @Html.Label("Tipo richiesta", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+
+                    @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+                    {
+
+                        var _dip = Model.TipoRichiesta.Where(x => x.IsTipoRichiestaDipendente == true);
+                        var _az = Model.TipoRichiesta.Where(x => x.IsTipoRichiestaDipendente != true);
+
+                        <select class="form-control" data-val="true" data-val-number="Il campo PraticheAziendaRicercaModel_TipoRichiestaId deve essere un numero." id="PraticheAziendaRicercaModel_TipoRichiestaId" name="PraticheAziendaRicercaModel_TipoRichiestaId">
+                            <option selected="selected" value="">[Selezionare una voce]</option>
+
+                            @if (_az != null && _az.Count() >= 0)
+                            {
+                                <optgroup label="Prestazioni Aziende">
+                                    <option value="0">[Tutti prestazioni Aziende]</option>
+
+                                    @*<option disabled style="font-weight:bold">&nbsp;&nbsp;Sub category A.1</option>*@
+
+                                    @foreach (var item in _az)
+                                    {
+
+                                        <option value="@item.TipoRichiestaId">@item.Descrizione</option>
+                                    }
+                                </optgroup>
+
+                                <optgroup label="Prestazioni Dipendenti">
+                                    <option value="-1">[Tutti prestazioni Dipendenti]</option>
+                                    @foreach (var item in _dip)
+                                    {
+                                        <option value="@item.TipoRichiestaId">@item.Descrizione</option>
+                                    }
+                                </optgroup>
+                            }
+
+
+                        </select>
+
+
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.PraticheAziendaRicercaModel_TipoRichiestaId, Html.SelectList(Model.TipoRichiesta.OrderBy(o => o.Descrizione), "TipoRichiestaId", "Descrizione", true), new { @class = "form-control" })
+                    }
+
+                    @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_TipoRichiestaId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-1">
+            <div class="form-group">
+                @Html.Label("Numero Protocollo", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.PraticheAziendaRicercaModel_ProtocolloId, new { @class = "form-control", type = "search" })
+                    @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_ProtocolloId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2 mb-1">
+            <div class="form-group">
+                @Html.Label("Data invio", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+
+                    @Html.TextBoxForReadOnly(model => model.PraticheAziendaRicercaModel_DataInvio, new
+                                     {
+                                         @class = "form-control",
+                                         data_inputmask_alias = "datetime",
+                                         data_inputmask_inputformat = "dd/mm/yyyy"
+                                     }, "{0:dd/MM/yyyy}")
+
+                    @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_DataInvio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @if (!User.IsInRole(IdentityHelper.Roles.Azienda.ToString()) && !User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+        {
+            @Html.HiddenFor(model => model.PraticheAziendaRicercaModel_AziendaId)
+
+            <div class="col-md-4 mb-1">
+                <div class="form-group">
+                    @Html.Label("Ragione sociale o Matricola Inps", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PraticheAziendaRicercaModel_RagioneSociale, new { @class = "form-control", type = "search" })
+                        @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_AziendaId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @Html.AutocompleteAzienda("PraticheAziendaRicercaModel_RagioneSociale", "PraticheAziendaRicercaModel_AziendaId", "PraticheAziendaNuovaRichiesta_AziendaId")
+        }
+
+        @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()) || User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+        {
+            @Html.HiddenFor(model => model.PraticheAziendaRicercaModel_DipendenteId)
+
+            <div class="col-md-4 mb-1">
+                <div class="form-group">
+                    @Html.Label("Nominativo Dipendente o Codice Fiscale", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PraticheAziendaRicercaModel_NominativoDipendente, new { @class = "form-control", type = "search" })
+                        @Html.ValidationMessageFor(model => model.PraticheAziendaRicercaModel_DipendenteId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+            {
+                @Html.AutocompleteDipendenteSportello("PraticheAziendaRicercaModel_NominativoDipendente", "PraticheAziendaRicercaModel_DipendenteId", "PraticheAziendaRicercaModel_DipendenteId")
+
+            }
+            else
+            {
+                @Html.AutocompleteDipendenteAll("PraticheAziendaRicercaModel_NominativoDipendente", "PraticheAziendaRicercaModel_DipendenteId", "PraticheAziendaRicercaModel_DipendenteId")
+
+            }
+
+        }
+
+
+
+    </div>
+
+    @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+    {
+        <div class="row mt-1">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label" for="PraticheAziendaRicercaModel_OrderBy">Ordina per</label>
+                    <div class="col-md-12">
+                        <select class="form-control" id="PraticheAziendaRicercaModel_OrderBy" name="PraticheAziendaRicercaModel_OrderBy" aria-invalid="false">
+                            <option value="DataInvio == null, DataInvio asc">Data invio ascendente</option>
+                            <option value="DataInvio == null, DataInvio desc">Data invio discendente</option>
+                            <option value="DataInserimento == null, DataInserimento asc">Data inserimento ascendente</option>
+                            <option value="DataInserimento == null, DataInserimento desc">Data inserimento discendente</option>
+                            <option value="ProtocolloId == null, ProtocolloId asc">Protocollo ascendente</option>
+                            <option value="ProtocolloId == null, ProtocolloId desc">Protocollo discendente</option>
+                            <option value="Azienda.RagioneSociale == null, Azienda.RagioneSociale asc">Ragione sociale ascendente</option>
+                            <option value="Azienda.RagioneSociale == null, Azienda.RagioneSociale desc">Ragione sociale discendente</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <hr />
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Avvia ricerca</button>
+    </div>
+</div>
+}
+
+
+
+<script>
+
+    $('#PraticheAziendaRicercaModel_DataInvio').inputmask();
+
+    flatpickr('#PraticheAziendaRicercaModel_DataInvio', {
+        locale: "it",
+        dateFormat: "d/m/Y",
+        disableMobile: "true",
+        allowInput: true,
+        maxDate:"@DateTime.Now",
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+
+</script>

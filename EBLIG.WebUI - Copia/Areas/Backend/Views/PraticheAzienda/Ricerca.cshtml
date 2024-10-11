@@ -1,0 +1,49 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaRicercaModel
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+<div class="row mb-4">
+    <div class="col-md-12">
+
+        @if (!User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+        {
+
+
+            if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+            {
+                @Ajax.EncodedAjaxActionLink("Nuova Richiesta", "NuovaRichiestaSportello", "PraticheAzienda", null, new AjaxOptions
+                {
+                    OnBegin = "alertWaid()",
+                    OnSuccess = "showModal_NoFooter('Nuova Richiesta',data); alertClose()",
+                    OnFailure = "handleError"
+                }, new { @class = "btn btn-info" });
+            }
+            else
+            {
+                @Ajax.EncodedAjaxActionLink("Nuova Richiesta", "NuovaRichiestaAltro", "PraticheAzienda", null, new AjaxOptions
+                {
+                    OnBegin = "alertWaid()",
+                    OnSuccess = "showModal_NoFooter('Nuova Richiesta',data); alertClose()",
+                    OnFailure = "handleError"
+                }, new { @class = "btn btn-info" });
+
+            }
+        }
+
+        @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+        {
+            @Ajax.EncodedAjaxActionLink("Visualizza Importi richiesti", "VisualizzaBudget", "PraticheAzienda", null, new AjaxOptions
+                   {
+                       OnBegin = "alertWaid()",
+                       OnSuccess = "showModalFullScreen_NoHeader(data); alertClose()",
+                       OnFailure = "handleError"
+                   }, new { @class = "btn btn-info" });
+        }
+
+
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Prestazioni Regionali")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "PraticheAzienda"), true)
+

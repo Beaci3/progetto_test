@@ -1,0 +1,154 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Maternita
+
+
+<div class="row">
+    <h4>
+        <span class="badge bg-secondary">Dati Richiedente</span>
+    </h4>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.Nome, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cognome, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.Cognome, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Cognome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CodiceFiscale, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.CodiceFiscale, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.DataNascita, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.DataNascita, new
+                {
+                @class = "form-control",
+                data_inputmask_alias = "datetime",
+                data_inputmask_inputformat = "dd/mm/yyyy"
+                }, "{0:dd/MM/yyyy}")
+
+                @Html.ValidationMessageFor(model => model.DataNascita, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-3">
+
+    @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+        {
+            ReadOnly = Model.ReadOnly,
+            IncludiRegioni = false,
+            IndirizzoElement = "Indirizzo",
+            ProvinciaElement = "ProvinciaId",
+            ComuneElement = "ComuneId",
+            LocalitaElement = "LocalitaId",
+            RegioneElement = "RegioneId",
+
+            Sigpro = Model.Provincia?.SIGPRO,
+            Codcom = Model.Comune?.CODCOM,
+            Codreg = Model.Regione?.CODREG,
+
+            Indirizzo = Model.Indirizzo,
+            ComuneId = Model.ComuneId,
+            RegioneId = Model.RegioneId,
+            LocalitaId = Model.LocalitaId,
+            ProvinciaId = Model.ProvinciaId,
+
+            Provincia = Model.Provincia,
+            Regione = Model.Regione,
+            Comune = Model.Comune,
+            Localita = Model.Localita
+
+        });}
+
+</div>
+
+<hr />
+
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+
+    <script>
+        $('#@nameof(Model.DataNascita)').inputmask();
+
+        flatpickr('#@nameof(Model.DataNascita)', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            maxDate:"@DateTime.Now.AddYears(-16)",
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+        });
+
+    </script>
+}
+
+<script>
+    $("#@nameof(Model.CodiceFiscale)").on("keyup", function () {
+        if (String($("#@nameof(Model.CodiceFiscale)").val()).length == 16) {
+            verificaCodiceFiscale();
+        }
+    });
+
+    $("#@nameof(Model.CodiceFiscale)").on("blur", function () {
+        verificaCodiceFiscale();
+    });
+
+    function verificaCodiceFiscale() {
+        disableAzioniButton();
+
+        resetValidator("@nameof(Model.CodiceFiscale)");
+
+        $.get("@Url.Action("VerificaTipoRichiestaUnivocoCodiceFiscale", "PraticheAzienda")",
+            {
+                aziendaId: $("#@nameof(Model.AziendaId)").val(),
+                tipoRichiestaId: $("#@nameof(Model.TipoRichiestaId)").val(),
+                codiceFiscale: $("#@nameof(Model.CodiceFiscale)").val(),
+                richiestaId: $("#@nameof(Model.RichiestaId)").val(),
+                nomeCampo: "@nameof(Model.CodiceFiscale)",
+                unica:false
+
+            }, function (data) {
+                if (!data.isValid) {
+                    setValidatorError("@nameof(Model.CodiceFiscale)", data.message);
+                }
+                else {
+                    enableAzioniButton();
+                }
+        }).fail(function (error) {
+            enableAllBtn();
+        });
+    }
+</script>

@@ -1,0 +1,61 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.AziendaAssociaRicercaModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("AssociaAziendaRicerca", new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAssociaAziendaRicerca",
+    OnFailure = "handleError"
+}))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AziendaAssociaRicercaModel_AziendaId)
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-12 mb-2">
+                <div class="alert alert-info">
+                    Per ricercare una azienda, inserisci la <strong>Ragione sociale</strong> o la <strong>Matricola Inps</strong>
+                </div>
+            </div>
+
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AziendaAssociaRicercaModel_AziendaId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.AziendaAssociaRicercaModel_RagioneSocialeMatricolaInps, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                        @Html.ValidationMessageFor(model => model.AziendaAssociaRicercaModel_AziendaId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer mt-5">
+            <button type="submit" class="btn btn-primary">Avvia ricerca</button>
+
+            <button id="buttonCloseModal" type="button" onclick="hideModal()" class="btn btn-danger">Chiudi finestra</button>
+        </div>
+    </div>
+}
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+@Html.AutocompleteAziendaAll("AziendaAssociaRicercaModel_RagioneSocialeMatricolaInps", "AziendaAssociaRicercaModel_AziendaId", "AziendaAssociaRicercaModel_AziendaId", width: 450)
+
+<script>
+
+    function onSuccessAssociaAziendaRicerca(data) {
+        if (data.isValid == false) {
+            alertDanger(data.message);
+        }
+        else {
+            alertClose();
+            showModal_NoFooter("Associa Azienda", data);
+        }
+    }
+
+</script>

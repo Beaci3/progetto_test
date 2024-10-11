@@ -1,0 +1,51 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_Maternita
+@using EBLIG.WebUI
+
+@Html.HiddenFor(model => model.CodiceFiscale)
+
+@Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+
+@*<script>
+    $().ready(function () { verificaCodiceFiscale(); })
+
+    function verificaCodiceFiscale() {
+        disableAzioniButton();
+
+        resetValidator("@nameof(Model.CodiceFiscale)");
+
+        $.get("@Url.Action("VerificaTipoRichiestaUnivocoCodiceFiscale", "PraticheAzienda")",
+            {
+                aziendaId: $("#@nameof(Model.AziendaId)").val(),
+                tipoRichiestaId: $("#@nameof(Model.TipoRichiestaId)").val(),
+                codiceFiscale: $("#@nameof(Model.CodiceFiscale)").val(),
+                richiestaId: $("#@nameof(Model.RichiestaId)").val(),
+                nomeCampo: "@nameof(Model.CodiceFiscale)",
+                unica:true
+            }, function (data) {
+                if (!data.isValid) {
+                    $("#Azione").remove();
+                    alertInfo(data.message);
+
+                    setTimeout(function () {
+                        $.get("@Url.Action("NuovaRichiesta", "PraticheAzienda")", function (data1) {
+                            showModal_NoFooter('Nuova Richiesta', data1);
+                            enableAzioniButton();
+                        });
+                    }, 200);
+
+                }
+                enableAzioniButton();
+        }).fail(function (error) {
+            enableAllBtn();
+        });
+    }
+
+</script>*@

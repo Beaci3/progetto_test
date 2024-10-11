@@ -1,0 +1,27 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteRicercaModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+
+
+        @Ajax.EncodedAjaxActionLink("Nuovo Dipendente", "Anagrafica", "Dipendente", null, new AjaxOptions
+        {
+        OnBegin = "alertWaid()",
+        OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+        OnFailure = "handleError"
+        }, new { @class = "btn btn-info" })
+        @if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+        {
+            @Ajax.EncodedAjaxActionLink("Associa Dipendente", "AssociaDipendenteRicerca", "Dipendente", null, new AjaxOptions
+       {
+           OnBegin = "alertWaid()",
+           OnSuccess = "showModal_NoFooter('Associa Dipendente',data); alertClose()",
+           OnFailure = "handleError"
+       }, new { @class = "btn btn-danger" })
+        }
+    </div>
+</div>
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Anagrafiche Dipendenti")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Dipendente"), true)
+

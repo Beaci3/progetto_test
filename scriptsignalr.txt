@@ -1,0 +1,82 @@
+<script>
+        $().ready(function () {
+
+            // Declare a proxy to reference the hub.
+            var ebligHub = $.connection.eBLIGHub;
+
+            // Create a function that the hub can call.
+            ebligHub.client.onLogOffUtente = function (username, message) {
+
+                var _username = "@User.Identity.Name";
+
+                if (_username == username) {
+
+                    alertInfoNoCloseButton(message);
+
+                    $.get("/Account/LogOff", function (data) { });
+
+                    setTimeout(function () {
+                        location.href = "/";
+                    }, 10000);
+
+                }
+            }
+
+            @if (User.IsInRole(IdentityHelper.Roles.Azienda.ToString()) || User.IsInRole(IdentityHelper.Roles.ConsulenteCs.ToString()))
+            {
+                @:var _username = "@User.Identity.Name";
+
+                    @:ebligHub.client.onUpdateListRicerca = function (username, message) {
+                         @:if (_username == username)
+                         @:{
+                            @:if (message != undefined && message != "") { toastInfo(message); }
+                            @:if (location.href.indexOf("@Url.Action("","PraticheAzienda")") != -1)
+                            @:{
+                                @:updateListRicerca();
+                            @:}
+                        @:}
+                    @:}
+            }
+
+            @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+            {
+                @:ebligHub.client.onAvvisoNuovaRichiesta = function ( message) {
+                    @:toastInfo(message);
+                @:}
+
+                @:if (location.href.indexOf("@Url.Action("","PraticheAzienda")") != -1)
+                @:{
+                    @:ebligHub.client.onUpdateListRicerca = function (username, message) {
+                        @:updateListRicerca();
+                    @:}
+                @:}
+            }
+
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+            });
+        });
+
+        function toastInfo(message) {
+            toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "15000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            };
+
+            toastr["info"](message);
+        }
+
+    </script>

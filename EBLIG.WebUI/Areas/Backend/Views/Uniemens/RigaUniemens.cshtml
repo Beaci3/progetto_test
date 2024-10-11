@@ -1,0 +1,78 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.UniemensViewModel
+@using EBLIG.Utils
+
+<table class="table table-sm">
+    @foreach (var item in Model.UniemensModel.mensilita)
+    {
+        var _totaleVersato = 0m;
+
+        var _totaleVersMov = Html.GetDecimal(item.totali.entrate) + Html.GetDecimal(item.totali.movimenti);
+
+
+        <tr>
+            <td class="text-center">
+                <span class="text-center fw-bold">Mese</span><br />
+                @item.mese/@Model.Uniemens.Anno
+            </td>
+            <td class="text-center">
+                <span class="text-center fw-bold">Versamenti</span>
+                <br />
+                @Html.ToImporto(item.totali.entrate)
+            </td>
+            <td class="text-center">
+                <span class="text-center fw-bold">
+                    Movimenti
+                </span>
+                <br />
+                @Html.ToImporto(item.totali.movimenti)
+            </td>
+
+
+            @foreach (var colonne in ConfigurationProvider.Instance.GetConfiguration().Uniemens.Colonna)
+            {
+                var _versato = Html.GetDecimal(item.totali?.dovuti?.FirstOrDefault(x => x.quota == colonne)?.importo);
+
+                _totaleVersato += _versato;
+
+                <td class="text-center">
+                    <span class="text-center fw-bold">@colonne</span><br />
+                    @Html.ToImporto(_versato)
+                </td>
+            }
+
+            @if ((_totaleVersato - ConfigurationProvider.Instance.GetConfiguration().Uniemens.Scoperto) > _totaleVersMov)
+            {
+                <td class="text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Risulta non coperto @Html.ToImporto(_totaleVersato-_totaleVersMov)">
+                    <i class="fas fa-exclamation-triangle text-danger"></i><br />
+                    <strong class="text-info">@Html.ToImporto(_totaleVersato - _totaleVersMov)</strong>
+                </td>
+            }
+            else
+            {
+                <td class="text-center">
+                    <i class="fas fa-check-circle text-success"></i>
+                </td>
+            }
+
+            <td class="text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Dettaglio dipendenti mese @item.mese">
+                <a href="@Html.EncodedAction("Dipendenti", "Uniemens", new { uniemensId=Model.Uniemens.UniemensId, mese =  item.mese})"
+                   data-ajax="true"
+                   data-ajax-success="showModal_NoFooter('Dipendenti Uniemens', data); alertClose()"
+                   data-ajax-begin="alertWaid()"
+                   data-ajax-failure="handleError">
+                    <span class="text-center fw-bold">
+                        Dipendenti
+                    </span>
+                    <br />
+                    <span class="badge bg-primary rounded-pill">@item.dovuti.Count()</span>
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+<script>
+    function dipendentiUniemens(id) {
+
+    }
+</script>

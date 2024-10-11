@@ -1,0 +1,39 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Errore";
+    try
+    {
+        EBLIG.DOM.DAL.UnitOfWork unitOfWork = new EBLIG.DOM.DAL.UnitOfWork();
+        unitOfWork.LogsRepository.Insert(new EBLIG.DOM.Entitys.Logs
+        {
+            Data = DateTime.Now,
+            Ruolo = Html.GetUserRole(),
+            Username = User.Identity?.Name,
+            Model = typeof(Exception).AssemblyQualifiedName,
+            ViewDataJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Exception),
+            Message = Model.Exception.Message,
+            Action = Model.ActionName
+        });
+        unitOfWork.Save();
+    }
+    catch
+    {
+
+    }
+}
+
+<div>
+    @*<h3><strong class="text-danger">Errore.</strong></h3>*@
+    <div class="text-danger">Si è verificato un errore durante l'elaborazione della richiesta.</div>
+    @if (Model != null)
+    {
+        if (Model.Exception != null)
+        {
+            <br />
+            <h4>@Model.Exception.Message</h4>
+        }
+    }
+
+</div>
+

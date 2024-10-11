@@ -1,0 +1,134 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaNuovaRichiesta
+
+@Scripts.Render("~/bundles/jqueryval")
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+
+
+@using (Ajax.BeginForm("CreateNuovaRichiesta", null, new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessNuovaRichiesta",
+    OnFailure = "handleError"
+}, new { }))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.PraticheAziendaNuovaRichiesta_AziendaId)
+
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            @if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+            {
+                @Html.HiddenFor(model => model.PraticheAziendaNuovaRichiesta_DipendenteId)
+
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PraticheAziendaNuovaRichiesta_NominativoDipendente, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            @Model.PraticheAziendaNuovaRichiesta_NominativoDipendente
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!User.IsInRole(IdentityHelper.Roles.Azienda.ToString()))
+            {
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PraticheAziendaNuovaRichiesta_RagioneSociale, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.PraticheAziendaNuovaRichiesta_RagioneSociale, new { @class = "form-control", type = "search" })
+                            @Html.ValidationMessageFor(model => model.PraticheAziendaNuovaRichiesta_AziendaId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Matricola Inps", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            @User.Identity.Name
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PraticheAziendaNuovaRichiesta_TipoRichiestaId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.PraticheAziendaNuovaRichiesta_TipoRichiestaId, Html.SelectList(Model.TipoRichiesta, "TipoRichiestaId", "Descrizione", true), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PraticheAziendaNuovaRichiesta_TipoRichiestaId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-4" id="noteTipoRichiesta">
+
+                @if (User.IsInRole(IdentityHelper.Roles.Dipendente.ToString()))
+                {
+                    <div class="alert alert-info fw-bold">Assicurarsi di avere associato almeno una azienda. Per associare una azienda, clicca la voce dal menu "Aziende associate"</div>
+                }
+                @if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+                {
+                    <div class="alert alert-info fw-bold">Inserisci Ragione Sociale o Matricola Inps, e poi seleziona il Tipo di Richiesta</div>
+                }
+            </div>
+
+            <div class="modal-footer mt-4">
+                <button type="submit" class="btn btn-primary">Crea richiesta</button>
+
+                @if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+                {
+                    @Ajax.EncodedAjaxActionLink("Cambia dipendente", "NuovaRichiestaSportello", "PraticheAzienda", null, new AjaxOptions
+                      {
+                          OnBegin = "alertWaid()",
+                          OnSuccess = "showModal_NoFooter('Nuova Richiesta sportello',data); alertClose()",
+                          OnFailure = "handleError"
+                      }, new { @class = "btn btn-info" })
+                }
+
+                <button type="button" onclick="hideModal()" class="btn btn-danger" id="buttonCloseModal">Chiudi finestra</button>
+            </div>
+
+        </div>
+    </div>
+}
+
+@if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+{
+    @Html.AutocompleteAziendaByDipendenteId(Model.PraticheAziendaNuovaRichiesta_DipendenteId.GetValueOrDefault(), "PraticheAziendaNuovaRichiesta_RagioneSociale", "PraticheAziendaNuovaRichiesta_AziendaId", "PraticheAziendaNuovaRichiesta_AziendaId", width: 450)
+}
+else
+{
+    @Html.AutocompleteAzienda("PraticheAziendaNuovaRichiesta_RagioneSociale", "PraticheAziendaNuovaRichiesta_AziendaId", "PraticheAziendaNuovaRichiesta_AziendaId", width: 450)
+}
+
+<script>
+    $("#PraticheAziendaNuovaRichiesta_TipoRichiestaId").on("change", function () {
+        $("#noteTipoRichiesta").html("");
+
+        $.get("@Url.Action("GetNoteTipoRichiesta")", { id: $("#PraticheAziendaNuovaRichiesta_TipoRichiestaId").val() }, function (data) {
+
+            if (data != undefined && data != "") {
+                $("#noteTipoRichiesta").html(getAlert_Info(data));
+            }
+        });
+    });
+
+    function onSuccessNuovaRichiesta(data) {
+        if (data.isValid==false) {
+            alertInfo(data.message)
+        }
+        else {
+            alertClose();
+            showModalFullScreen_NoHeaderFooter(data);
+        }
+    }
+</script>

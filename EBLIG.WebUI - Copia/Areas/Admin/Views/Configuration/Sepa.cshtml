@@ -1,0 +1,225 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.SepaConfigModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Html.RicercaModulo("Configurazione Sepa")
+
+<hr />
+
+@using (Ajax.BeginForm("Sepa", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessSepa",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.MsgId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.MsgId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MsgId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InitgPty_Nm, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.InitgPty_Nm, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.InitgPty_Nm, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InitgPty_OrgId_Id, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.InitgPty_OrgId_Id, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.InitgPty_OrgId_Id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InitgPty_OrgId_Issr, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.InitgPty_OrgId_Issr, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.InitgPty_OrgId_Issr, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClrSysMmbId_MmbId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.ClrSysMmbId_MmbId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ClrSysMmbId_MmbId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_PmtInfId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_PmtInfId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_PmtInfId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_PmtMtd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PmtInf_PmtMtd, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.PmtInf_PmtMtd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_ChrgBr, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PmtInf_ChrgBr, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.PmtInf_ChrgBr, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_PmtTpInf_SvcLvl_Cd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PmtInf_PmtTpInf_SvcLvl_Cd, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.PmtInf_PmtTpInf_SvcLvl_Cd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_DbtrAcct_Iban, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_DbtrAcct_Iban, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_DbtrAcct_Iban, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_Dbtr_Nm, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_Dbtr_Nm, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_Dbtr_Nm, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_Dbtr_PstlAdr_StrtNm, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_Dbtr_PstlAdr_StrtNm, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_Dbtr_PstlAdr_StrtNm, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_Dbtr_PstlAdr_Ctry, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_Dbtr_PstlAdr_Ctry, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_Dbtr_PstlAdr_Ctry, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_Dbtr_PstlAdr_PstCd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_Dbtr_PstlAdr_PstCd, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_Dbtr_PstlAdr_PstCd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_Dbtr_PstlAdr_TwnNm, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_Dbtr_PstlAdr_TwnNm, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_Dbtr_PstlAdr_TwnNm, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mt-2">
+                <div class="form-group">
+                    @Html.Label("PmtInf_DbtrAgt_FinInstnId_ClrSysMmbId_MmbId", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_DbtrAgt_FinInstnId_ClrSysMmbId_MmbId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_DbtrAgt_FinInstnId_ClrSysMmbId_MmbId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_CdtTrfTxInf_PmtTpInf_CtgyPurp_Cd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PmtInf_CdtTrfTxInf_PmtTpInf_CtgyPurp_Cd, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.PmtInf_CdtTrfTxInf_PmtTpInf_CtgyPurp_Cd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_CdtTrfTxInf_PmtId_EndToEndId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_CdtTrfTxInf_PmtId_EndToEndId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_CdtTrfTxInf_PmtId_EndToEndId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_CdtTrfTxInf_Purp_Cd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.PmtInf_CdtTrfTxInf_Purp_Cd, new { @class = "form-control" }, null, true)
+                        @Html.ValidationMessageFor(model => model.PmtInf_CdtTrfTxInf_Purp_Cd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PmtInf_CdtTrfTxInf_RmtInf_Ustrd, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.PmtInf_CdtTrfTxInf_RmtInf_Ustrd, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PmtInf_CdtTrfTxInf_RmtInf_Ustrd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <hr />
+
+        <div class="form-group row">
+            <div class="col-md-12 text-center">
+                <input type="submit" value="Aggiorna" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function onSuccessSepa(data) {
+        @Html.OnSuccess();
+    }
+</script>

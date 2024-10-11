@@ -1,0 +1,274 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaAllegati
+
+
+@{
+
+    var _allegati = (from a in Model.TipoRichiestaAllegati
+                     select new
+                     {
+                         TipoRichiestaAllegatiId = a.TipoRichiestaAllegatiId,
+                         Nome = a.Allegato.Nome + (a.Obblicatorio.GetValueOrDefault() ? " (Obbligatorio)" : ""),
+                         Obblicatorio = a.Obblicatorio
+                     })?.OrderByDescending(o => o.Obblicatorio).ThenBy(o => o.Nome).ToList();
+
+}
+
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+
+    if (_allegati != null && _allegati.Count() > 0)
+    {
+        var _Obblicatorio = Model.TipoRichiestaAllegati?.Select(o => o.Obblicatorio == true)?.Count() > 0;
+
+        <div class="row">
+
+            <h4>
+                <span class="badge bg-secondary">Allegati Richiesti</span>
+            </h4>
+
+            @Html.HiddenFor(x => x.AllegatiId)
+
+            @Html.HiddenFor(x => x.AllegatiIdSelInput)
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label">
+                        Tipo allegato
+                        @if (_Obblicatorio)
+                        {
+                            <span class="text-danger"> *</span>
+                        }
+                    </label>
+
+                    @Html.DropDownList("TipoAllegato", Html.SelectList(_allegati, "TipoRichiestaAllegatiId", "Nome", true), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AllegatiId, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Allegato</label>
+
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="fileUpload" accept=".pdf" disabled>
+                    </div>
+
+
+                    <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-md-12" id="containerfiles">
+
+            </div>
+        </div>
+
+
+    }
+}
+else
+{
+    if (Model.RichiestaAllegati != null && Model.RichiestaAllegati.Count() > 0)
+    {
+
+        <div class="row">
+            <h4>
+                <span class="badge bg-secondary">Allegati Richiesti</span>
+            </h4>
+
+
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12" id="containerfiles">
+
+            </div>
+        </div>
+
+
+    }
+}
+
+<hr class="mt-4" />
+
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/documentiObblicatori.js"></script>
+
+<script>
+
+    $("#TipoAllegato").on("change", function () {
+
+        if ($("#TipoAllegato").val() == "" || $("#TipoAllegato").val() == undefined) {
+            $("#fileUpload").attr("disabled", "disabled");
+        }
+        else {
+            $("#fileUpload").removeAttr("disabled");
+        }
+    });
+
+    var _arrayFiles = new Array();
+
+    @if (!Model.ReadOnly.GetValueOrDefault()) {
+        @:setAllegatiObbicatori();
+    }
+
+    setAllegatiCaricati();
+
+    function setAllegatiObbicatori()
+    {
+        var _allegatiid = "";
+
+        @if (_allegati!=null)
+        {
+            foreach (var item in _allegati.Where(x=>x.Obblicatorio==true))
+            {
+                @:_allegatiid+="@item.TipoRichiestaAllegatiId" + ",";
+            }
+        }
+        $("#@nameof(Model.AllegatiId)").val(_allegatiid);
+
+   }
+
+    function setAllegatiCaricati() {
+
+        var _allegatiidSelected = "";
+
+        @if (Model.RichiestaAllegati !=null)
+        {
+            foreach (var item in Model.RichiestaAllegati)
+            {
+                try
+                {
+                    var _allegato = Model.TipoRichiestaAllegati.FirstOrDefault(x => x.TipoRichiestaAllegatiId == item.TipoRichiestaAllegatiId);
+
+                    if (_allegato==null)
+                    {
+                        continue;
+                    }
+
+                    var _nomefile = _allegato?.Allegato?.Nome + (_allegato.Obblicatorio.GetValueOrDefault() ? " (Obbligatorio)":"");
+                   @:_allegatiidSelected +="@item.TipoRichiestaAllegatiId" + ",";
+                   @:pushFileToArray("@item.TipoRichiestaAllegatiId", "@_nomefile","@item.FilenameOriginale", "@Path.GetFileNameWithoutExtension(item.Filename)", "", "", "@item.PraticheRegionaliImpreseAllegatiId");
+                }
+                catch
+                {
+
+                }
+            }
+            @:popularDati();
+        }
+
+        $("#@nameof(Model.AllegatiIdSelInput)").val(_allegatiidSelected);
+
+    }
+
+    //#region fileupload
+
+    $('input[type=file]').on('change', function () {
+
+        var _span = $("span[data-valmsg-for='@nameof(Model.AllegatiId)']");
+
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+        var tmppath = URL.createObjectURL(file);
+
+        reader.addEventListener("load", function () {
+            var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+            if (!myRe.exec(getFileExtension(file.name))) {
+                _span.addClass("field-validation-error");
+                _span.html("Estensione non valida");
+                _span.show();
+                return;
+            }
+
+            if (getFileSize(file.size) > 1) {
+                _span.addClass("field-validation-error");
+                _span.html("Dimensione massima 1MB");
+                _span.show();
+                return;
+            }
+
+            pushFileToArray($("#TipoAllegato").val(), $("#TipoAllegato option:selected").text(),
+                file.name, tmppath, reader.result, getFileExtension(file.name), "");
+
+            _span.hide();
+            _span.html("");
+            popularDati();
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+        $(this).val('');
+
+    });
+
+    function pushFileToArray(tiporichiestaallegatiid, descrizionecodtipall, nome, completefilename, data, estensione, praticheregionaliimpreseallegatiid) {
+        _arrayFiles.push({
+            "tiporichiestaallegatiid": tiporichiestaallegatiid,
+            "descrizionecodtipall": descrizionecodtipall,
+            "nome": nome,
+            "completefilename": completefilename,
+            "data": data,
+            "estensione": estensione,
+            "praticheregionaliimpreseallegatiid": praticheregionaliimpreseallegatiid
+        });
+    }
+
+    function popularDati() {
+        var _allegatiidsel = "";
+        var _table = "<ul class=\"list-group\">";
+
+        if (_arrayFiles.length==0) {
+            _table += "<li class=\"list-group-item text-danger\">Nessun allegato caricato</li>";
+        }
+
+        for (var i = 0; i < _arrayFiles.length; i++) {
+            _table += "<li class=\"list-group-item text-dark\">";
+            @if (!Model.ReadOnly.GetValueOrDefault())
+            {
+                @:_table += "<a onclick=\"deleteFile('" + i + "')\" href=\"javascript:void()\"><i class=\"fas fa-trash-alt text-danger mr-3\"></i></a>";
+            }
+            if (_arrayFiles[i].praticheregionaliimpreseallegatiid != 0) {
+                _table += "<a data-toggle=\"tooltip\" title=\"Scarica allegato\" data-placement=\"top\" href='@Html.EncodedAction("DownloadAllegato", "PraticheAzienda", new { Model.RichiestaId, area="Backend" })&allegato=" + _arrayFiles[i].completefilename +"' target=\"_blank\"><i class=\"fas fa-file-pdf text-info mr-3\"></i>" + _arrayFiles[i].descrizionecodtipall + "</a>";
+            }
+            else {
+                _table += "<a data-toggle=\"tooltip\" title=\"Scarica allegato\" data-placement=\"top\" href='" + _arrayFiles[i].completefilename + "' target=\"_blank\"><i class=\"fas fa-file-pdf text-info mr-3\"></i>" + _arrayFiles[i].descrizionecodtipall + "</a>";
+            }
+            _table += "</li>";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].NomeFile\" value=\"" + _arrayFiles[i].nome + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].Base64\" value=\"" + _arrayFiles[i].data + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].TipoRichiestaAllegatiId\" value=\"" + _arrayFiles[i].tiporichiestaallegatiid + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].Estensione\" value=\"" + _arrayFiles[i].estensione + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].CodTipAlldescrizione\" value=\"" + _arrayFiles[i].descrizionecodtipall + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].Completefilename\" value=\"" + _arrayFiles[i].completefilename + "\">";
+            _table += "<input type=\"hidden\"/ name=\"File[" + i + "].PraticheRegionaliImpreseAllegatiId\" value=\"" + _arrayFiles[i].praticheregionaliimpreseallegatiid + "\">";
+            _allegatiidsel += _arrayFiles[i].tiporichiestaallegatiid + ",";
+        }
+
+        _table += "</ul>";
+        $("#containerfiles").html(_table);
+        $("#@nameof(Model.AllegatiIdSelInput)").val(_allegatiidsel);
+
+        }
+
+    function deleteFile(index) {
+        _arrayFiles.splice(index, 1);
+        popularDati();
+    }
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    //#endregion
+
+</script>
+

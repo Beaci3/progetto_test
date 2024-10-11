@@ -1,0 +1,78 @@
+﻿@using EBLIG.WebUI
+@if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+{
+    <div class="row">
+        <div class="col-md-12">
+
+            <h3>
+                <span class="badge bg-secondary">Statistiche EBLIG</span>
+            </h3>
+            <hr />
+
+            @{
+                var _barchart = new string[] { "PraticheAzienda", "PratichePerStato", "PraticheDataInvio", "UtentiGiorno" };
+            }
+
+            <div class="row">
+                @for (int i = 0; i < _barchart.Length; i++)
+                {
+                    <div class="col-md-6">
+                        <div id="barchart_@_barchart[i]" style="height:100%; text-align:center" class="mt-1 mb-1 w-100 text-center">
+
+                            <div style="height: 200px; padding-bottom: 30px; padding-top: 50px;">
+
+                                <div class="spinner-border mt-3 text-info"></div>
+                                <div class="text-info mt-3"><strong>Elaborazione in corso...</strong></div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <script src="~/Scripts/chart.js/Chart.min.js"></script>
+
+            <script>
+
+            $().ready(function () {
+                @for (int i = 0; i < _barchart.Length; i++)
+                {
+                    //@:$.get("@Url.Action(_barchart[i], "Statistiche")", function (data) {
+                        @:setTimeout(function () { $("#barchart_@_barchart[i]").load("@Url.Action(_barchart[i], "Statistiche")");}, 500)
+                        //@:$("#barchart_@_barchart[i]").html(data)
+                    //@:});
+                }
+
+            });
+            </script>
+        </div>
+
+
+        <div class="col-md-12 mt-2">
+            <h3>
+                <span class="badge bg-secondary">Menu EBLIG</span>
+            </h3>
+            <hr />
+            @{ Html.RenderAction("HomeMenu", "Home");}
+        </div>
+
+
+    </div>
+
+}
+
+else
+{
+    <h3>
+        <span class="badge bg-secondary">Menu EBLIG</span>
+    </h3>
+    <hr />
+    Html.RenderAction("HomeMenu", "Home");
+
+
+    Html.RenderAction("AvvisoUtente", "Home");
+
+
+}

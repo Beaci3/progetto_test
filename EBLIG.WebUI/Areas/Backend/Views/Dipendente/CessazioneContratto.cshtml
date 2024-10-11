@@ -1,0 +1,67 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteAziendaCessazioneContrattoModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+
+@using (Ajax.BeginForm("CessazioneContratto", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessCessazioneContratto",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.DipendenteAziendaId)
+
+    <div class="form-horizontal row">
+
+        <div class="form-group offset-3">
+            <div class="row">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.DataAssunzione, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.DataAssunzione, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DataAssunzione, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.DataCessione, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.DataCessione, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DataCessione, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer mt-5">
+
+            <button type="submit" class="btn btn-primary">Conferma</button>
+            <button type="button" onclick="hideModal()" class="btn btn-danger">Chiudi</button>
+        </div>
+    </div>
+}
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/dataDalDataAl.js"></script>
+
+<script>
+    $().ready(function () {
+        $('#DataAssunzione').inputmask();
+        $('#DataCessione').inputmask();
+
+        flatpickr('#DataAssunzione', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            maxDate:"@DateTime.Now",
+            onChange: function (selectedDates, dateStr, instance) {
+                },
+            plugins: [new rangePlugin({ input: "#DataCessione" })]
+        });
+    })
+
+    function onSuccessCessazioneContratto(data) {
+        @Html.OnSuccessHideModal();
+    }
+</script>

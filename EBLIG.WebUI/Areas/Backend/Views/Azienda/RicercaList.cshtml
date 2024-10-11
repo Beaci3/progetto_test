@@ -1,0 +1,88 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.AziendaRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessuna Azienda trovata");
+    return;
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Ragione sociale</th>
+                    <th>Matricola Inps</th>
+                    <th>Tipologia</th>
+                    <th>CSC</th>
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    <tr>
+                        <td>
+                            @item.RagioneSociale
+
+                            @if (item.Copertura != null && item.Copertura.FirstOrDefault()?.Coperto == false)
+                            {
+                                <br />
+                                <i class="fas fa-exclamation-triangle mr-3 text-danger"></i><strong class="text-danger">L'azienda non risulta in regola con i contributi</strong>
+                            }
+
+                        </td>
+                        <td>@item.MatricolaInps</td>
+                        <td>@Html.CropText(item.Tipologia?.Descrizione, 50)</td>
+                        <td>@item.CSC</td>
+                        <td class="text-center">
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Azioni
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        @Ajax.EncodedAjaxActionLink("Dettaglio", "Anagrafica", "Azienda", new
+                                        {
+                                              id = item.AziendaId
+                                        }, new AjaxOptions
+                                        {
+                                              OnBegin = "alertWaid()",
+                                              OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                                              OnFailure = "handleError"
+                                        }, new { @class = "dropdown-item" })
+                                    </li>
+                                    <li>
+                                        @Ajax.EncodedAjaxActionLink("Dissocia", "Dissocia", "Azienda", new
+                                           {
+                                               id = item.AziendaId
+                                           }, new AjaxOptions
+                                           {
+                                               OnBegin = "alertWaid()",
+                                               OnSuccess = "showModal_NoHeaderFooter(data); alertClose()",
+                                               OnFailure = "handleError"
+                                           }, new { @class = "dropdown-item" })
+                                    </li>
+                                </ul>
+                            </div>
+                        
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

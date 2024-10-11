@@ -1,0 +1,94 @@
+﻿@model IEnumerable<EBLIG.DOM.Entitys.DipendenteAzienda>
+
+
+@if (Model.Count() == 0)
+{
+    @Html.AlertDanger("Nessuna Azienda associata");
+    return;
+}
+else
+{
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="text-center bg-dark text-white">
+                <th>Ragione Sociale</th>
+                <th>Data assunzione</th>
+                <th>Data cessazione</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Azienda.RagioneSociale)
+                        <br />
+
+                        <label class="badge bg-primary">CF: @item.Azienda.CodiceFiscale - Matricola: @Html.DisplayFor(modelItem => item.Azienda.MatricolaInps)</label>
+
+                        <div>
+                            @if (item.TipoImpiego != null)
+                            {
+                                <span>@item.TipoImpiego.Descrizione</span><span> - </span>
+                            }
+
+                            @if (item.TipoContratto != null)
+                            {
+                                <span>@item.TipoContratto.Descrizione</span><span> - </span>
+                            }
+
+
+                            @if (item.TempoLavoro != null)
+                            {
+                                <span>@item.TempoLavoro.Descrizione</span>
+                            }
+                        </div>
+
+                    </td>
+
+                    <td class="text-center">
+                        @if (item.DataAssunzione.HasValue)
+                        {
+                            @item.DataAssunzione.GetValueOrDefault().ToShortDateString()
+                        }
+                        </td>
+                    <td class="text-center">
+                        @if (item.DataCessazione.HasValue)
+                        {
+                            <strong class="text-danger">
+                                @item.DataCessazione.GetValueOrDefault().ToShortDateString()
+                            </strong>
+                        }
+                    </td>
+                  
+                    <td class="text-center">
+
+                        @if (!item.DataCessazione.HasValue)
+                        {
+                            @Ajax.EncodedAjaxActionLink("Aggiorna Data assunzione/cessazione", "CessazioneContratto", "Dipendente", new
+                       {
+                           dipendenteAziendaId = item.DipendenteAziendaId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModal_NoFooter('Cessazione contratto', data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class = "btn btn-sm btn-primary" })
+
+
+                        }
+                        else
+                        {
+                        <button type="button" class="btn btn-sm btn-primary disabled" disabled>Aggiorna Data assunzione/cessazione</button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

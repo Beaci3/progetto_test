@@ -1,0 +1,140 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneDaLiquidareRicercaModel
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <button disabled data-liquidazione-button="true" class="btn btn-danger" type="button" onclick="cancellaListaPraticheLiquidazione()">Cancella lista</button>
+        <button disabled data-liquidazione-button="true" class="btn btn-primary" type="button" onclick="creaListaPraticheLiquidazione()">Crea lista</button>
+       
+        
+        <button class="btn btn-info" type="button" onclick="creaUnicaListaPraticheLiquidazione()">Crea unico pagamento</button>
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaDaLiquidareModulo", Model), "Prestazioni Regionali da liquidare")
+
+@Html.UpdateListRicerca(Url.Action("RicercaDaLiquidare", "Liquidazione"), true)
+
+
+
+<script>
+
+@if (Model.ListaPraticheLiquidazione.GetValueOrDefault() > 0)
+{
+    @:$().ready(function () { $("[data-liquidazione-button]").removeAttr("disabled"); cancellaListaPraticheLiquidazione();  });
+}
+
+
+    function creaListaPraticheLiquidazione() {
+
+         const swalWithBootstrapButtons = Swal.mixin({
+             customClass: {
+                 confirmButton: 'btn btn-success mr-1',
+                 cancelButton: 'btn btn-danger mr-1'
+             },
+             buttonsStyling: false
+         });
+
+        playNotifyConfirm();
+
+         swalWithBootstrapButtons.fire({
+            html: "Creare la lista per la Liquidazione?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: 'Conferma',
+            cancelButtonText: 'Annulla',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                alertWaid();
+                $.post("@Html.EncodedAction("CreaListaLiquidazione", "Liquidazione")", function (data) {
+                    if (data.isValid == false) {
+                        alertDanger(data.message);
+                    }
+                    else {
+                        $("[data-liquidazione-button]").attr("disabled", "disabled");
+                        alertSuccess(data.message);
+                        updateListRicerca();
+                    }
+                }).fail(function (error) { handleError(error) });
+            }
+        })
+    }
+
+    function creaUnicaListaPraticheLiquidazione() {
+
+         const swalWithBootstrapButtons = Swal.mixin({
+             customClass: {
+                 confirmButton: 'btn btn-success mr-1',
+                 cancelButton: 'btn btn-danger mr-1'
+             },
+             buttonsStyling: false
+         });
+
+        playNotifyConfirm();
+
+         swalWithBootstrapButtons.fire({
+            html: "Creare unica la lista per la Liquidazione?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: 'Conferma',
+            cancelButtonText: 'Annulla',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                alertWaid();
+                $.post("@Html.EncodedAction("CreaUnicaListaLiquidazione", "Liquidazione")", function (data) {
+                    if (data.isValid == false) {
+                        alertDanger(data.message);
+                    }
+                    else {
+                        $("[data-liquidazione-button]").attr("disabled", "disabled");
+                        alertSuccess(data.message);
+                        updateListRicerca();
+                    }
+                }).fail(function (error) { handleError(error) });
+            }
+        })
+    }
+
+    function cancellaListaPraticheLiquidazione() {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Hai richiesta nella lista da liquidare, voi mantenere questi ho cancellare dalla lista?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Cancella richieste in lista',
+        cancelButtonText: 'Continua',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $.post("@Html.EncodedAction("RimuoviRichiesta", "Liquidazione")", function (data) {
+                if (data.isValid == false) {
+                    alertDanger(data.message);
+                }
+                else {
+                    $("[data-liquidazione-button]").attr("disabled", "disabled");
+                    alertSuccess(data.message);
+                    updateListRicerca();
+                }
+            }).fail(function (error) { handleError(error) });
+        }
+    })
+}
+
+</script>

@@ -1,0 +1,54 @@
+﻿use eblig
+
+ALTER TABLE [Sportello] NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].[Sportello]
+DBCC CHECKIDENT ('dbo.Sportello',RESEED, 0)
+ALTER TABLE [Sportello] WITH CHECK CHECK CONSTRAINT ALL
+
+truncate table [dbo].[PraticheRegionaliImpreseAllegati]
+truncate table [dbo].[PraticheRegionaliImpreseDatiPratica]
+truncate table [dbo].[PraticheRegionaliImpreseStatoPraticaStorico]
+
+
+ALTER TABLE PraticheRegionaliImprese NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].PraticheRegionaliImprese
+DBCC CHECKIDENT ('dbo.PraticheRegionaliImprese',RESEED, 0)
+ALTER TABLE PraticheRegionaliImprese WITH CHECK CHECK CONSTRAINT ALL
+
+ALTER TABLE ConsulenteCS NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].ConsulenteCS
+DBCC CHECKIDENT ('dbo.ConsulenteCS',RESEED, 0)
+ALTER TABLE ConsulenteCS WITH CHECK CHECK CONSTRAINT ALL
+
+
+truncate table [dbo].[Copertura]
+truncate table [dbo].[DelegheConsulenteCSAzienda]
+
+ALTER TABLE Azienda NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].Azienda
+DBCC CHECKIDENT ('dbo.Azienda',RESEED, 0)
+ALTER TABLE Azienda WITH CHECK CHECK CONSTRAINT ALL
+
+
+truncate table [dbo].[DipendenteAzienda]
+truncate table [dbo].[DelegheSportelloDipendente]
+
+ALTER TABLE Dipendente NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].Dipendente
+DBCC CHECKIDENT ('dbo.Dipendente',RESEED, 0)
+ALTER TABLE Dipendente WITH CHECK CHECK CONSTRAINT ALL
+
+
+truncate table [dbo].[LiquidazionePraticheRegionali]
+
+ALTER TABLE Liquidazione NOCHECK CONSTRAINT ALL
+DELETE FROM [dbo].Liquidazione
+DBCC CHECKIDENT ('dbo.Liquidazione',RESEED, 0)
+ALTER TABLE Liquidazione WITH CHECK CHECK CONSTRAINT ALL
+
+
+truncate table [dbo].[Logs]
+
+truncate table [dbo].[Uniemens]
+
+delete from [dbo].[AspNetUsers] where UserName != 'Admin'

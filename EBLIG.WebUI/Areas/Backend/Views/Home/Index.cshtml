@@ -1,0 +1,14 @@
+﻿@using EBLIG.WebUI
+
+<div class="row">
+
+    @{ Html.RenderPartial("~/Areas/Backend/Views/Statistiche/Statistica.cshtml"); }
+   
+    @if (!User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+    {
+        Html.RenderAction("AvvisoUtente", "Home");
+    }
+
+    @{ Html.RenderAction("HomeMenu", "Home"); }
+
+</div>

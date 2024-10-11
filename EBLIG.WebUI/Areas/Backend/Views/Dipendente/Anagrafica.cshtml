@@ -1,0 +1,537 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteViewModel
+@using EBLIG.WebUI
+
+@Scripts.Render("~/bundles/jqueryval")
+
+
+@using (Ajax.BeginForm("Anagrafica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAnagrafica",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.DipendenteId)
+    @Html.HiddenFor(model => model.SportelloId)
+    var _matricolaReadOnly = Model.DipendenteId != 0 || Model.ReadOnly.GetValueOrDefault() ? true
+        : (User.IsInRole(IdentityHelper.Roles.Dipendente.ToString()) ? true : false);
+
+    <h3>Dati Anagrafici Dipendente</h3>
+    <hr />
+    <div class="form-horizontal mt-4">
+
+        <div class="row">
+
+            <h4>
+                <span class="badge bg-secondary">Dati Dipendente</span>
+            </h4>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Cognome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Cognome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Cognome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Nome, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CodiceFiscale, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxForReadOnly(model => model.CodiceFiscale, new { @class = "form-control text-uppercase" }, null, _matricolaReadOnly)
+                        @Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Iban, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Iban, new { @class = "form-control text-uppercase" })
+                        @Html.ValidationMessageFor(model => model.Iban, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Datanascita, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxForReadOnly(model => model.Datanascita, new
+                   {
+                       @class = "form-control",
+                       data_inputmask_alias = "datetime",
+                       data_inputmask_inputformat = "dd/mm/yyyy"
+                   }, "{0:dd/MM/yyyy}")
+                        @Html.ValidationMessageFor(model => model.Datanascita, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+                {
+                    ReadOnly = Model.ReadOnly,
+                    Col = 3,
+                    IncludiEstero = true,
+                    IncludiRegioni = true,
+                    ShowLocalita = false,
+                    ShowIndirizzo = false,
+                    IndirizzoElement = "Indirizzo",
+                    ProvinciaElement = "ProvinciaNascitaId",
+                    ComuneElement = "ComuneNascitaId",
+                    LocalitaElement = "LocalitaNascitaId",
+                    RegioneElement = "RegioneNascitaId",
+
+                    ComuneElementNome = "Comune nascita",
+                    ProvinciaElementNome = "Provincia nascita",
+                    RegioneElementNome = "Regione nascita",
+                    Sigpro = Model.ProvinciaNascita?.SIGPRO,
+                    Codcom = Model.ComuneNascita?.CODCOM,
+                    Codreg = Model.RegioneNascita?.CODREG,
+
+                    ComuneId = Model.ComuneNascitaId,
+                    RegioneId = Model.RegioneNascitaId,
+                    ProvinciaId = Model.ProvinciaNascitaId
+                });}
+
+        </div>
+
+        <hr />
+
+        <div class="row mt-3">
+
+            <h4>
+                <span class="badge bg-secondary">Residenza Dipendente</span>
+            </h4>
+
+
+            @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+                {
+                    ReadOnly = Model.ReadOnly,
+                    IncludiRegioni = true,
+                    IndirizzoElement = "Indirizzo",
+                    ProvinciaElement = "ProvinciaId",
+                    ComuneElement = "ComuneId",
+                    LocalitaElement = "LocalitaId",
+                    RegioneElement = "RegioneId",
+
+                    Sigpro = Model.Provincia?.SIGPRO,
+                    Codcom = Model.Comune?.CODCOM,
+                    Codreg = Model.Regione?.CODREG,
+
+                    Indirizzo = Model.Indirizzo,
+                    ComuneId = Model.ComuneId,
+                    RegioneId = Model.RegioneId,
+                    LocalitaId = Model.LocalitaId,
+                    ProvinciaId = Model.ProvinciaId
+                });}
+
+        </div>
+
+
+        <hr />
+        <div class="row mt-3">
+
+            <h4>
+                <span class="badge bg-secondary">Contatti Dipendente</span>
+            </h4>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Cellulare, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxForReadOnly(model => model.Cellulare, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Cellulare, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        @if (Model.DipendenteId != 0)
+        {
+
+            <div class="row mt-3">
+                <h4>
+                    <span class="badge bg-warning">Aziende associate</span>
+                </h4>
+
+                <div style="max-height:250px; overflow:auto" class="mt-3">
+
+                    @if (Model.Aziende != null && Model.Aziende?.Count() > 0)
+                    {
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="table-fixed">
+                                <tr class="text-center bg-dark text-white">
+                                    <th>Ragione sociale</th>
+                                    <th>Contratto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.Aziende)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.Azienda.RagioneSociale - @item.Azienda.MatricolaInps
+                                            <br />
+
+                                            @if (item.Azienda.Tipologia != null)
+                                            {
+                                                @Html.CropText(item.Azienda.Tipologia.Descrizione, 50)
+                                            }
+
+
+                                        </td>
+                                        <td>
+                                            @if (item.TipoImpiego != null)
+                                            {
+                                                <strong>@Html.CropText(item.TipoImpiego.Descrizione, 50)</strong><br />
+
+                                            }
+
+                                            @if (item.TipoContratto != null)
+                                            {
+                                                <span>@item.TipoContratto.Descrizione</span>
+                                            }
+
+                                            -
+
+                                            @if (item.TempoLavoro != null)
+                                            {
+                                                <span>@item.TempoLavoro.Descrizione</span>
+                                            }
+
+                                            <br />
+
+                                            @Html.ToShortDate(item.DataAssunzione)
+
+                                            @if (item.DataCessazione.HasValue)
+                                            {
+                                                <span> - </span><span class="text-danger">@Html.ToShortDate(item.DataCessazione)</span>
+
+                                            }
+                                            else
+                                            {
+                                                <span class="text-success"> - attivo</span>
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        @Html.AlertWarning("Nessuna Azienda associata")
+                    }
+                </div>
+            </div>
+            <hr />
+        }
+
+        @if (Model.DipendenteId != 0 && Model.Sportello != null)
+        {
+            var _delega = Model.Sportello.DelegheSportelloDipendente.Where(a => a.DipendenteId == Model.DipendenteId && a.DelegaAttiva == true).FirstOrDefault();
+            if (_delega != null)
+            {
+                <div class="row mt-3">
+                    <h4>
+                        <span class="badge bg-info">Dati Sportello Sindacale</span>
+                    </h4>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            @Html.Label("Ragione Sociale", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Model.Sportello.RagioneSociale
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Codice Fiscale", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12 text-uppercase">
+                                @Model.Sportello.CodiceFiscalePIva
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Email", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12 text-uppercase">
+                                @Model.Sportello.Email
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Telefono", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12 text-uppercase">
+                                @Model.Sportello.Telefono
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.DocumentoIdentita, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+
+                                <a data-toggle="tooltip" title="Scarica allegato"
+                                   data-placement="top"
+                                   href='@Html.EncodedAction("DownloadAllegato", "Dipendente", new {delegaId= _delega.DelegheSportelloDipendenteId, area="Backend", allegato="DocumentoIdentita" })'
+                                   target="_blank">
+                                    <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                                </a>
+
+                                @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()) || User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+                                {
+                                    <div class="mt-2 text-primary">
+                                        <a data-toggle="tooltip" title="Aggiorna Documento di identità del dipendente"
+                                           data-placement="top"
+                                           href='@Html.EncodedAction("UploadAllegato", "Dipendente", new { delegaId = _delega.DelegheSportelloDipendenteId, area = "Backend", allegato = "DocumentoIdentita" })'
+                                           data-ajax="true"
+                                           data-ajax-begin="alertWaid()"
+                                           data-ajax-failure="handleError"
+                                           data-ajax-success="showModal_NoFooter('Aggiorna Documento di identità del dipendente', data); alertClose()">
+                                            <i class="fa-solid fa-upload mr-3"></i>Aggiorna Documento di identità del dipendente
+                                        </a>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.DelegaDipendente, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <a data-toggle="tooltip" title="Scarica allegato"
+                                   data-placement="top"
+                                   href='@Html.EncodedAction("DownloadAllegato", "Dipendente", new { delegaId= _delega.DelegheSportelloDipendenteId, area="Backend", allegato="DelegaDipendente" })'
+                                   target="_blank">
+                                    <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                                </a>
+
+                                @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()) || User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+                                {
+                                    <div class="mt-2 text-primary">
+                                        <a data-toggle="tooltip" title="Aggiorna Delega del dipendente"
+                                           data-placement="top"
+                                           href='@Html.EncodedAction("UploadAllegato", "Dipendente", new { delegaId = _delega.DelegheSportelloDipendenteId, area = "Backend", allegato = "DelegaDipendente" })'
+                                           data-ajax="true"
+                                           data-ajax-begin="alertWaid()"
+                                           data-ajax-failure="handleError"
+                                           data-ajax-success="showModal_NoFooter('Aggiorna Delega del dipendente', data); alertClose()">
+                                            <i class="fa-solid fa-upload mr-3"></i>Aggiorna Delega del dipendente
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <hr />
+            }
+
+        }
+
+        @if (Model.DipendenteId == 0 && User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+        {
+            @Html.HiddenFor(m => m.DocumentoIdentita)
+            @Html.HiddenFor(m => m.DelegaDipendente)
+
+            <div class="row mt-3">
+                <h4>
+                    <span class="badge bg-info">Documenti Sportello Sindacale Delegato</span>
+                </h4>
+
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.DocumentoIdentita, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="fileUpload1" accept=".pdf"
+                               data-fileupload-tipoallegato="DocumentoIdentita">
+                        <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DocumentoIdentita, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.DelegaDipendente, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="fileUpload2" accept=".pdf"
+                               data-fileupload-tipoallegato="DelegaDipendente">
+                        <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DelegaDipendente, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>
+            <hr />
+
+            <script>
+                $('input[type=file]').on('change', function () {
+
+                    var _tipoAllegato = $(this).data("fileupload-tipoallegato");
+
+                    var _span = $("span[data-valmsg-for='" + _tipoAllegato + "']");
+
+                    const file = document.querySelector("[data-fileupload-tipoallegato='" + _tipoAllegato + "']").files[0];
+                    const reader = new FileReader();
+
+                    reader.addEventListener("load", function () {
+                        var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+                        if (!myRe.exec(getFileExtension(file.name))) {
+                            _span.addClass("field-validation-error");
+                            _span.html("Estensione non valida");
+                            _span.show();
+                            return;
+                        }
+
+                        if (getFileSize(file.size) > 1) {
+                            _span.addClass("field-validation-error");
+                            _span.html("Dimensione massima 1MB");
+                            _span.show();
+                            return;
+                        }
+
+                        $("#" + _tipoAllegato).val(reader.result);
+
+                        _span.hide();
+                        _span.html("");
+                    }, false);
+
+                    if (file) {
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+            </script>
+        }
+
+        <div class="row mt-3">
+            <div class="col-md-12 text-danger">
+                <strong>* Campi obbligatori</strong>
+            </div>
+        </div>
+
+        <div class="form-group text-center mt-5">
+            <hr />
+            <button type="submit" class="btn btn-primary">
+                @if (Model.DipendenteId == 0)
+                {
+                    <span>Inserisci Dipendente</span>
+                }
+                else
+                {
+                    <span>Aggiorna dati Anagrafici</span>
+                }
+            </button>
+
+            <button id="buttonCloseModal" type="button" onclick="hideModal()" class="btn btn-danger">
+                Chiudi finestra
+            </button>
+        </div>
+    </div>
+}
+<script>
+
+    $().ready(function () {
+        $('#Datanascita').inputmask();
+
+            flatpickr('#Datanascita', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            maxDate:"@DateTime.Now.AddYears(-16)",
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+        });
+                                    })
+
+
+    function onSuccessAnagrafica(data) {
+                                        if (data.isValid) {
+
+                                            var _ismodal = $(".modal").hasClass('show');
+                                            if (_ismodal) {
+                                                updateListRicerca();
+                                            }
+
+                                            var _message = data.message;
+
+            $.get("@Url.Action("Anagrafica", "Dipendente")", { id: data.DipendenteId }, function (data) {
+                                                if (_ismodal) {
+                                                    showModalFullScreen_NoHeaderFooter(data);
+                                                    alertSuccess(_message);
+                                                }
+                                                else {
+                    $("#contentrenderbody").html(data);
+                                                    alertSuccess(_message);
+                                                }
+                                            });
+        }
+        else {
+                                        alertDanger(data.message);
+                                    }
+    }
+
+    @if (!Model.InformazioniPersonaliCompilati.GetValueOrDefault() && User.IsInRole(IdentityHelper.Roles.Dipendente.ToString()))
+    {
+        @:alertInfo("Per proseguire è necessario compilare la scheda Anagrafica")
+    }
+
+    @Html.ButtonCloseModal(false)
+
+</script>
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/checksumCFPiva.js"></script>
+<script src="~/Scripts/ifIban.js"></script>

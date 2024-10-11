@@ -1,0 +1,244 @@
+﻿@using Sediin.MVC.HtmlHelpers;
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Html.GetConfiguration().RagioneSociale.Nome</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/navmenu.css" rel="stylesheet" />
+    <link href="~/fontawesome-free-6.2.1-web/css/all.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/globalize")
+    @Scripts.Render("~/bundles/utils")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/onesidepage.js"></script>
+
+    <link rel="stylesheet" href="~/Content/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/flatpickr.dark.css">
+    <script src="~/Scripts/flatpickr.js"></script>
+    <script src="~/Scripts/flatpickr-it.js"></script>
+    <script src="~/Scripts/flatpickr.rangePlugin.js"></script>
+    <script src="~/Scripts/jquery.inputmask.min.js"></script>
+
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+    <script>
+    $().ready(function () {
+
+        const div = document.getElementById("containerBody");
+        div.addEventListener("contextmenu", (e) => { e.preventDefault() });
+
+        var _username = "@User.Identity.Name.ToUpper()";
+
+        // Declare a proxy to reference the hub.
+        var ebligHub = $.connection.eBLIGHub;
+        ebligHub.client.onLogOffUtente = function (username, message) {
+
+            if (String(_username).toUpperCase() == String(username).toUpperCase()) {
+
+                alertInfoNoCloseButton(message);
+
+                $.get("/Account/LogOff", function (data) { });
+
+                setTimeout(function () {
+                    location.href = "/";
+                }, 5000);
+            }
+        };
+
+        ebligHub.client.onUpdateListRicerca = function (username) {
+            if (String(_username).toUpperCase() == String(username).toUpperCase() || "@User.IsInRole(IdentityHelper.Roles.Admin.ToString())" == "True") {
+                if (location.href.indexOf("/Backend/PraticheAzienda") != -1) {
+                    if (typeof updateListRicerca === "function") { updateListRicerca(); }
+                }
+            }
+        };
+
+        ebligHub.client.onSendInstantMessage = function (messaggio) {
+            if ("@User.IsInRole(IdentityHelper.Roles.Admin.ToString())" != "True") {
+                setTimeout(function () {
+                    var _a = $("body").hasClass("swal2-shown");
+                    if (_a) {
+                        toastWarning(messaggio);
+                    }
+                    else {
+                        alertWarning(messaggio);
+                    }
+                }, 1000);
+            }
+        };
+
+        if ("@User.IsInRole(IdentityHelper.Roles.Admin.ToString())" == "True")
+        {
+            ebligHub.client.onAvvisaAdmin = function(message) {
+                toastInfo(message);
+            };
+
+            ebligHub.client.updateUserOnline = function(totale) {
+                $(".statususeronline").html(totale);
+            };
+
+            ebligHub.client.onReportImportStatus = function (processoId, username, tipoImport, index, totale, message, base64) {
+                if (String(_username).toUpperCase() == String(username).toUpperCase()) {
+
+                    $("[data-fileupload-tipoimport='" + tipoImport + "']").attr("disabled", "disabled");
+
+                    if (!$("#importProgressToast_" + processoId).hasClass("show")) {
+                        createTost(processoId, "Importazione " + tipoImport);
+                    }
+
+                    var _perc = 100 / totale * index;
+
+                    var _text = "<strong>" + Math.round(_perc, 2) + "%</strong> - Totale righe elaborati <strong>" + index + "</strong> di <strong>" + totale+"</strong>";
+                    _text += "<br/>" + message;
+
+                    $("#importProgressToastBodyText_" + processoId).html(_text);
+                    $("#importProgressToastProgressbar_" + processoId).attr("style", "width: " + _perc + "%");
+
+                    if (index < totale) {
+                        $("[data-fileupload-tipoimport='" + tipoImport + "']").attr("disabled", "disabled");
+                    }
+                    else {
+                        $("[data-fileupload-tipoimport='" + tipoImport + "']").removeAttr("disabled");
+                        $("#importProgressToastProgressbar_" + processoId).attr("style", "width: 100%");
+                        $("#importProgressToastRect_" + processoId).attr("fill", "#019201ff");
+
+                        toastSuccess("Importazione " + tipoImport + " completata");
+                    }
+
+                }
+            };
+
+            ebligHub.client.onReportImportError = function (base64, username) {
+                if (String(_username).toUpperCase() == String(username).toUpperCase()) {
+                    getTXT(base64, "erroriImport");
+                }
+            };
+        }
+
+        ebligHub.client.onAvvisoUtente = function (username, message) {
+            if (String(_username).toUpperCase() == String(username).toUpperCase()) {
+                toastInfo(message);
+            }
+        };
+
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+        });
+
+        $.connection.hub.disconnected(function () {
+            setTimeout(function () {
+                $.connection.hub.start();
+            }, 5000); // Restart connection after 5 seconds.
+        });
+     });
+
+    </script>
+
+</head>
+
+
+<body class="d-flex flex-column min-vh-100" id="containerBody" style="border-bottom: 2px solid #212529;">
+
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+        <nav id="sidebar" class="d-none d-md-block d-lg-block">
+            <div class="sidebar-header bg-white text-center">
+
+                <div>
+                    <img class="mt-2 mb-2" style="border-radius: 2%; mix-blend-mode: multiply;"
+                         src="/Content/images/logo_eblig_175.jpg" />
+                </div>
+
+                <strong style="font-size:12px" class="text-secondary">
+                    @Html.GetConfiguration().RagioneSociale.Nome
+                </strong>
+
+            </div>
+            @{Html.RenderAction("SideMenu", "Home", new { area = "Backend" });}
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content" style="margin-top:-30px">
+            @{Html.RenderAction("NavMenu", "Home", new { area = "Backend" });}
+
+            <div id="contentrenderbody" class="ml-1 mt-4 mr-1 pt-2 p-4">
+                @RenderBody()
+
+            </div>
+        </div>
+
+        <div class="toast-container top-0 end-0 mr-1 mt-2">
+
+        </div>
+    </div>
+
+    <script>
+
+        function createTost(id, headertext) {
+
+            var _toast = "<div id='importProgressToast_" + id + "' class='toast'";
+            _toast += "role='alert' aria-live='assertive' aria-atomic='true'";
+            _toast += "data-bs-autohide='false'>";
+            _toast += "<div class='toast-header'>";
+            _toast += "<svg class='bd-placeholder-img rounded mr-2' width='20' height='20'";
+            _toast += "xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid slice' focusable='false'";
+            _toast += "role='img'>";
+            _toast += "<rect fill='#ff0303' width='100%' height='100%' id='importProgressToastRect_" + id + "'></rect>";
+            _toast += "</svg>";
+            _toast += "<strong class='mr-auto'>" + headertext + "</strong>";
+            _toast += "<button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='Close'></button>";
+            _toast += "</div>";
+            _toast += "<div class='toast-body bg-white'>";
+            _toast += "<div class='progress'>";
+            _toast += "<div id='importProgressToastProgressbar_" + id + "'";
+            _toast += "class='progress-bar progress-bar-striped progress-bar-animated'";
+            _toast += "role='progressbar'";
+            _toast += "aria-label='Import data' style='width: 0%'";
+            _toast += "aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>";
+            _toast += "</div>";
+            _toast += "<div id='importProgressToastBodyText_" + id + "' style='min-height: 65px;margin-top:15px'></div>";
+            _toast += "</div>";
+            _toast += "</div>";
+
+
+            $(".toast-container").append(_toast);
+            $("#importProgressToast_" + id).addClass("show");
+
+        }
+    </script>
+    <footer class="mt-auto container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <strong>@Html.GetConfiguration().RagioneSociale.Nome</strong>
+                <br />
+                <small>
+                    @Html.GetConfiguration().RagioneSociale.Indirizzo - @Html.GetConfiguration().RagioneSociale.Cap @Html.GetConfiguration().RagioneSociale.Citta (@Html.GetConfiguration().RagioneSociale.Provincia)
+                    <br />Tel: @Html.GetConfiguration().RagioneSociale.Telefono - Email: @Html.GetConfiguration().RagioneSociale.Email - Sito: <a style="color:white !important" href="@Html.GetConfiguration().RagioneSociale.SitoWeb" target="_blank">@Html.GetConfiguration().RagioneSociale.SitoWeb</a>
+                </small>
+            </div>
+            <div class="col-md-6 text-end">
+                <strong>
+                    © Tutti i diritti riservati.
+                    <a href="/Home/Privacy" data-ajax="true"
+                       data-ajax-success="alertClose();showModal('Informativa privacy', data)"
+                       data-ajax-begin="alertWaid()"
+                       class="text-warning">Leggi l’informativa privacy</a>
+                </strong>
+            </div>
+        </div>
+    </footer>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

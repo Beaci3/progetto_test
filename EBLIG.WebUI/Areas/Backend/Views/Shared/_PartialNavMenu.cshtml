@@ -1,0 +1,202 @@
+﻿@model IEnumerable<EBLIG.WebUI.Areas.Backend.Models.MenuViewModel>
+@using Microsoft.AspNet.Identity
+
+@functions
+    {
+
+    public MvcHtmlString getUrl(object action, object controller, object area)
+    {
+        if (action != null && controller != null)
+        {
+            var _action = Url.Action(action.ToString(), controller.ToString(), new { area = area });
+            return new MvcHtmlString($" data-ajax='true' href='{_action}' onclick='loadContent(\"{_action}\")'");
+        }
+
+        return new MvcHtmlString(" href=\"javascript:void(0)\"");
+    }
+
+    public string GetSubMenu(int padre)
+    {
+        var _out = "";
+
+        foreach (var figlio in Model.ToList().Where(x => x.CodmenuPadre == padre).ToList().OrderBy(o => o.Ordine))
+        {
+            var _submenu = Model.ToList().Where(x => x.CodmenuPadre == figlio.Codmenu);
+
+            if (_submenu.Count() == 0)
+            {
+                _out += "<li><a class=\"dropdown-item\" " + getUrl(figlio.Action, figlio.Controller, figlio.Area) + ">" + figlio.Descrizione + "</a></li>";
+            }
+
+            if (_submenu.Count() > 0)
+            {
+                _out += "<li><a class=\"dropdown-item\" " + getUrl(figlio.Action, figlio.Controller, figlio.Area) + ">" + figlio.Descrizione + " »</a>";
+
+                _out += "<ul class=\"submenu dropdown-menu\">";
+
+                foreach (var item in _submenu.OrderBy(o => o.Ordine))
+                {
+                    var _subsubmenu = Model.ToList().Where(x => x.CodmenuPadre == item.Codmenu);
+
+                    if (_subsubmenu.Count() == 0)
+                    {
+                        _out += "<li><a class=\"dropdown-item\" " + getUrl(item.Action, item.Controller, item.Area) + "> " + item.Descrizione + "</a></li>";
+                    }
+                    else
+                    {
+                        _out += "<li><a class=\"dropdown-item\" " + getUrl(item.Action, item.Controller, item.Area) + "> " + item.Descrizione + " »</a>";
+                        _out += "<ul class=\"submenu dropdown-menu\">" + GetSubMenu(item.Codmenu) + "</ul>";
+                        _out += "</li>";
+                    }
+                }
+
+                _out += "</ul>";
+            }
+        }
+
+        return _out;
+    }
+}
+
+@{
+    @*if (Model == null)
+        {
+            @Html.Partial("~/Views/Shared/_PartialNavMenu.cshtml");
+            return;
+        }*@
+
+    var _voci = Model;
+
+    <nav class="sediinnav navbar navbar-expand-md navbar-dark navbar-custom d-none d-sm-block d-md-none">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarBackend"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarBackend">
+
+            <ul class="navbar-nav">
+
+
+                @foreach (var item in _voci.Where(x => x.CodmenuPadre == 0))
+                {
+                    var _subvoci = _voci.Where(x => x.CodmenuPadre == item.Codmenu);
+
+                    if (_subvoci.Count() == 0)
+                    {
+                        <li class="nav-item"> <a class="nav-link" @getUrl(item.Action, item.Controller, item.Area)> @item.Descrizione </a> </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> @item.Descrizione  </a>
+                            <ul class="dropdown-menu">
+                                @Html.Raw(GetSubMenu(item.Codmenu))
+                            </ul>
+                        </li>
+                    }
+                }
+
+            </ul>
+
+            <ul class="navbar-nav">
+
+
+                <li>
+                    <a class="nav-link"
+                       href="@Url.Action("ModificaPassword", "Utenti", new { area = "Backend" } )"
+                       data-ajax="true"
+                       data-ajax-begin="alertWaid()"
+                       data-ajax-failure="handleError"
+                       data-ajax-success="showModal_NoFooter('Modifica Password',data); alertClose()">
+                        <i class="fas fa-key marginMenuIcon"></i>
+                        Modifica Password
+                    </a>
+                    <a class="nav-link" href="@Url.Action("LogOff", "Account" , new { area="" })">
+                        <i class="fas fa-sign-out-alt marginMenuIcon"></i>
+                        Logout
+
+                    </a>
+
+                </li>
+
+
+            </ul>
+
+        </div>
+        <!-- navbar-collapse.// -->
+    </nav>
+
+
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom d-none d-md-block d-lg-block">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar1">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar1">
+            <ul class="navbar-nav mr-auto">
+                <li>
+                    <a class="nav-link" href="javascript:void(0)" id="sidebarCollapse">
+                        <i class="fas fa-sliders-h marginMenuIcon"></i>
+                        <span id="sidebarCollapseText">Chiudi menu</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="http://www.eblig.it" target="_blank">
+                        <i class="fas fa-home marginMenuIcon"></i>
+                        Sito EBLIG
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto" style="right:0">
+                <li class="nav-item dropdown dropstart" style="right:0">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @{
+                            var _user = Html.GetUser();
+                        }
+                        <span class="" style="color:orange">Benvenuto</span>&nbsp;
+                        <span class="text-capitalize">@_user.Nome</span>&nbsp;
+                        <span class="text-capitalize">@_user.Cognome</span><br />
+                        <small class="fa-pull-right">@Html.GetUserRoleFriendlyName()</small>
+
+                        @if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+                        {
+                            <br />
+                            <a href="/Admin/Home/Useronline" data-ajax="true"
+                               data-ajax-success="alertClose();showModal('Utenti online', data)"
+                               data-ajax-begin="alertWaid()"
+                               class="text-warning">
+                                <small class="fa-pull-right">
+                                    Utenti online: <span class="statususeronline">
+                                        @EBLIG.WebUI.Filters.UserOnlineAttribute.Useronline.Select(x => x.Item1).Distinct().Count()
+                                </span>
+                            </small>
+                        </a>
+
+                    }
+
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="@Url.Action("ModificaPassword", "Utenti", new { area = "Backend" } )"
+                               data-ajax="true"
+                               data-ajax-begin="alertWaid()"
+                               data-ajax-failure="handleError"
+                               data-ajax-success="showModal_NoFooter('Modifica Password',data); alertClose()">Modifica Password</a>
+                        </li>
+                        <li><a class="dropdown-item" href="@Url.Action("LogOff", "Account" , new { area="" })">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+
+
+
+        </div>
+
+        <!-- navbar-collapse.// -->
+    </nav>
+
+
+}
+

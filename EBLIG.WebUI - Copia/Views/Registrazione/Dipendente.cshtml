@@ -1,0 +1,112 @@
+﻿@model EBLIG.WebUI.Models.RegistrazioneDipendente
+
+@using (Ajax.BeginForm("Dipendente", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessRegistrazione"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal row">
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Cognome, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Cognome, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.Cognome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CodiceFiscale, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CodiceFiscale, new { htmlAttributes = new { @class = "form-control text-uppercase", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", type = "search" } })
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12">
+            <div class="form-check form-switch mt-3">
+
+                @Html.CheckBox("PersonaFisica", new { @class = "form-check-input" })
+
+                <label class="form-check-label" style="margin-left:10px" for="PersonaFisica">
+                    Dichiaro di essere il dipendente per cui si stanno richiedendo le credenziali di accesso.
+                </label>
+            </div>
+            @Html.ValidationMessageFor(model => model.PersonaFisica, "")
+        </div>
+
+
+    </div>
+    <div class="modal-footer mt-5">
+        <button type="submit" class="btn btn-secondary">Crea utenza</button>
+        <button type="button" onclick="hideModal()" class="btn btn-dark">Chiudi</button>
+    </div>
+}
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/passwordStrong.js"></script>
+<script src="~/Scripts/checksumCFPiva.js"></script>
+
+<script>
+    function onSuccessRegistrazione(data) {
+        if (data.isValid) {
+            hideModal();
+            alertSuccess(data.message);
+        }
+        else {
+            alertDanger(data.message);
+        }
+    }
+
+    $("#Password").on("focus", function () { $(this).attr("type", "password") });
+    $("#ConfirmPassword").on("focus", function () { $(this).attr("type", "password") });
+</script>

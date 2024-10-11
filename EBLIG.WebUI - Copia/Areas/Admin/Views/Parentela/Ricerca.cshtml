@@ -1,0 +1,16 @@
+﻿@model  EBLIG.WebUI.Areas.Admin.Models.ParentelaModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        @Ajax.EncodedAjaxActionLink("Nuova Parentela", "Nuovo", "Parentela", null, new AjaxOptions
+                {
+                OnBegin = "alertWaid()",
+                OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                OnFailure = "handleError"
+                }, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Ricerca Parentela")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Parentela"), true)

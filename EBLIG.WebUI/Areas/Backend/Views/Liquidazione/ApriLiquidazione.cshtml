@@ -1,0 +1,266 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneViewModel
+
+<h4>Dettaglio Liquidazione <strong class="text-primary">@Model.Liquidazione.LiquidazioneId.ToString().PadLeft(7, '0')</strong></h4>
+<h5>
+    <label class="badge bg-@Html.GetLiquidazioneStatoCss(Model.Liquidazione.StatoLiquidazioneId) text-start">
+        @if (Model.Liquidazione.StatoLiquidazione != null)
+        {
+            @Model.Liquidazione.StatoLiquidazione.Descrizione
+        }
+    </label>
+</h5>
+<hr />
+
+
+
+<div class="row">
+    <div class="col-md-3">
+        <label class="control-label">
+            Data creazione
+        </label>
+        <div>
+            @Html.ToShortDate(Model.Liquidazione.DataCreazione)
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label class="control-label">
+            Data lavorazione
+        </label>
+        <div>
+            @Html.ToShortDate(Model.Liquidazione.DataLavorazione)
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label class="control-label">
+            Totale importo
+        </label>
+        <div>
+            @{
+                var _totaleimp = @Html.ToImporto(Model.Liquidazione?.LiquidazionePraticheRegionali?.Sum(x => x.PraticheRegionaliImprese.ImportoContributoNetto));
+            }
+            @_totaleimp
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label class="control-label">
+            Totale Pratiche
+        </label>
+        <div>
+            @Model.Liquidazione.LiquidazionePraticheRegionali.Count()
+        </div>
+    </div>
+
+    @if (Model.Liquidazione.StatoLiquidazioneId != (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+    {
+        if (!string.IsNullOrWhiteSpace(Model.Liquidazione.Allegato))
+        {
+            <div class="col-md-3">
+                <label class="control-label">
+                    Allegato
+                </label>
+                <div>
+                    <a data-toggle="tooltip" title="Scarica allegato"
+                       data-placement="top"
+                       href='@Html.EncodedAction("DownloadAllegato", "Liquidazione", new { liquidazioneId=Model.Liquidazione.LiquidazioneId , area="Backend" })'
+                       target="_blank">
+                        <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                    </a>
+                </div>
+            </div>
+        }
+
+        if (!string.IsNullOrWhiteSpace(Model.Liquidazione.Note))
+        {
+            <div class="col-md-12 mt-2">
+                <label class="control-label">
+                    Note
+                </label>
+                <div>
+                    @Model.Liquidazione.Note
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<hr />
+
+@*@if (!string.IsNullOrWhiteSpace(Model.Liquidazione.MailInviataErrors))
+    {
+        <label class="text-danger fw-bold">Errori invio mail</label>
+        <div class="row mt-4">
+            <div class="col-md-12" style="height:120px; overflow:auto">
+                @Html.Raw(Model.Liquidazione.MailInviataErrors)
+            </div>
+        </div>
+    }*@
+
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="modal-footer mt-4">
+            <div class="col-md-12 text-center">
+                @if (Model.Liquidazione.StatoLiquidazioneId != (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.Annullata)
+                {
+                    <a href="@Html.EncodedAction("DownloadSepa", "Liquidazione", new { liquidazioneId = Model.Liquidazione.LiquidazioneId })"
+                       target="_blank" class="btn btn-primary mr-1">Salva Sepa Xml</a>
+                }
+
+                <a href="@Html.EncodedAction("LiquidazioneRichiesteExcel", "Liquidazione", new { liquidazioneId = Model.Liquidazione.LiquidazioneId })"
+                   target="_blank" class="btn btn-info mr-1">Salva elenco dei richieste</a>
+
+                @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+                {
+
+                    @Ajax.EncodedAjaxActionLink("Imposta come Liquidata", "LavoraLiquidazione", "Liquidazione", new
+                       {
+                           liquidazioneId = Model.Liquidazione.LiquidazioneId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnFailure = "handleError",
+                           OnSuccess = "showModalOffcanvas('Imposta come Liquidata', data); alertClose()"
+                       }, new { @class = "btn btn-success mr-1" })
+
+
+                    @Ajax.EncodedAjaxActionLink("Imposta come Annullata", "AnnullaLiquidazione", "Liquidazione", new
+                       {
+                           liquidazioneId = Model.Liquidazione.LiquidazioneId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnFailure = "handleError",
+                           OnSuccess = "showModalOffcanvas('Imposta come Annullata', data); alertClose()"
+
+                       }, new { @class = "btn btn-warning" })
+
+
+                }
+
+
+                @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.Liquidata)
+                {
+                    <button onclick="confermaInvioMailLiquidazione()" class="btn btn-success mr-1">Invia mail Aziende e Dipendenti</button>
+
+                    <a href="@Html.EncodedAction("LiquidazioneRichiesteMailInviatiExcel", "Liquidazione", new { liquidazioneId = Model.Liquidazione.LiquidazioneId })"
+                       target="_blank" class="btn btn-secondary mr-1">Elenco mail inviati</a>
+                }
+
+                <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasModalBottom" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasBottomLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div id="offcanvasModalBottomBody" class="offcanvas-body small">
+    </div>
+</div>
+
+<script>
+    function showModalOffcanvas(title, data) {
+        var myOffcanvas = document.getElementById('offcanvasModalBottom')
+
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+        bsOffcanvas.show();
+
+        $("#offcanvasBottomLabel").html(title);
+        $("#offcanvasModalBottomBody").html(data);
+
+    }
+
+    function hideModalOffcanvas() {
+        var myOffcanvas = document.getElementById('offcanvasModalBottom')
+
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+        bsOffcanvas.hide();
+
+    }
+
+    function cancellaRigaLiquidazione(id) {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Conferma per rimuove la Prestazione Regionale dalla Liquidazione?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $.post("@Html.EncodedAction("RimuoviRigaLiquidazione", "Liquidazione", new { liquidazioneId=Model.Liquidazione.LiquidazioneId })", { praticheRegionaliImpreseId:id}, function (data) {
+                if (data.isValid == false) {
+                    alertDanger(data.message);
+                }
+                else {
+                    updateListRicerca();
+                    $.get("@Html.EncodedAction("ApriLiquidazione", "Liquidazione", new { id=Model.Liquidazione.LiquidazioneId })", function (data1) {
+                        alertSuccess(data.message);
+                        showModalFullScreen_NoHeaderFooter(data1);
+                    });
+                }
+            }).fail(function (error) { handleError(error) });
+        }
+    })
+}
+
+    function confermaInvioMailLiquidazione() {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Conferma per invio mail a tutti utenti del bonifico?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $.get("@Html.EncodedAction("MailAvvenutoPagamento", "Liquidazione", new { liquidazioneId=Model.Liquidazione.LiquidazioneId })", function (data) {
+                if (data.isValid == false) {
+                    alertDanger(data.message);
+                }
+                else {
+                    alertClose();
+                }
+            }).fail(function (error) { handleError(error) });
+        }
+    })
+}
+
+    @*function getSepa(data) {
+        getXml(data.base64, 'Sepa_@Model.Liquidazione.LiquidazioneId.ToString().PadLeft(7, '0')');
+        alertClose();
+        toastInfo("Sepa Xml scaricato")
+    }*@
+</script>

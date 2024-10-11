@@ -1,0 +1,81 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.UtentiRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Utente trovato");
+    return;
+}
+else
+{
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Nome Completo</th>
+                    <th>Username</th>
+                    <th>Ruolo</th>
+                    <th>Email confermata</th>
+                    <th>Bloccato</th>
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    <tr>
+                        <td>@item.Nome @item.Cognome</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Ruolo</td>
+                        <td class="text-center">
+                            @if (item.EmailConfermata.GetValueOrDefault())
+                            {
+                                <span class="text-success">Si</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">No</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (item.Bloccato.GetValueOrDefault())
+                            {
+                                <span class="text-danger">Utente bloccato</span>
+                            }
+                            else
+                            {
+                                <span class="text-success">No</span>
+                            }
+                        </td>
+                        <td class="text-center">
+
+                            @Ajax.EncodedAjaxActionLink("Dettaglio", "Utente", "Utenti", new
+                       {
+                           id = item.UserId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModal_NoFooter('Dettaglio utente', data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class = "btn btn-primary btn-sm " })
+
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

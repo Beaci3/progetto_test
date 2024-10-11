@@ -1,0 +1,160 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.AvvisoUtenteViewModel
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/tinymce/langs/it.js"></script>
+
+@using (Ajax.BeginForm("Avviso", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessUtente",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.AvvisoUtenteId)
+    @Html.Hidden("DataInserimento", Model.DataInserimento.ToShortDateString())
+
+    <div class="form-horizontal">
+
+        <div class="row">
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Titolo, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.Titolo, new { @class = "form-control", type = "search" })
+                    @Html.ValidationMessageFor(model => model.Titolo, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+                @Html.Label("Fine Data visibilità", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.DataScadenza, new
+                                       {
+                                           @class = "form-control",
+                                           data_inputmask_alias = "datetime",
+                                           data_inputmask_inputformat = "dd/mm/yyyy"
+                                       }, "{0:dd/MM/yyyy}")
+                    @Html.ValidationMessageFor(model => model.DataScadenza, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                @Html.Label("Popup", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <div class="form-check form-switch">
+
+                        @Html.CheckBox("Popup", new { @class = "form-check-input" })
+
+                        <label class="form-check-label" style="margin-left:10px" for="Popup">
+                            mostra come popup
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-2">
+
+                @Html.Label("Visibili per Ruoli", htmlAttributes: new { @class = "control-label" })
+
+                <div class="col-md-12 mt-2">
+                    <div class="row">
+                        @{
+                            var i = 0;
+                        }
+
+                        @foreach (var item in Html.GetRolesFriendlyName().Where(x => x.Item2 != "Admin"))
+                        {
+                            var _checked = "";
+
+                            if (Model.AvvisoUtenteRuoli != null)
+                            {
+                                _checked = Model.AvvisoUtenteRuoli.FirstOrDefault(x => x.Ruolo == item.Item2) != null ? "checked" : "";
+
+                            }
+
+                            <div class="col-md-4">
+
+                                <div class="form-check form-switch">
+
+                                    <input @_checked class="form-check-input" id="Ruolo[@i].Checked" name="Ruolo[@i].Checked" type="checkbox" value="true">
+
+                                    @Html.Hidden("Ruolo[" + i + "].Nome", item.Item2, new { id = "Ruolo[" + i + "].Nome" })
+
+                                    <label class="form-check-label" style="margin-left:10px" for="Ruolo[@i].Checked">
+                                        @item.Item3
+                                    </label>
+                                </div>
+
+
+
+                            </div>
+
+                            i++;
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-12 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Messaggio, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+
+                        @Html.TextAreaFor(model => model.Messaggio)
+                        @Html.ValidationMessageFor(model => model.Messaggio, "", new { @class = "text-danger" })
+                        <script>
+                            tinymce.init({
+                                selector: '#Messaggio',
+                                height: 400,
+                                //plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect code',
+                                toolbar: 'forecolor backcolor | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat ',
+                                promotion: false,
+                                language: 'it'
+                            });
+                        </script>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+        <div class="modal-footer mt-3">
+            <button type="submit" class="btn btn-primary">Salva</button>
+            <button type="button" onclick="hideModal()" class="btn btn-danger" id="buttonCloseModal">Chiudi finestra</button>
+        </div>
+    </div>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+
+
+<script>
+
+    $().ready(function () {
+        $('#DataScadenza').inputmask();
+        flatpickr('#DataScadenza', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+        });
+    })
+
+    function onSuccessUtente(data) {
+        @Html.OnSuccessHideModal()
+    }
+
+</script>

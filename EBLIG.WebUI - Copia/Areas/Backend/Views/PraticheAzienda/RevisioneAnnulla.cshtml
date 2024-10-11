@@ -1,0 +1,73 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaRevisione_Annulla
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Revisione_Annulla", new { Model.RichiestaId }, new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessRevisione_Annulla",
+    OnFailure = "handleError(error)"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StatoPratica)
+    <div class="form-horizontal">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.MotivazioneId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.MotivazioneId, Html.SelectList(Model.Motivazioni.OrderBy(o => o.Motivazione), "MotivazioniId", "Motivazione", true), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MotivazioneId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(model => model.Note, new { @class = "form-control", rows = 5 })
+                        @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer mt-5">
+            <button type="submit" class="btn btn-primary">Conferma</button>
+
+            <button id="buttonCloseModal" type="button" onclick="alertWaid(); apriRichiesta(true)" class="btn btn-danger">Annulla</button>
+        </div>
+
+    </div>
+}
+
+<script>
+    function apriRichiesta(closealert) {
+        $.get("@Html.EncodedAction("ApriRichiesta", "PraticheAzienda", new { id = Model.RichiestaId})", function (data) {
+            if (data.isValid == false) {
+                alertDanger(data.message);
+            }
+            else {
+                hideModal();
+                showModalFullScreen_NoHeaderFooter(data);
+                if (closealert) {
+                    alertClose();
+                }
+            }
+        });
+    }
+
+    function onSuccessRevisione_Annulla(data) {
+        if (data.isValid) {
+            updateListRicerca();
+            apriRichiesta(false);
+            alertSuccess(data.message);
+        }
+        else {
+            alertDanger(data.message);
+        }
+    }
+</script>

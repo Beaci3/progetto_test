@@ -1,0 +1,57 @@
+﻿@model IEnumerable<EBLIG.DOM.Entitys.PraticheRegionaliImpreseStatoPraticaStorico>
+
+@using EBLIG.DOM
+
+@if (Model == null || Model.Count() == 0)
+{
+    return;
+}
+
+<div class="row">
+    <h4>
+        <span class="badge bg-warning">Storico Revisione Pratica</span>
+    </h4>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    @*<th>Stato</th>*@
+                    <th>Note</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.OrderByDescending(d => d.DataInserimento))
+                {
+                    <tr>
+                        @*<td>
+                                @item.StatoPratica.Descrizione
+                            </td>*@
+                        <td>
+                            @if (item.StatoPraticaId == (int)EbligEnums.StatoPratica.Revisione && item.Motivazione != null)
+                            {
+                                <div>@item.Motivazione.Motivazione</div>
+
+
+                                if (!string.IsNullOrWhiteSpace(item.Note))
+                                {
+                                    <div>@item.Note</div>
+                                }
+                                else
+                                {
+                                    <div>@item.Motivazione.Note</div>
+                                }
+                            }
+                        </td>
+                        
+                        <td class="text-center">@item.DataInserimento.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<hr />

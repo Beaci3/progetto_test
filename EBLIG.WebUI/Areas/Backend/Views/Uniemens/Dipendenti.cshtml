@@ -1,0 +1,110 @@
+﻿
+@model EBLIG.WebUI.Areas.Backend.Models.UniemensMensilitaViewModel
+@using EBLIG.Utils
+
+<table class="table table-sm">
+    @foreach (var item in Model.Mensilita)
+    {
+        var _totaleVersato = 0m;
+
+        var _totaleVersMov = Html.GetDecimal(item.totali.entrate) + Html.GetDecimal(item.totali.movimenti);
+
+        <tr>
+            <td class="text-center pl-5 pr-5">
+                <span class="fw-bold">Mese</span><br />
+                @item.mese/@Model.Uniemens.Anno
+            </td>
+            <td class="text-center pl-5 pr-5">
+                <span class="fw-bold">Versamenti</span>
+                <br />
+                @Html.ToImporto(item.totali.entrate)
+            </td>
+            <td class="text-center pl-5 pr-5">
+                <span class="fw-bold">Movimenti</span><br />
+                @Html.ToImporto(item.totali.movimenti)
+            </td>
+
+
+            @foreach (var colonne in ConfigurationProvider.Instance.GetConfiguration().Uniemens.Colonna)
+            {
+                var _versato = Html.GetDecimal(item.totali?.dovuti?.FirstOrDefault(x => x.quota == colonne)?.importo);
+
+                _totaleVersato += _versato;
+
+                <td class="text-center pl-5 pr-5">
+                    <span class="fw-bold">@colonne</span><br />
+                    @Html.ToImporto(_versato)
+                </td>
+            }
+
+
+            <td class="text-center pl-5 pr-5">
+                <span class="fw-bold">Dipendenti</span>
+                <br />
+                <span class="badge bg-primary rounded-pill">@item.dovuti.Count()</span>
+
+            </td>
+
+            @if ((_totaleVersato - ConfigurationProvider.Instance.GetConfiguration().Uniemens.Scoperto) > _totaleVersMov)
+            {
+                <td class="text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Risulta non coperto @Html.ToImporto(_totaleVersato-_totaleVersMov)">
+                    <i class="fas fa-exclamation-triangle text-danger"></i><br />
+                    <strong class="text-info">@Html.ToImporto(_totaleVersato - _totaleVersMov)</strong>
+                </td>
+            }
+            else
+            {
+                <td class="text-center">
+                    <br />
+                    <i class="fas fa-check-circle text-success"></i>
+                </td>
+            }
+        </tr>
+
+        <tr>
+            <td colspan="10">
+                <p class="mt-3"><span class="badge bg-info">Riepilogo dipendenti</span></p>
+            </td>
+        </tr>
+
+        foreach (var dipendente in item.dovuti)
+        {
+            <tr>
+
+                <td class="text-center" style="min-width:190px" colspan="2">
+                    <span class="fw-bold">Dipendente</span><br />
+                    @dipendente.cognome @dipendente.nome
+                </td>
+                <td class="text-center">
+                    <span class="fw-bold">Codice Fiscale</span><br />
+                    @dipendente.codice_fiscale
+                </td>
+                <td class="text-center" style="width:190px">
+                    <span class="fw-bold">Imponibile</span><br />
+                    @Html.ToImporto(dipendente.imponibile)
+                </td>
+                @foreach (var colonne in ConfigurationProvider.Instance.GetConfiguration().Uniemens.Colonna)
+                {
+                    <td class="text-center" style="width:190px">
+                        <span class="fw-bold">@colonne</span><br />
+                        @Html.ToImporto(dipendente.quote?.FirstOrDefault(x => x.quota == colonne)?.importo)
+                    </td>
+                }
+
+                <td></td>
+            </tr>
+        }
+
+    }
+</table>
+
+<div class="modal-footer mt-4">
+
+    <a href="@Html.EncodedAction("DipendentiExcel", "Uniemens", new {uniemensId =Model.Uniemens.UniemensId,mese=@Model.Mensilita.FirstOrDefault().mese })"
+       target="_blank" class="btn btn-primary"><i class="fas fa-file-excel mr-2"></i>Esporta excel</a>
+
+    <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+
+</div>
+
+

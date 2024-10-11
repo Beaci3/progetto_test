@@ -1,0 +1,86 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.InsMotivazioniRichiesta
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Modifica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessModifica"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.TextBoxFor(model => model.MotivazioniRichiestaId, new { @hidden = true, @readonly = true })
+
+<h3>Modifica Motivazioni Richiesta</h3>
+    <hr />
+    <div class="form-horizontal">
+        <div class="row">
+
+            <div class="form-group col-md-12">
+                @Html.Label("Descrizione", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.Motivazione, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                    @Html.ValidationMessageFor(model => model.Motivazione, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.Label("Percentuale Rimborso", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.PercentualeRimborso, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                    @Html.ValidationMessageFor(model => model.PercentualeRimborso, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.Label("Importo massimo Rimborsato", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.EditorFor(model => model.ImportoMaxRimborsato, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                    @Html.ValidationMessageFor(model => model.ImportoMaxRimborsato, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.TipoRichiestaId, htmlAttributes: new { @class = "control-label" })
+                <div>
+                    <select class="form-control"
+                            data-val="false"
+                            id="TipoRichiestaId"
+                            name="TipoRichiestaId"
+                            aria-describedby="TipoRichiestaId-error"
+                            aria-invalid="false">
+                        <option value="">[Seleziona un Valore]</option>
+                        @foreach (var item in Model.TipoRichiesta)
+                        {
+                            <option value="@item.TipoRichiestaId"
+                                    @(Model.TipoRichiestaId == item.TipoRichiestaId ? "selected" : "")
+                                    data-descrizione="@item.Descrizione">
+                                @item.Descrizione
+                            </option>
+                        }
+
+                    </select>
+                    @Html.ValidationMessageFor(model => model.TipoRichiestaId, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+            <div class="modal-footer row" style="margin-top: 30px">
+                <div class="col-md-12 text-center">
+                    <input type="submit" value="Modifica" class="btn btn-success" />
+                    <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function onSuccessModifica(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>
+
+
+

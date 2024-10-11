@@ -1,0 +1,129 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.MailSettingConfigModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Html.RicercaModulo("Configurazione Email settings")
+
+<hr />
+
+@using (Ajax.BeginForm("Email", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessEmailSettings",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="row">
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServer, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.SmtpServer, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SmtpServer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServerPort, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.SmtpServerPort, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SmtpServerPort, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServerUsername, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.SmtpServerUsername, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SmtpServerUsername, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServerPassword, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.SmtpServerPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SmtpServerPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-md-4 mt-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SmtpServerSenderEmail, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.SmtpServerSenderEmail, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SmtpServerSenderEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>*@
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServerAutentication, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.SmtpServerAutentication)
+                            @Html.ValidationMessageFor(model => model.SmtpServerAutentication, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpServerUseSSL, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.SmtpServerUseSSL)
+                            @Html.ValidationMessageFor(model => model.SmtpServerUseSSL, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FromName, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.FromName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FromName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FromEmail, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.FromEmail, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FromEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-group row">
+            <div class="col-md-12 text-center">
+                @Ajax.ActionLink("Prova mail", "EmailTest", null, new AjaxOptions
+                {
+            OnSuccess = "alertClose();showModal_NoFooter('Prova mail', data)",
+            OnBegin="alertWaid()"
+           }, new { @class = "btn btn-info" })
+                <input type="submit" value="Aggiorna" class="btn btn-primary" />
+            </div>
+        </div>
+
+    </div>
+}
+
+<script>
+    function onSuccessEmailSettings(data) {
+        @Html.OnSuccess();
+    }
+
+</script>

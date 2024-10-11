@@ -1,0 +1,119 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteUploadAllegatoModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("UploadAllegato", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessUploadAllegato",
+    OnFailure = "handleError"
+}))
+{
+
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.DelegheSportelloDipendenteId)
+    @Html.HiddenFor(m => m.TipoAllegato)
+    @Html.HiddenFor(m => m.DipendenteId)
+    @Html.HiddenFor(m => m.Allegato)
+
+
+    <div class="form-horizontal">
+
+        <div class="alert alert-info fw-bold">
+
+            Seleziona il nuovo documento da caricare e poi prema il pulsante "Aggiorna allegato"
+
+        </div>
+
+        <div class="col-md-6 mt-4">
+
+            <div class="custom-file">
+                <input type="file" class="form-control" id="fileUploadAllegato" accept=".pdf"
+                       data-fileupload-tipoallegato="@Model.TipoAllegato">
+                <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+            </div>
+
+            @Html.ValidationMessageFor(model => model.Allegato, "", new { @class = "text-danger" })
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer mt-5 ">
+        <div class="col-md-12 text-end">
+            <input type="submit" value="Aggiorna allegato" class="btn btn-success" />
+
+            @Ajax.EncodedAjaxActionLink("Chiudi finestra", "Anagrafica", "Dipendente", new
+       {
+           id = Model.DipendenteId
+       }, new AjaxOptions
+       {
+           OnBegin = "alertWaid()",
+           OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+           OnFailure = "handleError"
+       }, new { @class = "btn btn-danger", id = "buttonChiudiFinestraUploadAllegato" })
+
+
+        </div>
+    </div>
+}
+
+<script>
+
+    $("[data-dismiss=\"modal\"]").removeAttr("onclick");
+
+    $("[data-dismiss=\"modal\"]").on("click", function () {
+        $("#buttonChiudiFinestraUploadAllegato").trigger("click");
+    })
+
+    $('input[type=file]').on('change', function () {
+
+        var _tipoAllegato = $(this).data("fileupload-tipoallegato");
+
+        var _span = $("span[data-valmsg-for='Allegato']");
+
+        const file = document.querySelector("[data-fileupload-tipoallegato='" + _tipoAllegato + "']").files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+            if (!myRe.exec(getFileExtension(file.name))) {
+                _span.addClass("field-validation-error");
+                _span.html("Estensione non valida");
+                _span.show();
+                return;
+            }
+
+            if (getFileSize(file.size) > 1) {
+                _span.addClass("field-validation-error");
+                _span.html("Dimensione massima 1MB");
+                _span.show();
+                return;
+            }
+
+            $("#Allegato").val(reader.result);
+
+            _span.hide();
+            _span.html("");
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function onSuccessUploadAllegato(data) {
+        if (data.isValid) {
+            alertSuccessNoCloseButton(data.message);
+            setTimeout(function () {
+                $("#buttonChiudiFinestraUploadAllegato").trigger("click");
+            }, 1500);
+        }
+        else {
+            alertDanger(data.message);
+        }
+    }
+
+</script>

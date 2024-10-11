@@ -1,0 +1,48 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteAssociaAziendaRicercaModel
+
+<div class="col-md-12 mb-3">
+
+    @Ajax.EncodedAjaxActionLink("Associa Azienda", "AziendaAssociaRicerca", "Dipendente", null, new AjaxOptions
+    {
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAziendaAssociaRicerca",
+    OnFailure = "handleError"
+    }, new { @class = "btn btn-info" })
+
+</div>
+
+@if (User.IsInRole(IdentityHelper.Roles.Dipendente.ToString()))
+{
+    @Html.RicercaModulo("Aziende associate", false)
+}
+else
+{
+    @Html.RicercaModulo(Html.Partial("AziendaAssociaRicercaModulo", Model), "Aziende associate")
+
+}
+
+@Html.UpdateListRicerca(Url.Action("AziendeAssociateRicerca", "Dipendente"), true)
+@if (User.IsInRole(IdentityHelper.Roles.Dipendente.ToString()))
+{
+    <script>
+        $().ready(function () {
+            alertWaid();
+            updateListRicerca(true);
+        });
+    </script>
+}
+
+<script>
+
+    function onSuccessAziendaAssociaRicerca(data) {
+        if (data.isValid == false) {
+            alertInfo(data.message);
+        }
+        else {
+            showModal_NoFooter('Ricerca Azienda', data);
+            alertClose();
+        }
+    }
+</script>
+
+

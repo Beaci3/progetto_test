@@ -1,0 +1,75 @@
+﻿@model IEnumerable<EBLIG.DOM.Entitys.AvvisoUtente>
+
+@if (Model == null || Model?.Count() == 0)
+{
+    return;
+}
+
+<div class="mt-3">
+    <h3>
+        <span class="badge bg-secondary">Avvisi EBLIG</span>
+    </h3>
+
+    <hr />
+
+    <ul class="list-group">
+
+        @foreach (var item in Model.OrderByDescending(x => x.DataInserimento))
+        {
+
+            <a href="@Html.EncodedAction("ApriAvviso", "Home", new {  id = item.AvvisoUtenteId})"
+
+               class="hover-shadow"
+               data-toggle="tooltip" title="Leggi avviso completo" data-placement="left"
+               data-ajax="true"
+               data-ajax-begin="alertWaid()"
+               data-ajax-failure="handleError(error)" data-ajax-success="showModal_NoHeader(data); alertClose()">
+            <li class="list-group-item myli" style="cursor:pointer">
+                <i class="fa-solid fa-circle-info mr-2 text-info"></i><span class="fw-bold">@item.Titolo</span>
+                <br /><i class="text-muted"><small>pubblicato il @Html.ToShortDate(item.DataInserimento)</small> </i>
+            </li></a>
+        }
+
+
+    </ul>
+</div>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
+</script>
+
+@if (Session["AvvisoUtentePopUp"] == null && Model.FirstOrDefault(x => x.Popup == true) != null)
+{
+    Session["AvvisoUtentePopUp"] = true;
+
+
+    var _avvisoid = 0;
+    var _list = Model.Where(x => x.Popup == true).ToList();
+
+    if (_list?.Count() > 0)
+    {
+        Random rnd = new Random();
+        var _index = rnd.Next(1, _list.Count());
+
+        _avvisoid = _list[_index - 1].AvvisoUtenteId;
+
+    }
+
+
+
+    if (_avvisoid != 0)
+    {
+        <script>
+        $.get("@Html.EncodedAction("ApriAvviso", "Home", new { id = _avvisoid })", function (data) {
+            showModal_NoHeader(data);
+            playNotifyInfo();
+        });
+
+        </script>
+
+    }
+
+
+}

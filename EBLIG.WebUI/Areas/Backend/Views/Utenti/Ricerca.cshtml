@@ -1,0 +1,27 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.UtentiRicercaModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+
+
+        @Ajax.EncodedAjaxActionLink("Nuovo Utente \"Admin\"", "UtenteNuovo", "Utenti", new { tipo = IdentityHelper.Roles.Admin.ToString() }, new AjaxOptions
+   {
+       OnBegin = "alertWaid()",
+       OnSuccess = "showModal_NoFooter('Nuovo Utente Admin',data); alertClose()",
+       OnFailure = "handleError"
+   }, new { @class = "btn btn-info" })
+
+        @Ajax.EncodedAjaxActionLink("Nuovo Utente \"Spotello Sindacale\"", "UtenteNuovo", "Utenti", new { tipo = IdentityHelper.Roles.Sportello.ToString() }, new AjaxOptions
+        {
+        OnBegin = "alertWaid()",
+        OnSuccess = "showModal_NoFooter('Nuovo Utente Sportello Sindacale',data); alertClose()",
+        OnFailure = "handleError"
+        }, new { @class = "btn btn-warning ml-2" })
+
+
+    </div>
+</div>
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Utenti registrati")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Utenti"), true)
+

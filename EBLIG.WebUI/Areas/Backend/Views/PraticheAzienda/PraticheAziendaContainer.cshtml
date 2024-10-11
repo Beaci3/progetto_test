@@ -1,0 +1,432 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaContainer
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+@using EBLIG.DOM;
+
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("SalvaRichiesta", new { }, new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessSalvaRichiesta",
+    OnFailure = "handleError"
+}, new { id = "formSalvaRichiesta" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.RichiestaId)
+    @Html.HiddenFor(model => model.AziendaId)
+    @Html.HiddenFor(model => model.DipendenteId)
+    @Html.HiddenFor(model => model.TipoRichiestaId)
+    @Html.HiddenFor(model => model.StatoId)
+    @Html.HiddenFor(model => model.ChildClassRowCount)
+
+    <div class="form-horizontal" id="containerRichiestaBody">
+
+        <h3>Richiesta @Model.DescrizioneTipoRichiesta</h3>
+        <h5>
+            <label class="badge bg-@Html.GetRichiestaStatoCss(Model.StatoId) text-start" style="margin-top:-30px">
+                Stato @Model.DescrizioneStato
+            </label>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ProtocolloId))
+            {
+                <br />
+
+                <small>
+                    <strong class="text-primary">Protocollo: @Model.ProtocolloId</strong>
+                </small>
+            }
+
+        </h5>
+        <hr />
+
+        @if (Model.StatoId == (int)EBLIG.DOM.EbligEnums.StatoPratica.Confermata)
+        {
+            <div class="col-md-12 fw-bold">
+
+                @if (Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Count() > 0)
+                {
+
+                    var _liquidata = Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Where(x => x.Liquidazione.StatoLiquidazioneId == (int)EbligEnums.StatoLiqidazione.Liquidata);
+                    var _inliquidazione = Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Where(x => x.Liquidazione.StatoLiquidazioneId == (int)EbligEnums.StatoLiqidazione.InLiquidazione);
+
+                    if (_liquidata.Count() > 0)
+                    {
+
+                        <small class="text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.Liquidata)">"Liquidata @Html.ToShortDate(_liquidata.LastOrDefault().Liquidazione.DataLavorazione) sul Iban: @_liquidata.LastOrDefault().PraticheRegionaliImprese.Iban"</small>
+                    }
+                    else if (_inliquidazione.Count() > 0)
+                    {
+                        <small class="text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.InLiquidazione)">"In Liquidazione"</small>
+                    }
+                    else
+                    {
+                        <small class="text-info">"Da Liquidare"</small>
+                    }
+                }
+                else
+                {
+                    <small class="text-info">"Da Liquidare"</small>
+                }
+
+            </div>
+            <hr />
+
+        }
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.Raw(Model.NoteTipoRichiesta)
+            </div>
+        </div>
+
+        <hr />
+
+        @{Html.RenderAction("AnagraficaAzienda", new { aziendaId = Model.AziendaId, iban = Model.Iban, ibanRequired = Model.IbanAziendaRequired, readOnly = Model.ReadOnly });}
+
+        @if (Model.DipendenteId.HasValue)
+        {
+            Html.RenderAction("AnagraficaDipendente", new { dipendenteId = Model.DipendenteId, iban = Model.Iban, ibanRequired = Model.IbanDipendenteRequired, readOnly = Model.ReadOnly });
+        }
+
+        @{Html.RenderPartial($"~/Areas/Backend/Views/PraticheAzienda/TipoRichiesta/{Model.View}.cshtml", Model.DataModel);}
+
+        @if (Model.StoricoStatoPratica != null)
+        {
+            if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+            {
+                Html.RenderPartial("StoricoStatoPratica", Model.StoricoStatoPratica);
+            }
+            else
+            {
+                Html.RenderPartial("RevisionePratica", Model.StoricoStatoPratica?.Where(x => x.StatoPraticaId == (int)EbligEnums.StatoPratica.Revisione));
+            }
+        }
+
+        @if (Model.RichiestaId != 0)
+        {
+            <div id="containerImportoCalcolati">
+                @{ Html.RenderPartial("ImportoCalcolati", new EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_ImportoCalcolatiModel
+                    {
+                        AliquoteIRPEF = Model.AliquoteIRPEF,
+                        ImportoContributo = Model.ImportoContributo,
+                        ImportoContributoNetto = Model.ImportoContributoNetto,
+                        ImportoIRPEF = Model.ImportoIRPEF
+                    });}
+            </div>
+        }
+
+
+        @if (Model.StatoId == (int)EBLIG.DOM.EbligEnums.StatoPratica.Confermata)
+        {
+            <div class="col-md-12 fw-bold">
+
+                @if (Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Count() > 0)
+                {
+
+                    var _liquidata = Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Where(x => x.Liquidazione.StatoLiquidazioneId == (int)EbligEnums.StatoLiqidazione.Liquidata);
+                    var _inliquidazione = Model.PraticheRegionaliImprese.LiquidazionePraticheRegionali.Where(x => x.Liquidazione.StatoLiquidazioneId == (int)EbligEnums.StatoLiqidazione.InLiquidazione);
+
+                    if (_liquidata.Count() > 0)
+                    {
+
+                        <small class="text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.Liquidata)">"Liquidata @Html.ToShortDate(_liquidata.LastOrDefault().Liquidazione.DataLavorazione) sul Iban: @_liquidata.LastOrDefault().PraticheRegionaliImprese.Iban"</small>
+                    }
+                    else if (_inliquidazione.Count() > 0)
+                    {
+                        <small class="text-@Html.GetLiquidazioneStatoCss((int)EbligEnums.StatoLiqidazione.InLiquidazione)">"In Liquidazione"</small>
+                    }
+                    else
+                    {
+                        <small class="text-info">"Da Liquidare"</small>
+                    }
+                }
+                else
+                {
+                    <small class="text-info">"Da Liquidare"</small>
+                }
+
+            </div>
+            <hr />
+
+        }
+
+
+        <div class="row mt-4">
+            <div class="col-md-12 text-danger">
+                <strong>* Campi obbligatori</strong>
+            </div>
+        </div>
+
+        <hr />
+
+        @{Html.RenderAction("Azioni", new { Model.RichiestaId, Model.TipoRichiestaId, Model.StatoId, Model.LiquidataOinLiquidazione });}
+
+    </div>
+}
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasModalBottom" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasBottomLabel">Inserisci la motivazione</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div id="offcanvasModalBottomBody" class="offcanvas-body small">
+    </div>
+</div>
+
+
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/checksumCFPiva.js"></script>
+<script src="~/Scripts/requiredFromEBLIGAdmin.js"></script>
+<script src="~/Scripts/customRangeValidator.js"></script>
+<script src="~/Scripts/ifIban.js"></script>
+
+<script>
+    function showModalOffcanvas(data) {
+        var myOffcanvas = document.getElementById('offcanvasModalBottom')
+
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+        bsOffcanvas.show();
+
+        $("#offcanvasModalBottomBody").html(data);
+
+    }
+
+    function hideModalOffcanvas() {
+        var myOffcanvas = document.getElementById('offcanvasModalBottom')
+
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+        bsOffcanvas.hide();
+
+    }
+
+    @if (Model.StatoId == (int)EbligEnums.StatoPratica.Revisione && (!User.IsInRole(IdentityHelper.Roles.Admin.ToString())))
+    {
+        @:$().ready(function () {
+        @:alertInfo("Attenzione, la richiesta e in Revisione, effetuare la modifica neccessaria (vedi note sotto) e alla fine premere il pulsante \"Invia come Revisionata\"");
+        @:})
+    }
+
+    var _arrayDataValRequired = new Array();
+
+    disableValidation();
+
+    function disableValidation() {
+        $("[data-val]").each(function (index, item) {
+            var id = $(item).attr("id");
+            _arrayDataValRequired.push({ id: $(item).attr("id"), value: $('#' + id).data("val-required") });
+            $('#' + id).removeAttr("data-val-required");
+            $('#' + id).attr("data-val", false);
+            $('#' + id).removeClass("input-validation-error");
+            $('#' + id).addClass("valid");
+            $('#' + id + '-error').html("");
+            $('[data-valmsg-for="' + id + '"]').removeClass("field-validation-error");
+            $('[data-valmsg-for="' + id + '"]').addClass("field-validation-valid");
+            $('[data-valmsg-for="' + id + '"]').html("");
+        })
+
+        $("#formSalvaRichiesta").removeData("validator");
+        $("#formSalvaRichiesta").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse("#formSalvaRichiesta");
+    }
+
+    var _arrayDataAjax = new Array();
+    _arrayDataAjax.push("href");
+    _arrayDataAjax.push("data-ajax");
+    _arrayDataAjax.push("data-ajax-success");
+    _arrayDataAjax.push("data-ajax-failure");
+    _arrayDataAjax.push("data-ajax-begin");
+
+    //$.each(_arrayDataAjax, function (index, item) {
+    //    $("[data-azione-id='Annulla']").removeAttr(item);
+    //    //$("[data-azione-id='Conferma']").removeAttr(item);
+    //});
+
+    $("[data-azione-id]").on("click", function () {
+        //enable validation
+        if ($(this).data("azione-id") == "@EbligEnums.AzioniPratica.Invia.ToString()"
+            || $(this).data("azione-id") == "@EbligEnums.AzioniPratica.InviaRevisionata.ToString()"
+            || $(this).data("azione-id") == "@EbligEnums.AzioniPratica.Conferma.ToString()") {
+
+            $.each(_arrayDataValRequired, function (index, item) {
+                $('#' + item.id).attr("data-val-required", item.value);
+                $('#' + item.id).attr("data-val", true);
+
+                try {
+                    if ($("[id='" + item.id + "-error'][for=['" + item.id + "']") != undefined) {
+                        $("[id='" + item.id + "-error'][for=['" + item.id + "']").remove();
+                    }
+                } catch (e) {
+
+                }
+            });
+
+            $("#formSalvaRichiesta").removeData("validator");
+            $("#formSalvaRichiesta").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("#formSalvaRichiesta");
+
+        }
+
+        //disable validation
+        if ($(this).data("azione-id") == "@EbligEnums.AzioniPratica.Bozza.ToString()") {
+            disableValidation();
+        }
+
+        @*if ($(this).data("azione-id") == "@EbligEnums.AzioniPratica.Annulla.ToString()") {
+            annullaRichiesta();
+        }*@
+
+        setTimeout(function () { $("label[id*='-error']").remove(); }, 1)
+
+        if ($("#formSalvaRichiesta").valid) {
+            if ($(this).data("azione-id") == "@EbligEnums.AzioniPratica.Conferma.ToString()") {
+
+                var _notvalid = 0;
+                $.each(_arrayDataValRequired, function (index, item) {
+
+                    if (!$('#' + item.id).valid()) {
+                        _notvalid++;
+                    }
+
+                    $("label[id='" + item.id + "-error']").remove();
+                });
+
+                if (_notvalid == 0) {
+                    confermaRichiesta();
+                    return false;
+                }
+            }
+        }
+    })
+
+    function onSuccessSalvaRichiesta(data) {
+        if (data.isValid == false) {
+            alertDanger(data.message);
+        }
+        else {
+            updateListRicerca();
+            apriRichiesta(data.richiestaId, data.message);
+        }
+    }
+
+    function apriRichiesta(richiestaId, message) {
+        $.get("@Url.Action("ApriRichiesta")", { id:richiestaId}, function (data) {
+            if (data.isValid == false) {
+                alertDanger(data.message);
+            }
+            else {
+               showModalFullScreen_NoHeaderFooter(data);
+               alertSuccess(message);
+            }
+        });
+    }
+
+    function annullaRichiesta() {
+
+        disableValidation();
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Sicuro di voler \"Annullare\" la richiesta?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $.post("@Html.EncodedAction("AnnullaRichiesta", "PraticheAzienda", new { Model.RichiestaId })", function (data) {
+                if (data.isValid == false) {
+                    alertDanger(data.message);
+                }
+                else {
+                    apriRichiesta("@Model.RichiestaId", data.message);
+                    updateListRicerca();
+                }
+            });
+        }
+    })
+}
+
+    function confermaRichiesta() {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Sicuro di voler \"Confermare\" la richiesta?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $('#formSalvaRichiesta').append('<input type="hidden" name="Azione" value="@EbligEnums.AzioniPratica.Conferma.ToString()" />');
+            $("#formSalvaRichiesta").submit();
+        }
+    })
+}
+
+    function rimettiInStatoInviataRichiesta() {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        playNotifyConfirm();
+
+        swalWithBootstrapButtons.fire({
+        html: "Sicuro di voler rimettere la richiesta come stato \"Inviata\"?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $('#formSalvaRichiesta').append('<input type="hidden" name="Azione" value="@EbligEnums.AzioniPratica.Invia.ToString()" />');
+            $("#formSalvaRichiesta").submit();
+        }
+    })
+}
+
+    function disableAzioniButton() {
+        $("[data-azione-id]").addClass("disabled");
+        $("[data-azione-id]").attr("disabled", "disabled");
+    }
+
+    function enableAzioniButton() {
+        $("[data-azione-id]").removeClass("disabled");
+        $("[data-azione-id]").removeAttr("disabled");
+    }
+</script>
+

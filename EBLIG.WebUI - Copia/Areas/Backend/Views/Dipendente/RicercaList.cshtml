@@ -1,0 +1,55 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Dipendente trovato");
+    return;
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Nominativo</th>
+                    <th>Codice Fiscale</th>
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    <tr>
+                        <td>@item.Cognome, @item.Nome</td>
+                        <td class="text-uppercase">@item.CodiceFiscale</td>
+                        <td class="text-center">
+
+                            @Ajax.EncodedAjaxActionLink("Dettaglio", "Anagrafica", "Dipendente", new
+                       {
+                           id = item.DipendenteId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class= "btn btn-sm btn-primary" })
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

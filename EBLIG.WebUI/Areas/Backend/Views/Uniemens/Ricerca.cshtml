@@ -1,0 +1,6 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.UniemensRicercaModel
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Contributi")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "Uniemens"), true)
+

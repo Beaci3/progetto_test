@@ -1,0 +1,12 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.NavigationHistoryRicercaModel
+
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Navigation history", false)
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "NavigationHistory"), true)
+
+<script>
+    $().ready(function () {
+        alertWaid();
+        updateListRicerca(true);
+    });
+</script>

@@ -1,0 +1,58 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.CoperturaModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Modifica", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessModifica"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CoperturaId, new { @hidden = true, @readonly = true })
+
+    <h3>Modifica Copertura</h3>
+    <hr />
+    <div class="form-horizontal">
+        <div class="row">
+
+            <div class="form-group col-md-12">
+                @Html.Label("Azienda/Matricola", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Model.Ragionesociale (@Model.MatricolaInps)
+                    @Html.HiddenFor(model => model.AziendaId, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                    @Html.ValidationMessageFor(model => model.AziendaId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                @Html.Label("Coperta", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @if (Model.Coperto == null)
+                    {
+                        Model.Coperto = false;
+                    }
+
+                    @Html.CheckBoxFor(model => model.Coperto.Value, htmlAttributes: new { @style = "margin-bottom:30px", @Id = "Coperto", @Name = "Coperto" })
+                </div>
+            </div>
+
+            <div class="modal-footer row" style="margin-top: 30px">
+                <div class="col-md-12 text-center">
+                    <input type="submit" value="Modifica" class="btn btn-success" />
+                    <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+    function onSuccessModifica(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>
+
+
+

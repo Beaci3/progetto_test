@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Html.GetConfiguration().RagioneSociale.Nome</title>
+    <style>
+        body {
+            background: url(/content/images/sfondoHome.png) no-repeat center center fixed;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+    </style>
+    @Styles.Render("~/Content/css")
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div class="container body-content">
+        <img class="img-fluid rounded" src="~/Content/images/logo_eblig_300.jpg" style="margin-bottom: 40px; mix-blend-mode: multiply;" />
+
+        @RenderBody()
+    </div>
+
+    <footer class="mt-auto container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <strong>@Html.GetConfiguration().RagioneSociale.Nome</strong>
+                <br />
+                <small>
+                    @Html.GetConfiguration().RagioneSociale.Indirizzo - @Html.GetConfiguration().RagioneSociale.Cap @Html.GetConfiguration().RagioneSociale.Citta (@Html.GetConfiguration().RagioneSociale.Provincia)
+                    <br />Tel: @Html.GetConfiguration().RagioneSociale.Telefono - Email: @Html.GetConfiguration().RagioneSociale.Email - Sito: <a style="color:white !important" href="@Html.GetConfiguration().RagioneSociale.SitoWeb" target="_blank">@Html.GetConfiguration().RagioneSociale.SitoWeb</a>
+                </small>
+            </div>
+            <div class="col-md-6 text-end">
+                <strong>
+                    © Tutti i diritti riservati.
+                    <a href="/Home/Privacy" data-ajax="true"
+                       data-ajax-success="alertClose();showModal('Informativa privacy', data)"
+                       data-ajax-begin="alertWaid()"
+                       class="text-warning">Leggi l’informativa privacy</a>
+                </strong>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function onSuccessGet(title, data) {
+            alertClose();
+            showModal_NoFooter(title, data);
+        }
+    </script>
+
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/globalize")
+    @Scripts.Render("~/bundles/utils")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

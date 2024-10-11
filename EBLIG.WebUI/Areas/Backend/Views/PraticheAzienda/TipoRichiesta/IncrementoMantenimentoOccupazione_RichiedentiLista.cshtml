@@ -1,0 +1,190 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_IncrementoMantenimentoOccupazione.RichiedentiViewModel
+@using EBLIG.WebUI.Areas.Backend.Models
+@using EBLIG.DOM.DAL
+
+@{
+    var _contaRighe = 0;
+
+    var _oresettimanaleTotale = Model.ChildClass != null ? Model.ChildClass?.Sum(x => x.OreSettimanaleDipendente) : 0;
+
+    var _importoRiconosciutoTotale = Model.ChildClass != null ? Model.ChildClass?.Sum(x => x.ImportoRiconosciuto) : 0;
+}
+
+@if (Model.ChildClass == null || Model.ChildClass.Count() == 0)
+{
+    @Html.AlertDanger("Nessun richiedente trovato");
+}
+else
+{
+    var _model = new PraticheAzienda_IncrementoMantenimentoOccupazione.Richiedente();
+
+    var _unitOfWork = new UnitOfWork();
+
+    var _provincie = _unitOfWork.ProvinceRepository.Get();
+
+    var _comuni = _unitOfWork.ComuniRepository.Get();
+
+    var _localita = _unitOfWork.LocalitaRepository.Get();
+
+    <div class="col-md-12 mt-3" id="PraticheAzienda_IncrementoMantenimentoOccupazione_Richiedenti">
+
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Nominativo</th>
+
+                    <th>Indirizzo</th>
+                    <th>Ore settimanali</th>
+                    <th>Importo lordo</th>
+                    @if (!Model.ReadOnly.GetValueOrDefault())
+                    {
+                        <th style="width:125px"></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+
+                @for (int i = 0; i < Model.ChildClass.Count(); i++)
+                {
+                    _contaRighe++;
+
+                    var _richiedente = Model.ChildClass[i];
+
+                    <tr>
+                        <td>
+                            @_richiedente.Nome  @_richiedente.Cognome<br />
+                            Codice Fiscale: @_richiedente.CodiceFiscale - Data nascita: @_richiedente.DataNascita.GetValueOrDefault().ToShortDateString()
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.Nome)" name="ChildClass[@i].@nameof(_model.Nome)" value="@_richiedente.Nome" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.Cognome)" name="ChildClass[@i].@nameof(_model.Cognome)" value="@_richiedente.Cognome" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.CodiceFiscale)" name="ChildClass[@i].@nameof(_model.CodiceFiscale)" value="@_richiedente.CodiceFiscale" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.DataNascita)" name="ChildClass[@i].@nameof(_model.DataNascita)" value="@_richiedente.DataNascita.GetValueOrDefault().ToShortDateString()" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.Indirizzo)" name="ChildClass[@i].@nameof(_model.Indirizzo)" value="@_richiedente.Indirizzo" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.RegioneId)" name="ChildClass[@i].@nameof(_model.RegioneId)" value="@_richiedente.RegioneId" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.ProvinciaId)" name="ChildClass[@i].@nameof(_model.ProvinciaId)" value="@_richiedente.ProvinciaId" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.ComuneId)" name="ChildClass[@i].@nameof(_model.ComuneId)" value="@_richiedente.ComuneId" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.LocalitaId)" name="ChildClass[@i].@nameof(_model.LocalitaId)" value="@_richiedente.LocalitaId" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.OreSettimanaleDipendente)" name="ChildClass[@i].@nameof(_model.OreSettimanaleDipendente)" value="@_richiedente.OreSettimanaleDipendente" />
+                            <input type="hidden" id="ChildClass[@i].@nameof(_model.ImportoRiconosciuto)" name="ChildClass[@i].@nameof(_model.ImportoRiconosciuto)" value="@_richiedente.ImportoRiconosciuto" />
+                        </td>
+
+                        <td>
+                            @_richiedente.Indirizzo<br />
+                            @string.Format("{0} - {1} - {2} {3}",
+                           _provincie.FirstOrDefault(x => x.ProvinciaId == _richiedente.ProvinciaId)?.DENPRO,
+                           _comuni.FirstOrDefault(x => x.ComuneId == _richiedente.ComuneId)?.DENCOM,
+                           _localita.FirstOrDefault(x => x.LocalitaId == _richiedente.LocalitaId)?.CAP,
+                           _localita.FirstOrDefault(x => x.LocalitaId == _richiedente.LocalitaId)?.DENLOC
+                           )
+
+                        </td>
+                        <td class="text-end">
+                            @_richiedente.OreSettimanaleDipendente
+
+                        </td>
+                        <td class="text-end">
+                            @Html.ToImporto(_richiedente.ImportoRiconosciuto)
+
+                        </td>
+                        @if (!Model.ReadOnly.GetValueOrDefault())
+                        {
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-danger" href="javascript:void(0)"
+                                   onclick="incrementoMantenimentoOccupazione_Richiedente_Rimuovi('@_richiedente.CodiceFiscale')">Rimuovi</a>
+                            </td>
+                        }
+                    </tr>
+
+
+                }
+
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Totale:</td>
+                    <td class="text-end">@_oresettimanaleTotale</td>
+                    <td class="text-end text-success doubleunderline">
+                        <span id="@nameof(Model.ImportoRiconosciutoTotale)-span">@Html.ToImporto(_importoRiconosciutoTotale)</span>
+                    </td>                    
+                    
+                    @if (!Model.ReadOnly.GetValueOrDefault())
+                    {
+                        <td></td>
+                    }
+                </tr>
+
+
+            </tfoot>
+
+        </table>
+    </div>
+}
+
+<script>
+
+    $().ready(function () {
+        $("#RichiedentiTotale").val("@_contaRighe");
+        $("#ChildClassRowCount").val("@_contaRighe");
+        @if (!Model.ReadOnly.GetValueOrDefault())
+        {
+            @:getImportoRiconosciutoTotale();
+        }
+    });
+
+    function incrementoMantenimentoOccupazione_Richiedente_Rimuovi(codiceFiscale) {
+
+         const swalWithBootstrapButtons = Swal.mixin({
+             customClass: {
+                 confirmButton: 'btn btn-success mr-1',
+                 cancelButton: 'btn btn-danger mr-1'
+             },
+             buttonsStyling: false
+         });
+
+        playNotifyConfirm();
+
+         swalWithBootstrapButtons.fire({
+            html: "Sicuro di voler \"Rimuovere\" il nominativo?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: 'Conferma',
+            cancelButtonText: 'Annulla',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                alertWaid();
+                var formData = $("#PraticheAzienda_IncrementoMantenimentoOccupazione_Richiedenti :input").serialize();
+                formData = formData + "&codiceFiscale=" + codiceFiscale;
+
+                $.post("@Html.EncodedAction("IncrementoMantenimentoOccupazione_RichiedenteRimuovo", "PraticheAzienda")", formData, function (data) {
+                   $("#containerIncrementoMantenimentoOccupazione_RichiedentiLista").html(data);
+                   alertClose();
+                })
+            }
+        })
+    }
+
+    function getImportoRiconosciutoTotale() {
+        disableAllBtn();
+
+        $("#@nameof(Model.ImportoRiconosciutoTotale)-span").html("0,00");
+        $("#@nameof(Model.ImportoRiconosciutoTotale)").val("0");
+
+        $.get("@Url.Action("GetImportoIncrementoMantenimentoOccupazionImpreseTotale", "PraticheAzienda")",
+            {
+                importoTotale: "@_importoRiconosciutoTotale",
+                tipoRichiestaId: $("#TipoRichiestaId").val(),
+            }, function (data) {
+                $("#@nameof(Model.ImportoRiconosciutoTotale)-span").html(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#@nameof(Model.ImportoRiconosciutoTotale)").val(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#containerImportoCalcolati").html(data.html);
+                enableAllBtn();
+            }).fail(function (error) {
+                $("#@nameof(Model.ImportoRiconosciutoTotale)-span").html("0,00");
+                $("#@nameof(Model.ImportoRiconosciutoTotale)").val("0");
+                $("#@nameof(Model.ImportoRiconosciutoTotale)").valid();
+                enableAllBtn();
+            });
+    }
+</script>

@@ -1,0 +1,70 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.ChartModel
+
+@{
+    var _id = Guid.NewGuid();
+
+    if (Model.ChartData.Count() == 0)
+    {
+        <span class="text-info p-5">@Model.ChartTitle non disponibile</span>
+        return;
+    }
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 text-left" style="background-color:transparent">
+        <h6 class="m-0 font-weight-bold text-primary">@Model.ChartTitle</h6>
+    </div>
+    <div class="card-body">
+        <div class="chart-bar">
+            <canvas id="myBarChart_@_id" style="display: block; height: 301px; width: 602px;" width="752" height="376" class="chartjs-render-monitor"></canvas>
+        </div>
+    </div>
+</div>
+
+
+@functions
+{
+    public string Serialize(object o)
+    {
+        System.Web.Script.Serialization.JavaScriptSerializer js = new System.Web.Script.Serialization.JavaScriptSerializer();
+        return js.Serialize(o).Replace("[", "").Replace("]", "");
+    }
+
+    public string SerializeInteger(IEnumerable<int> o)
+    {
+        return string.Join(",", o);
+    }
+}
+
+<script>
+    var randomScalingFactor = function () {
+        return Math.round(Math.random() * 100);
+    };
+
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [@SerializeInteger(Model.ChartData.Select(x => x.Data))],
+                backgroundColor: [@Html.Raw(Serialize(Model.ChartData.Select(x => x.Color)))],
+                label: 'Dataset 1'
+            }],
+            labels: [@Html.Raw(Serialize(Model.ChartData.Select(x => x.Label)))],
+
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+        }
+    };
+
+    $().ready(function () {
+      var ctx = document.getElementById("myBarChart_@_id").getContext('2d');
+      window.myPie = new Chart(ctx, config);
+    });
+
+
+</script>

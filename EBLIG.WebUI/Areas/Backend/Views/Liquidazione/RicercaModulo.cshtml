@@ -1,0 +1,36 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneRicercaModel
+@using EBLIG.WebUI
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("Ricerca", new AjaxOptions
+{
+    UpdateTargetId = "resultRicerca",
+    OnBegin = "onBeginRicerca",
+    OnSuccess = "alertClose",
+    OnFailure="handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.Label("Stato Liquidazione", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.LiquidazioneRicercaModel_StatoLiquidazioneId, Html.SelectList(Model.StatoLiquidazione.OrderBy(o => o.Ordine), "StatoLiquidazioneId", "Descrizione", true), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.LiquidazioneRicercaModel_StatoLiquidazioneId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Avvia ricerca</button>
+        </div>
+    </div>
+}

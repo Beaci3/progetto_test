@@ -1,0 +1,259 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_IncrementoMantenimentoOccupazione.Richiedente
+@using EBLIG.WebUI.Areas.Backend.Models
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("IncrementoMantenimentoOccupazione_RichiedenteNuovo_Add", new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessIncrementoMantenimentoOccupazione_RichiedenteNuovo_Add",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.AziendaId)
+    @Html.HiddenFor(m => m.TipoRichiestaId)
+    @Html.HiddenFor(m => m.RichiestaId)
+    @Html.ValidationMessageFor(model => model.AziendaId, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.TipoRichiestaId, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.RichiestaId, "", new { @class = "text-danger" })
+
+    <div class="row">
+        <h4>
+            <span class="badge bg-secondary">Dati Richiedente</span>
+        </h4>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.Nome, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Cognome, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.Cognome, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Cognome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CodiceFiscale, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.CodiceFiscale, new { @class = "form-control text-uppercase" })
+                    @Html.ValidationMessageFor(model => model.CodiceFiscale, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DataNascita, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.DataNascita, new
+                    {
+                    @class = "form-control",
+                    data_inputmask_alias = "datetime",
+                    data_inputmask_inputformat = "dd/mm/yyyy"
+                    }, "{0:dd/MM/yyyy}")
+
+                    @Html.ValidationMessageFor(model => model.DataNascita, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-3">
+
+        @{Html.RenderPartial("~/Areas/Backend/Views/Moduli/IndirizzoConRegioni.cshtml", new EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+            {
+                IncludiRegioni = true,
+                ReadOnly = false,
+
+                IndirizzoElement = "Indirizzo",
+                ProvinciaElement = "ProvinciaId",
+                ComuneElement = "ComuneId",
+                LocalitaElement = "LocalitaId",
+                RegioneElement = "RegioneId",
+
+                Sigpro = Model.Provincia?.SIGPRO,
+                Codcom = Model.Comune?.CODCOM,
+                Codreg = Model.Regione?.CODREG,
+
+                Indirizzo = Model.Indirizzo,
+                ComuneId = Model.ComuneId,
+                RegioneId = Model.RegioneId,
+                LocalitaId = Model.LocalitaId,
+                ProvinciaId = Model.ProvinciaId,
+
+                Provincia = Model.Provincia,
+                Regione = Model.Regione,
+                Comune = Model.Comune,
+                Localita = Model.Localita
+
+            });}
+
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.OreSettimanaleDipendente, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.TextBoxForReadOnly(model => model.OreSettimanaleDipendente, new { @class = "form-control", placeholder = "tra 1 e 40" })
+                    @Html.ValidationMessageFor(model => model.OreSettimanaleDipendente, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ImportoRiconosciuto, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <span id="@nameof(Model.ImportoRiconosciuto)-span">@Model.ImportoRiconosciuto.GetValueOrDefault().ToString("n")</span><br />
+                    @Html.HiddenFor(model => model.ImportoRiconosciuto)
+                    @Html.ValidationMessageFor(model => model.ImportoRiconosciuto, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+    if (Model.Richiedenti != null && Model.Richiedenti.Count() > 0)
+    {
+        var _model = new PraticheAzienda_IncrementoMantenimentoOccupazione.Richiedente();
+        for (int i = 0; i < Model.Richiedenti.Count(); i++)
+        {
+            var _richiedente = Model.Richiedenti.ToList()[i];
+
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.Nome)" name="ChildClass[@i].@nameof(_model.Nome)" value="@_richiedente.Nome" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.Cognome)" name="ChildClass[@i].@nameof(_model.Cognome)" value="@_richiedente.Cognome" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.CodiceFiscale)" name="ChildClass[@i].@nameof(_model.CodiceFiscale)" value="@_richiedente.CodiceFiscale" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.DataNascita)" name="ChildClass[@i].@nameof(_model.DataNascita)" value="@_richiedente.DataNascita.GetValueOrDefault().ToShortDateString()" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.Indirizzo)" name="ChildClass[@i].@nameof(_model.Indirizzo)" value="@_richiedente.Indirizzo" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.RegioneId)" name="ChildClass[@i].@nameof(_model.RegioneId)" value="@_richiedente.RegioneId" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.ProvinciaId)" name="ChildClass[@i].@nameof(_model.ProvinciaId)" value="@_richiedente.ProvinciaId" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.ComuneId)" name="ChildClass[@i].@nameof(_model.ComuneId)" value="@_richiedente.ComuneId" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.LocalitaId)" name="ChildClass[@i].@nameof(_model.LocalitaId)" value="@_richiedente.LocalitaId" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.OreSettimanaleDipendente)" name="ChildClass[@i].@nameof(_model.OreSettimanaleDipendente)" value="@_richiedente.OreSettimanaleDipendente" />
+            <input type="hidden" id="ChildClass[@i].@nameof(_model.ImportoRiconosciuto)" name="ChildClass[@i].@nameof(_model.ImportoRiconosciuto)" value="@_richiedente.ImportoRiconosciuto" />
+        }
+
+    }
+
+    <div class="modal-footer mt-3">
+        <button type="submit" class="btn btn-primary">Aggiungi richiedente</button>
+        <button type="button" class="btn btn-danger" onclick="modalIncrementoMantenimentoOccupazioneShow()">Torna alla richiesta</button>
+    </div>
+
+}
+
+<script>
+    function modalIncrementoMantenimentoOccupazioneShow() {
+       $.each(_modalArray, function (index, item) {
+            if (item.id == "@Model.ModalId") {
+                showModalFullScreen_NoHeaderFooter(item.html);
+            }
+        })
+    }
+
+    function onSuccessIncrementoMantenimentoOccupazione_RichiedenteNuovo_Add(data) {
+        if (data.isValid == false) {
+            alertDanger(data.message);
+        }
+        else {
+            alertWaid();
+            modalIncrementoMantenimentoOccupazioneShow();
+            $("#containerIncrementoMantenimentoOccupazione_RichiedentiLista").html(data);
+            alertClose();
+        }
+    }
+
+    $('#@nameof(Model.DataNascita)').inputmask();
+
+        flatpickr('#@nameof(Model.DataNascita)', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            maxDate:"@DateTime.Now.AddYears(-16)",
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+    });
+
+
+    $("#@nameof(Model.CodiceFiscale)").on("keyup", function () {
+        if (String($("#@nameof(Model.CodiceFiscale)").val()).length == 16) {
+            verificaCodiceFiscale();
+        }
+    });
+
+    function verificaCodiceFiscale() {
+        disableAzioniButton();
+
+        resetValidator("@nameof(Model.CodiceFiscale)");
+
+        $.get("@Url.Action("VerificaTipoRichiestaUnivocoCodiceFiscale", "PraticheAzienda")",
+            {
+                aziendaId: $("#@nameof(Model.AziendaId)").val(),
+                tipoRichiestaId: $("#@nameof(Model.TipoRichiestaId)").val(),
+                codiceFiscale: $("#@nameof(Model.CodiceFiscale)").val(),
+                richiestaId: $("#@nameof(Model.RichiestaId)").val(),
+                nomeCampo: "@nameof(Model.CodiceFiscale)",
+                unica:false
+            }, function (data) {
+                if (!data.isValid) {
+                    setValidatorError("@nameof(Model.CodiceFiscale)", data.message);
+                }
+                else {
+                    enableAzioniButton();
+                }
+        }).fail(function (error) {
+            enableAllBtn();
+        });
+    }
+
+    $("#@nameof(Model.OreSettimanaleDipendente)").on("keyup", function () {
+       getImportoRiconosciuto();
+    });
+
+    function getImportoRiconosciuto() {
+        disableAllBtn();
+
+        $("#@nameof(Model.ImportoRiconosciuto)-span").html("0,00");
+        $("#@nameof(Model.ImportoRiconosciuto)").val("0");
+
+        $.get("@Url.Action("GetImportoIncrementoMantenimentoOccupazionImprese", "PraticheAzienda")",
+            {
+                ore: $("#@nameof(Model.OreSettimanaleDipendente)").val(),
+                tipoRichiestaId: @Model.TipoRichiestaId,
+            }, function (data) {
+                $("#@nameof(Model.ImportoRiconosciuto)-span").html(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#@nameof(Model.ImportoRiconosciuto)").val(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#containerImportoCalcolati").html(data.html);
+                enableAllBtn();
+        }).fail(function (error) {
+            $("#@nameof(Model.ImportoRiconosciuto)-span").html("0,00");
+            $("#@nameof(Model.ImportoRiconosciuto)").val("0");
+            $("#@nameof(Model.ImportoRiconosciuto)").valid();
+            enableAllBtn();
+        });
+
+    }
+
+
+
+</script>
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+<script src="~/Scripts/checksumCFPiva.js"></script>

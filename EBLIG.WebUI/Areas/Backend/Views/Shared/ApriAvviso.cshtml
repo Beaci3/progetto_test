@@ -1,0 +1,32 @@
+﻿@model EBLIG.DOM.Entitys.AvvisoUtente
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <i class=" text-muted"><small>pubblicato il @Html.ToShortDate(Model.DataInserimento)</small> </i>
+        <h3 class="text-info fw-bold">
+            @Html.Raw(Model.Titolo)
+        </h3>
+
+
+    </div>
+
+    <div class="col-md-12 mt-3">
+
+
+        @Html.Raw(Model.Messaggio)
+
+
+
+
+    </div>
+
+
+
+</div>
+

@@ -1,0 +1,219 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.DipendenteAziendaAssociaViewModel
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Ajax.BeginForm("AssociaAzienda", new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessAssociaAzienda",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.DocumentoIdentita)
+    @*@Html.HiddenFor(m => m.AltroDocumento)*@
+
+    <div class="row">
+        <div class="col-md-12 mb-2">
+            <div class="alert alert-info">
+                Inserire tutti i dati del contratto e clicca poi su <strong>"Associa Azienda"</strong> per creare il collegamento
+            </div>
+        </div>
+        @if (User.IsInRole(IdentityHelper.Roles.Sportello.ToString()))
+        {
+            @Html.HiddenFor(m => m.DipendenteAziendaAssociaViewModel_DipendenteId)
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DipendenteAziendaAssociaViewModel_DipendenteId, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.DipendenteAziendaAssociaViewModel_NominativoCF, new { @class = "form-control", type = "search" })
+                        @Html.ValidationMessageFor(model => model.DipendenteAziendaAssociaViewModel_DipendenteId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @Html.AutocompleteDipendenteSportello("DipendenteAziendaAssociaViewModel_NominativoCF", "DipendenteAziendaAssociaViewModel_DipendenteId", "DipendenteAziendaAssociaViewModel_DipendenteId")
+
+        }
+
+
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.TipoImpiegoId, new { @class = "control-label" })
+            @Html.DropDownListFor(m => m.TipoImpiegoId, Html.SelectList(Model.TipoImpiego.OrderBy(o => o.Descrizione), "TipoImpiegoId", "Descrizione", true), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TipoImpiegoId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.TipoContrattoId, new { @class = "control-label" })
+            @Html.DropDownListFor(m => m.TipoContrattoId, Html.SelectList(Model.TipoContratto.OrderBy(o => o.Descrizione), "TipoContrattoId", "Descrizione", true), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TipoContrattoId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.TempoLavoroId, new { @class = "control-label" })
+            @Html.DropDownListFor(m => m.TempoLavoroId, Html.SelectList(Model.TempoLavoro.OrderBy(o => o.Descrizione), "TempoLavoroId", "Descrizione", true), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TempoLavoroId, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.DataAssunzione, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.DataAssunzione, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.DataAssunzione, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.CCNLCNEL, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.CCNLCNEL, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CCNLCNEL, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.DocumentoIdentita, new { @class = "control-label" })
+
+            <div class="custom-file">
+                <input type="file" class="form-control" id="fileUpload1" accept=".pdf"
+                       data-fileupload-tipoallegato="DocumentoIdentita">
+                <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.DocumentoIdentita, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    @*<div class="row mt-2">
+
+
+
+            <div class="col-md-6">
+                 @Html.LabelFor(m => m.AltroDocumento, new { @class = "control-label" })
+
+                 <div class="custom-file">
+                     <input type="file" class="form-control" id="fileUpload2" accept=".pdf"
+                            data-fileupload-tipoallegato="AltroDocumento">
+                     <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                 </div>
+                 @Html.ValidationMessageFor(model => model.AltroDocumento, "", new { @class = "text-danger" })
+
+             </div
+        </div>>*@
+
+    <div style="max-height:300px; overflow:auto" class="mt-4">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-fixed">
+                <tr class="text-center bg-dark text-white">
+                    <th>Ragione sociale</th>
+                    <th>Matricola Inps</th>
+                    @*<th>Codice Fiscale</th>
+                        <th>Partita Iva</th>*@
+                    <th>Tipologia</th>
+                    <th>CSC</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Aziende)
+                {
+                    <tr>
+                        <td>@item.RagioneSociale</td>
+                        <td>@item.MatricolaInps</td>
+                        @*<td>@item.CodiceFiscale</td>
+                            <td>@item.PartitaIva</td>*@
+                        <td>
+                            @if (item.Tipologia != null)
+                            {
+                                @item.Tipologia.Descrizione
+                            }
+                        </td>
+                        <td>@item.CSC</td>
+                        <td class="text-center" style="width:135px">
+                            <button class="btn btn-sm btn-primary" type="submit" id="AziendaId" name="AziendaId"
+                                    value="@item.AziendaId">
+                                Associa Azienda
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+
+        </table>
+
+    </div>
+}
+
+
+<div class="modal-footer mt-4">
+
+    @Ajax.EncodedAjaxActionLink("Nuova ricerca", "AziendaAssociaRicerca", "Dipendente", null, new AjaxOptions
+{
+   OnBegin = "alertWaid()",
+   OnSuccess = "showModal_NoFooter('Associa Azienda',data); alertClose()",
+   OnFailure = "handleError"
+}, new { @class = "btn btn-primary" })
+
+    <button class="btn btn-danger" onclick="hideModal()">Chiudi finestra</button>
+
+</div>
+
+<script src="~/Scripts/unobtrusiveParseForm.js"></script>
+
+<script>
+    $('#DataAssunzione').inputmask();
+
+    flatpickr('#DataAssunzione', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            @*defaultDate:"@_minDate.ToShortDateString()",*@
+            maxDate:"@DateTime.Now.ToShortDateString()",
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+        });
+
+    function onSuccessAssociaAzienda(data) {
+        @Html.OnSuccessHideModal()
+    }
+
+    $('input[type=file]').on('change', function () {
+
+        var _tipoAllegato = $(this).data("fileupload-tipoallegato");
+
+        var _span = $("span[data-valmsg-for='" + _tipoAllegato + "']");
+
+        const file = document.querySelector("[data-fileupload-tipoallegato='" + _tipoAllegato + "']").files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+            if (!myRe.exec(getFileExtension(file.name))) {
+                _span.addClass("field-validation-error");
+                _span.html("Estensione non valida");
+                _span.show();
+                return;
+            }
+
+            if (getFileSize(file.size) > 1) {
+                _span.addClass("field-validation-error");
+                _span.html("Dimensione massima 1MB");
+                _span.show();
+                return;
+            }
+
+            $("#" + _tipoAllegato).val(reader.result);
+
+            _span.hide();
+            _span.html("");
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+</script>

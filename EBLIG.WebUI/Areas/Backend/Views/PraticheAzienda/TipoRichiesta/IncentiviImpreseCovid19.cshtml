@@ -1,0 +1,63 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_IncentiviImpreseCovid19
+
+<div class="row">
+    <h4>
+        <span class="badge bg-secondary">Dati Richiesta</span>
+    </h4>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumeroGiorniSospensione, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-8">
+                @Html.TextBoxForReadOnly(model => model.NumeroGiorniSospensione, new { @class = "form-control", placeholder = "Inserire almeno 3 giorni" })
+                @Html.ValidationMessageFor(model => model.NumeroGiorniSospensione, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImportoTotaleRimborsato, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-10">
+                <span id="@nameof(Model.ImportoTotaleRimborsato)-span">@Model.ImportoTotaleRimborsato.GetValueOrDefault().ToString("n")</span><br />
+                @Html.HiddenFor(model => model.ImportoTotaleRimborsato, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ImportoTotaleRimborsato, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+
+<script>
+    $("#@nameof(Model.NumeroGiorniSospensione)").on("keyup", function () {
+        getImportoRiconosciuto();
+    });
+
+    function getImportoRiconosciuto() {
+        disableAllBtn();
+        $("#@nameof(Model.ImportoTotaleRimborsato)-span").html("0,00");
+        $("#@nameof(Model.ImportoTotaleRimborsato)").val("0");
+        $.post("@Url.Action("GetImportoErogatoIncentiviImpreseCovid19", "PraticheAzienda")", {
+            giorni: $("#@nameof(Model.NumeroGiorniSospensione)").val(),
+            tipoRichiestaId: @Model.TipoRichiesta.TipoRichiestaId,
+        }, function (data) {
+            $("#@nameof(Model.ImportoTotaleRimborsato)-span").html(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+            $("#@nameof(Model.ImportoTotaleRimborsato)").val(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+            $("#containerImportoCalcolati").html(data.html);
+            enableAllBtn();
+        }).fail(function (error) {
+            $("#@nameof(Model.ImportoTotaleRimborsato)-span").html("Importo non valido");
+            $("#@nameof(Model.ImportoTotaleRimborsato)").val("");
+            $("#@nameof(Model.ImportoTotaleRimborsato)").valid();
+           enableAllBtn();
+        });
+    }
+</script>

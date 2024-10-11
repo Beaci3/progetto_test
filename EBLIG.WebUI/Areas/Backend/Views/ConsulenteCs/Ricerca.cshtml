@@ -1,0 +1,19 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.ConsulenteCsRicercaModel
+
+<div class="row mb-4">
+    <div class="col-md-12">
+
+
+        @Ajax.EncodedAjaxActionLink("Nuovo Consulente / Sportello Datoriale", "Anagrafica", "ConsulenteCs", null, new AjaxOptions
+        {
+        OnBegin = "alertWaid()",
+        OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+        OnFailure = "handleError"
+        }, new { @class = "btn btn-info" })
+
+    </div>
+</div>
+@Html.RicercaModulo(Html.Partial("RicercaModulo", Model), "Anagrafiche Consulenti / Sportello Datoriale")
+
+@Html.UpdateListRicerca(Url.Action("Ricerca", "ConsulenteCs"), true)
+

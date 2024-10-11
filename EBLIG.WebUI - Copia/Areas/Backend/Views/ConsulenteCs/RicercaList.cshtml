@@ -1,0 +1,61 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.ConsulenteCsRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun Consulente / Sportello Datoriale trovato");
+    return;
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Ragione sociale</th>
+                    <th>CF / P.Iva</th>
+                    @*<th>Matricola Inps</th>
+                    <th>Tipologia</th>
+                    <th>CSC</th>*@
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result.ToList())
+                {
+                    <tr>
+                        <td>@item.RagioneSociale</td>
+                        <td class="text-uppercase">@item.CodiceFiscalePIva</td>
+                        @*<td>@item.MatricolaInps</td>
+                        <td>@Html.CropText(item.Tipologia.Descrizione, 50)</td>
+                        <td>@item.CSC</td>*@
+                        <td class="text-center">
+
+                            @Ajax.EncodedAjaxActionLink("Dettaglio", "Anagrafica", "ConsulenteCs", new
+                       {
+                           id = item.ConsulenteCSId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModalFullScreen_NoHeaderFooter(data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class= "btn btn-sm btn-primary" })
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

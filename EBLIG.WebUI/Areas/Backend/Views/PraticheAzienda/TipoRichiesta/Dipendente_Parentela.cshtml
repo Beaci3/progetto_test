@@ -1,0 +1,189 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_Parentela.PraticheAzienda_Dipendente_Parenti
+
+@{
+    EBLIG.DOM.DAL.UnitOfWork unitOfWork = new EBLIG.DOM.DAL.UnitOfWork();
+
+    var _contaRighe = 0;
+    var _model = new EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_Parentela();
+
+}
+
+<div class="col-md-12 mt-3" id="PraticheAzienda_Dipendente_Parentela">
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="text-center bg-dark text-white">
+                <th>Parentela</th>
+                <th>Codice Fiscale</th>
+                <th>Cognome e nome</th>
+                <th>Luogo di nascita</th>
+                <th>Data di nascita</th>
+                @if (!Model.ReadOnly.GetValueOrDefault())
+                {
+                    <th style="width:125px"></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.ReadOnly.GetValueOrDefault())
+            {
+                <tr class="text-center">
+                    <td class="text-center">
+
+                        @Html.DropDownList(nameof(_model.ParentelaId), Html.SelectList(unitOfWork.ParentelaRepository.Get(), "ParentelaId", "Descrizione", true), new { @class = "form-control", @onchange = "setTipoParentela()" })
+                        <input type="hidden" name="@nameof(_model.TipoParentela)" id="@nameof(_model.TipoParentela)" />
+                    </td>
+                    <td class="text-center">
+                        <input type="text" name="@nameof(_model.CodiceFiscale)" id="@nameof(_model.CodiceFiscale)" class="form-control" />
+                    </td>
+                    <td class="text-center">
+                        <input type="text" name="@nameof(_model.CognomeNome)" id="@nameof(_model.CognomeNome)" class="form-control" />
+                    </td>
+                    <td class="text-center">
+                        <input type="text" name="@nameof(_model.LuogoNascita)" id="@nameof(_model.LuogoNascita)" class="form-control" />
+                    </td>
+                    <td class="text-center">
+                        <input type="text" name="@nameof(_model.DataNascita)" id="@nameof(_model.DataNascita)" class="form-control" />
+                    </td>
+                    <td style="width:125px">
+                        <button type="button" class="btn btn-sm btn-primary align-middle" onclick="aggiungiDipendenteParentela()">Aggiungi</button>
+                    </td>
+                </tr>
+            }
+
+            @if (Model != null && Model.ChildClass != null)
+            {
+                for (int i = 0; i < Model.ChildClass.Count(); i++)
+                {
+                    _contaRighe++;
+                    <tr class="text-center">
+                        <td>
+                            @Model.ChildClass[i].TipoParentela
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.ParentelaId)" id="ChildClass[@i].@nameof(_model.ParentelaId)" value="@Model.ChildClass[i].ParentelaId" />
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.TipoParentela)" id="ChildClass[@i].@nameof(_model.TipoParentela)" value="@Model.ChildClass[i].TipoParentela" />
+                        </td>
+                        <td class="text-center">
+                            @Model.ChildClass[i].CodiceFiscale
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.CodiceFiscale)" id="ChildClass[@i].@nameof(_model.CodiceFiscale)" value="@Model.ChildClass[i].CodiceFiscale" />
+                        </td>
+                        <td class="text-center">
+                            @Model.ChildClass[i].CognomeNome
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.CognomeNome)" id="ChildClass[@i].@nameof(_model.CognomeNome)" value="@Model.ChildClass[i].CognomeNome" />
+                        </td>
+                        <td class="text-center">
+                            @Model.ChildClass[i].LuogoNascita
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.LuogoNascita)" id="ChildClass[@i].@nameof(_model.LuogoNascita)" value="@Model.ChildClass[i].LuogoNascita" />
+                        </td>
+                        <td class="text-center">
+                            @Html.ToShortDate(Model.ChildClass[i].DataNascita)
+                            <input type="hidden" name="ChildClass[@i].@nameof(_model.DataNascita)" id="ChildClass[@i].@nameof(_model.DataNascita)" value="@Html.ToShortDate(Model.ChildClass[i].DataNascita)" />
+                        </td>
+                        @if (!Model.ReadOnly.GetValueOrDefault())
+                        {
+                            <td style="width:125px">
+                                <button type="button" class="btn btn-sm btn-danger align-middle" value="@i" onclick="rimuoviDipendenteParentela(@i)">Rimuovi</button>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    $("#Parenti").val("@_contaRighe");
+</script>
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+    <script>
+
+    $('#@nameof(_model.DataNascita)').inputmask();
+
+    flatpickr('#@nameof(_model.DataNascita)', {
+        locale: "it",
+        dateFormat: "d/m/Y",
+        disableMobile: "true",
+        allowInput: true,
+        maxDate:"@DateTime.Now",
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+
+
+    $('#@nameof(_model.ParentelaId)').on("change", function () {
+        var _t = $("#@nameof(_model.ParentelaId) option:selected").text();
+        $("#@nameof(_model.TipoParentela)").val(_t);
+    });
+
+    function aggiungiDipendenteParentela() {
+        $("span[data-valmsg-for='Parenti']").removeClass("field-validation-error");
+        $("span[data-valmsg-for='Parenti']").addClass("field-validation-valid");
+        $("span[data-valmsg-for='Parenti']").html("");
+
+        var _arrayVal = new Array();
+        var _arrayQuery = new Array();
+
+        @foreach (var item in _model.GetType().GetProperties())
+        {
+           @:_arrayQuery.push("@item.Name");
+
+           foreach (var _attributes in item.GetCustomAttributes(true))
+            {
+                if (_attributes is System.ComponentModel.DataAnnotations.RequiredAttribute)
+                {
+                    @:_arrayVal.push("@item.Name");
+                }
+            }
+        }
+
+        var _isValid = true;
+        var _query = "";
+
+        for (var i = 0; i < _arrayVal.length; i++) {
+            if ($("#" + _arrayVal[i]).val() == "") {
+                _isValid = false;
+                break;
+            }
+        }
+
+        for (var i = 0; i < _arrayQuery.length; i++) {
+            _query += "&" + _arrayQuery[i] + "=" + $("#" + _arrayQuery[i]).val();
+        }
+
+        if (_isValid) {
+            postParentela("@Url.Action("AggiungiParentela", "PraticheAzienda")?"+ String(_query).substring(1) );
+        }
+        else {
+            $("span[data-valmsg-for='Parenti']").removeClass("field-validation-valid");
+            $("span[data-valmsg-for='Parenti']").addClass("field-validation-error");
+            $("span[data-valmsg-for='Parenti']").html("Inserire informazioni della Parentela");
+            $("span[data-valmsg-for='Parenti']").show();
+        }
+    }
+
+    function rimuoviDipendenteParentela(index) {
+        postParentela("@Url.Action("RimuoviParentela", "PraticheAzienda")?index=" + index);
+    }
+
+    function postParentela(action) {
+        var formdata = $("#PraticheAzienda_Dipendente_Parentela :input").serialize();
+        $.post(action, formdata, function (data) {
+            if (data.isValid) {
+                $("#containerDipendente_Parentela").html(data.list);
+                $("#ChildClassRowCount").val(data.totale);
+                $("#Parenti").val(data.totale);
+            }
+            else {
+                alertDanger(data.message);
+            }
+        }).fail(function (error) {
+            handleError(error);
+        });
+    }
+
+    </script>
+}

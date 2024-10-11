@@ -1,0 +1,29 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.Elimina
+
+@using (Ajax.BeginForm("Elimina", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessElimina"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.TextBoxFor(model => model.TipoRichiestaId, new { @hidden = true, @readonly = true })
+
+<div class="form-horizontal">
+    <h4>
+        @Html.Label("Sei sicuro di voler eliminare la richiesta?", new { htmlAttributes = new { @style = "border-width : 0; width: -webkit-fill-available;" } })
+    </h4>
+    
+    <div class="modal-footer row" style="margin-top: 30px">
+        <div class="col-md-12 text-center">
+            <input type="submit" value="Elimina" class="btn btn-success" />
+            <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+        </div>
+    </div>
+</div>
+}
+<script>
+    function onSuccessElimina(data) {
+        @Html.OnSuccessHideModal()
+    }
+</script>

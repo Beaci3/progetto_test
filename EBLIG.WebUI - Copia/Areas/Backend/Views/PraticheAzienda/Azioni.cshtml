@@ -1,0 +1,59 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaAzioni
+
+@using EBLIG.WebUI
+
+<div class="row mt-2">
+    <div class="col-md-12 text-center">
+
+        @if (Model.Azioni == null || Model.Azioni.Count() == 0 && Model.StatoId == 0)
+        {
+            <button type="submit" class="btn btn-primary" data-azione-id="Bozza" id="Azione" name="Azione" value="Bozza">Salva bozza</button>
+        }
+        else
+        {
+            foreach (var item in Model.Azioni.OrderBy(o => o.Ordine))
+            {
+                if (Model.AzioniRuolo.FirstOrDefault(x => x.Action == item.Action) == null)
+                {
+                    continue;
+                }
+
+                if (item.IsSubmit.GetValueOrDefault())
+                {
+                    <button type="submit" class="btn btn-@item.ButtonCss" data-azione-id="@item.Action" id="Azione" name="Azione" value="@item.Action">@item.Nome</button>
+                }
+                else
+                {
+                    var _success = "showModalFullScreen_NoHeaderFooter(data)";
+
+                    if (!item.SuccessModalFullScreen.GetValueOrDefault())
+                    {
+                        _success = "showModal_NoFooter('" + item.TitleSuccessModal + "',data)";
+                    }
+
+                    <a class="btn btn-@item.ButtonCss"
+                       data-azione-id="@item.Action"
+                       data-ajax="true"
+                       data-ajax-begin="alertWaid()"
+                       data-ajax-failure="handleError(error)"
+                       data-ajax-success="@_success; alertClose()"
+                       data-ajax-method="post"
+                       href="@Html.EncodedAction(item.Action, item.Controller ?? "PraticheAzienda", new {  richiestaId=Model.RichiestaId , area="Backend" })">@item.Nome</a>
+                }
+            }
+        }
+
+        @if (Model.StatoId.GetValueOrDefault() == (int)EBLIG.DOM.EbligEnums.StatoPratica.Confermata && !Model.LiquidataOinLiquidazione.GetValueOrDefault() && User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+        {
+
+            <button type="button" class="btn btn-primary" 
+                    data-azione-id="Inviata" 
+                    id="Azione" name="Azione"
+                    onclick="rimettiInStatoInviataRichiesta()">Rimetti stato come Inviata</button>
+        }
+
+        <button type="button" class="btn btn-danger" onclick="hideModal()">Chiudi finestra</button>
+
+    </div>
+
+</div>

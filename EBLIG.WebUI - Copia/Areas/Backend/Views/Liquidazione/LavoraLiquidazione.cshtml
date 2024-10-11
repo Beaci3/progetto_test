@@ -1,0 +1,110 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneLavoraViewModel
+
+@using (Ajax.BeginForm("LavoraLiquidazione", new AjaxOptions
+{
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessLavoraLiquidazione",
+    OnFailure = "handleError"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.LiquidazioneId)
+    @Html.HiddenFor(model => model.Allegato)
+
+    <div class="form-horizontal row">
+        <div class="col-md-12 mb-2">
+            <div class="alert alert-info">
+                Per confermare la Liquidazione la richiesta inserisci una eventuale nota e allega il file della banca (opzionale)
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.TextAreaFor(model => model.Note, new { @class = "form-control", rows = 5 })
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-3">
+            <div class="form-group">
+                <label class="control-label">Allegato</label>
+
+                <div class="custom-file">
+                    <input type="file" class="form-control" id="fileUpload" accept=".pdf">
+                </div>
+
+
+                <label class="badge badge-info"> in formato .pdf (max: 1MB)</label>
+                <br />
+                @Html.ValidationMessageFor(model => model.Allegato, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+
+
+        <div class="modal-footer row mt-4">
+            <div class="col-md-12 text-end">
+                <input type="submit" value="Conferma" class="btn btn-success" />
+                @Ajax.EncodedAjaxActionLink("Chiudi finestra", "ApriLiquidazione", "Liquidazione", new
+                               {
+                                   id = Model.LiquidazioneId
+                               }, new AjaxOptions
+                               {
+                                   OnBegin = "alertWaid()",
+                                   OnSuccess = "showModalFullScreen_NoHeaderFooter(data);alertClose();",
+                                   OnFailure = "handleError"
+                               }, new { @class = "btn btn-danger" })
+
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function onSuccessLavoraLiquidazione(data) {
+         $.get("@Html.EncodedAction("ApriLiquidazione", "Liquidazione", new { id=Model.LiquidazioneId })", function (data1) {
+             updateListRicerca();
+             alertSuccess(data.message);
+             showModalFullScreen_NoHeaderFooter(data1);
+        });
+    }
+
+    $('input[type=file]').on('change', function () {
+
+        var _span = $("span[data-valmsg-for='Allegato']");
+
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+        var tmppath = URL.createObjectURL(file);
+
+        reader.addEventListener("load", function () {
+            var myRe = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(['.pdf'])$", "gi");
+
+            if (!myRe.exec(getFileExtension(file.name))) {
+                _span.addClass("field-validation-error");
+                _span.html("Estensione non valida");
+                _span.show();
+                return;
+            }
+
+            if (getFileSize(file.size) > 1) {
+                _span.addClass("field-validation-error");
+                _span.html("Dimensione massima 1MB");
+                _span.show();
+                return;
+            }
+
+            _span.hide();
+            _span.html("");
+            $("#Allegato").val(reader.result);
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+</script>

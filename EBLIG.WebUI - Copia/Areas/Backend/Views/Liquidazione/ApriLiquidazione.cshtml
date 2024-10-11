@@ -1,0 +1,293 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.LiquidazioneViewModel
+
+<h4>Dettaglio Liquidazione <strong class="text-primary">@Model.Liquidazione.LiquidazioneId.ToString().PadLeft(7, '0')</strong></h4>
+<h5>
+    <label class="badge bg-@Html.GetLiquidazioneStatoCss(Model.Liquidazione.StatoLiquidazioneId) text-start">
+        @if (Model.Liquidazione.StatoLiquidazione != null)
+        {
+            @Model.Liquidazione.StatoLiquidazione.Descrizione
+        }
+    </label>
+</h5>
+<hr />
+
+
+
+<div class="row">
+    <div class="col-md-3">
+        <label class="control-label">
+            Data creazione
+        </label>
+        <div>
+            @Html.ToShortDate(Model.Liquidazione.DataCreazione)
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label class="control-label">
+            Data lavorazione
+        </label>
+        <div>
+            @Html.ToShortDate(Model.Liquidazione.DataLavorazione)
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label class="control-label">
+            Totale importo
+        </label>
+        <div>
+            @{
+                var _totaleimp = @Html.ToImporto(Model.Liquidazione?.LiquidazionePraticheRegionali?.Sum(x => x.PraticheRegionaliImprese.ImportoContributoNetto));
+            }
+            @_totaleimp
+        </div>
+    </div>
+
+    @if (Model.Liquidazione.StatoLiquidazioneId != (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+    {
+        if (!string.IsNullOrWhiteSpace(Model.Liquidazione.Allegato))
+        {
+            <div class="col-md-3">
+                <label class="control-label">
+                    Allegato
+                </label>
+                <div>
+                    <a data-toggle="tooltip" title="Scarica allegato"
+                       data-placement="top"
+                       href='@Html.EncodedAction("DownloadAllegato", "Liquidazione", new { liquidazioneId=Model.Liquidazione.LiquidazioneId , area="Backend" })'
+                       target="_blank">
+                        <i class="fas fa-file-pdf text-info mr-3"></i>Scarica allegato
+                    </a>
+                </div>
+            </div>
+        }
+
+        if (!string.IsNullOrWhiteSpace(Model.Liquidazione.Note))
+        {
+            <div class="col-md-12 mt-2">
+                <label class="control-label">
+                    Note
+                </label>
+                <div>
+                    @Model.Liquidazione.Note
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<hr />
+<div class="row">
+
+    <h4>
+        <span class="badge bg-secondary">Prestazioni Regionali</span>
+    </h4>
+
+
+    <div class="col-md-12 mt-3">
+
+        @if (Model.Liquidazione.LiquidazionePraticheRegionali.Select(x => x.PraticheRegionaliImprese).Count() == 0)
+        {
+            @Html.AlertInfo("Nessuna Prestazioni Regionale nella lista")
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr class="text-center bg-dark text-white">
+                            <th>Tipo richiesta</th>
+                            <th>Importo</th>
+                            @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+                            {
+                                <th style="width:125px"></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.Liquidazione.LiquidazionePraticheRegionali.Select(x => x.PraticheRegionaliImprese).ToList())
+                        {
+                            <tr>
+
+
+                                <td>
+
+                                    @if (item.TipoRichiesta.IsTipoRichiestaDipendente == true)
+                                    {
+                                        <label class="badge bg-1">Prestazioni Regionali Dipendenti</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="badge bg-2">Prestazioni Regionali Aziende</label>
+
+                                    }
+                                    <br />
+
+                                    <div>
+                                        @if (item.TipoRichiesta != null)
+                                        {
+                                            <h5 class="mt-1">
+                                                @Html.Raw($"{item.TipoRichiesta.Descrizione} ({item.TipoRichiesta.Anno})")
+                                            </h5>
+                                        }
+                                    </div>
+
+                                    <div>
+                                        <strong class="mr-2">Ragione sociale:</strong>
+
+                                        @if (item.Azienda != null)
+                                        {
+                                            @item.Azienda.RagioneSociale <span> - </span>@item.Azienda.MatricolaInps
+                                        }
+
+                                    </div>
+                                    @if (item.TipoRichiesta.IsTipoRichiestaDipendente == true)
+                                    {
+                                        <div>
+                                            <strong class="mr-2">Dipendente richiesta:</strong>
+                                            @if (item.Dipendente != null)
+                                            {
+                                                @Html.Raw($"{item.Dipendente.Nome} {item.Dipendente.Cognome} - {item.Dipendente.CodiceFiscale?.ToUpper()}");
+                                            }
+                                        </div>
+                                    }
+                                    <div><strong>Iban:</strong>  @item.Iban.</div>
+                                </td>
+
+                                <td class="text-end">
+                                    @Html.ToImporto(item.ImportoContributoNetto)
+                                </td>
+                                @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+                                {
+
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-danger" type="button" onclick="cancellaRigaLiquidazione('@item.PraticheRegionaliImpreseId')">Rimuovi</button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr class="fw-bold">
+
+                            <td class="text-end">Totale Importo</td>
+                            <td class="text-end text-success doubleunderline">
+                                @_totaleimp
+                            </td>
+
+                            @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+                            {
+
+                                <td></td>
+                            }
+                        </tr>
+
+
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </div>
+    <div class="col-md-12">
+        <div class="modal-footer mt-4">
+            <div class="col-md-12 text-center">
+                @if (Model.Liquidazione.StatoLiquidazioneId != (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.Annullata)
+                {
+                    <a href="@Html.EncodedAction("DownloadSepa", "Liquidazione", new { liquidazioneId = Model.Liquidazione.LiquidazioneId })"
+                       target="_blank" class="btn btn-primary mr-1">Salva Sepa Xml</a>
+                }
+
+                @*@Ajax.EncodedAjaxActionLink("Salva Sepa Xml", "DownloadSepa", "Liquidazione", new
+                    {
+                        liquidazioneId = Model.Liquidazione.LiquidazioneId
+                    }, new AjaxOptions
+                    {
+                        OnBegin = "alertWaid",
+                        OnFailure = "handleError",
+                        OnSuccess = "getSepa(data)"
+                    }, new { @class = "btn btn-primary mr-1" })*@
+
+
+                @if (Model.Liquidazione.StatoLiquidazioneId == (int)EBLIG.DOM.EbligEnums.StatoLiqidazione.InLiquidazione)
+                {
+
+                    @Ajax.EncodedAjaxActionLink("Imposta come Liquidata", "LavoraLiquidazione", "Liquidazione", new
+                       {
+                           liquidazioneId = Model.Liquidazione.LiquidazioneId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid",
+                           OnFailure = "handleError",
+                           OnSuccess = "showModal_NoFooter('Imposta come Liquidata',data); alertClose()"
+                       }, new { @class = "btn btn-success mr-1" })
+
+                    @Ajax.EncodedAjaxActionLink("Imposta come Annullata", "AnnullaLiquidazione", "Liquidazione", new
+               {
+                   liquidazioneId = Model.Liquidazione.LiquidazioneId
+               }, new AjaxOptions
+               {
+                   OnBegin = "alertWaid",
+                   OnFailure = "handleError",
+                   OnSuccess = "showModal_NoFooter('Imposta come Annullata',data); alertClose()"
+
+               }, new { @class = "btn btn-warning" })
+
+
+                }
+
+
+                <input type="button" value="Chiudi finestra" onclick="hideModal()" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function cancellaRigaLiquidazione(id) {
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mr-1',
+                cancelButton: 'btn btn-danger mr-1'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+        html: "Conferma per rimuove la Prestazione Regionale dalla Liquidazione?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: 'Conferma',
+        cancelButtonText: 'Annulla',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            alertWaid();
+            $.post("@Html.EncodedAction("RimuoviRigaLiquidazione", "Liquidazione", new { liquidazioneId=Model.Liquidazione.LiquidazioneId })", { praticheRegionaliImpreseId:id}, function (data) {
+                if (data.isValid == false) {
+                    alertDanger(data.message);
+                }
+                else {
+                    updateListRicerca();
+                    $.get("@Html.EncodedAction("ApriLiquidazione", "Liquidazione", new { id=Model.Liquidazione.LiquidazioneId })", function (data1) {
+                        alertSuccess(data.message);
+                        showModalFullScreen_NoHeaderFooter(data1);
+                    });
+                }
+            }).fail(function (error) { handleError(error) });
+        }
+    })
+}
+
+    @*function getSepa(data) {
+        getXml(data.base64, 'Sepa_@Model.Liquidazione.LiquidazioneId.ToString().PadLeft(7, '0')');
+        alertClose();
+        toastInfo("Sepa Xml scaricato")
+    }*@
+</script>

@@ -1,0 +1,33 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_CarenzaMalattia
+
+<div class="row">
+
+    <h4>
+        <span class="badge bg-secondary">Dati richiesta</span>
+    </h4>
+
+    <div id="containerCarenzaMalattiaDipendente_Eventi">
+
+        @{
+            var _model = new EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_Dipendente_CarenzaMalattia.PraticheAzienda_Dipendente_CarenzaMalattia_Eventi();
+            _model.ChildClass = Model.ChildClass;
+            _model.ReadOnly = Model.ReadOnly;
+        }
+
+        @{ Html.RenderPartial("~/Areas/Backend/Views/PraticheAzienda/TipoRichiesta/CarenzaMalattiaDipendente_Eventi.cshtml", _model);}
+    </div>
+</div>
+
+@Html.Hidden("AssenzaMalattia", "0")
+@Html.ValidationMessageFor(m => m.AssenzaMalattia, "", new { @class = "text-danger" })
+
+<hr />
+
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+

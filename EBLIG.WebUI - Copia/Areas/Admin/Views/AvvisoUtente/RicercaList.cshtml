@@ -1,0 +1,104 @@
+﻿@model EBLIG.WebUI.Areas.Admin.Models.AvvisoUtenteRicercaViewModel
+
+@if (Model.TotalRecords == 0)
+{
+    @Html.AlertDanger("Nessun avviso trovato");
+    return;
+}
+else
+{
+    var _rolesfriendly = Html.GetRolesFriendlyName();
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="text-center bg-dark text-white">
+                    <th>Titolo</th>
+                    <th>Data inserimento</th>
+                    <th>Fine Data visibilità</th>
+                    <th>Popup</th>
+                    <th>Visibili per Ruoli</th>
+                    <th style="width:125px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Result)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Titolo)
+                        </td>
+
+                        <td class="text-center" style="width:150px">
+                            @Html.ToShortDate(item.DataInserimento)
+                        </td>
+
+                        <td class="text-center" style="width:150px">
+                            @Html.ToShortDate(item.DataScadenza)
+                        </td>
+
+                        <td class="text-center" style="width:75px">
+                            @if (item.Popup.GetValueOrDefault())
+                            {
+                                <span class="text-success">Si</span>
+                            }
+                            else
+                            {
+                                <span class="text-info">No</span>
+                            }
+                        </td>
+
+                        <td style="width:280px">
+                            @if (item.AvvisoUtenteRuoli == null || item.AvvisoUtenteRuoli.Count() == 0)
+                            {
+                                <span>Tutti utenti</span>
+                            }
+                            else
+                            {
+                                <ul>
+                                    @foreach (var role in item.AvvisoUtenteRuoli.OrderBy(r => r.Ruolo))
+                                    {
+                                        <li>
+                                            @{
+                                                var _ruolo = _rolesfriendly.FirstOrDefault(x => x.Item2 == role.Ruolo).Item3;
+                                            }
+
+                                            @_ruolo
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                        </td>
+
+                        <td class="text-center">
+
+                            @Ajax.EncodedAjaxActionLink("Dettaglio", "Avviso", "AvvisoUtente", new
+                       {
+                           id = item.AvvisoUtenteId
+                       }, new AjaxOptions
+                       {
+                           OnBegin = "alertWaid()",
+                           OnSuccess = "showModal_NoFooter('Dettaglio avviso utente', data); alertClose()",
+                           OnFailure = "handleError"
+                       }, new { @class = "btn btn-primary btn-sm " })
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @Html.PagingAjax(Model.PageSize, Model.CurrentPage, Model.TotalRecords,
+        Url.Action("Ricerca"), Model.Filtri,
+        new AjaxOptions
+        {
+            UpdateTargetId = "resultRicerca",
+            HttpMethod = "post",
+            OnFailure = "handleError"
+        }, Url.Action("RicercaExcel"))
+}

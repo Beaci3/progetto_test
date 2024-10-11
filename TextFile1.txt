@@ -1,0 +1,146 @@
+@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_SicurezzaSulLavoro
+
+@using EBLIG.WebUI
+
+<div class="row">
+    <h4 class="text-info">
+        <span class="badge bg-secondary">Dati richiesta</span>
+    </h4>
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.LabelFor(model => model.MotivoRichiestaId, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+
+                @{
+                    var _motivazioni = Html.GetMotivazioniRichiesta(Model.TipoRichiesta.TipoRichiestaId);
+                }
+                @if (Model.ReadOnly.GetValueOrDefault())
+                {
+                    @Html.HiddenFor(model => model.MotivoRichiestaId)
+                    <span>@_motivazioni.FirstOrDefault(x => x.MotivazioniRichiestaId == Model.MotivoRichiestaId).Motivazione</span>
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.MotivoRichiestaId, Html.SelectList(_motivazioni, "MotivazioniRichiestaId", "Motivazione", true), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MotivoRichiestaId, "", new { @class = "text-danger" })
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotaleFatture, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.TotaleFatture, new { @class = "form-control", placeholder = "Importo minimo € 1.500,00" }, "{0:n}")
+                @Html.ValidationMessageFor(model => model.TotaleFatture, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotaleFatturAccettate, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-10">
+
+                @if (Model.StatoPraticaId == (int)EbligEnums.StatoPratica.Bozza && !Model.RichiestaId.HasValue)
+                {
+                    <small class="text-primary">Inserito dopo invio dal Admin EBLIG</small>
+                }
+                else if ((Model.StatoPraticaId == (int)EbligEnums.StatoPratica.Inviata || Model.StatoPraticaId == (int)EbligEnums.StatoPratica.InviataRevisionata))
+                {
+                    if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+                    {
+                        @Html.TextBoxFor(model => model.TotaleFatturAccettate, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TotaleFatturAccettate, "", new { @class = "text-danger" })
+                    }
+                    else
+                    {
+                        <span>@Model.TotaleFatturAccettate.GetValueOrDefault().ToString("n")</span>
+                        @Html.HiddenFor(model => model.TotaleFatturAccettate)<br />
+                    }
+                }
+                else
+                {
+                    <span>@Model.TotaleFatturAccettate.GetValueOrDefault().ToString("n")</span>
+                    @Html.HiddenFor(model => model.TotaleFatturAccettate)<br />
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImportoTotaleRimborsato, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+
+                @if (Model.StatoPraticaId == (int)EbligEnums.StatoPratica.Bozza && !Model.RichiestaId.HasValue)
+                {
+                    <small class="text-primary">Inserito dopo invio dal Admin EBLIG</small>
+                }
+                else if ((Model.StatoPraticaId == (int)EbligEnums.StatoPratica.Inviata || Model.StatoPraticaId == (int)EbligEnums.StatoPratica.InviataRevisionata))
+                {
+                    if (User.IsInRole(IdentityHelper.Roles.Admin.ToString()))
+                    {
+                        <span id="ImportoTotaleRimborsato-span">
+                            @Model.ImportoTotaleRimborsato.GetValueOrDefault().ToString("n")
+                        </span>
+                        @Html.HiddenFor(model => model.ImportoTotaleRimborsato, new { @class = "form-control" })
+                        <br />
+                        @Html.ValidationMessageFor(model => model.ImportoTotaleRimborsato, "", new { @class = "text-danger" })
+                    }
+                    else
+                    {
+                        <span>@Model.ImportoTotaleRimborsato.GetValueOrDefault().ToString("n")</span>
+                        @Html.HiddenFor(model => model.ImportoTotaleRimborsato)<br />
+                    }
+                }
+                else
+                {
+                    <span>@Model.ImportoTotaleRimborsato.GetValueOrDefault().ToString("n")</span>
+                    @Html.HiddenFor(model => model.ImportoTotaleRimborsato)<br />
+                }
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+<script>
+    $("#TotaleFatturAccettate").on("keyup blur", function () {
+        $("#ImportoTotaleRimborsato-span").html("0,00");
+        $("#ImportoTotaleRimborsato").val("0");
+
+        $.get("@Url.Action("GetImportoTotaleRimborsatoSicurezzaLavoroImprese", "PraticheAzienda")", { importoAccettato: $("#TotaleFatturAccettate").val() }, function (data) {
+            $("#ImportoTotaleRimborsato-span").html(data);
+            $("#ImportoTotaleRimborsato").val(data);
+        }).fail(function (data) {
+            $("#ImportoTotaleRimborsato-span").html("Importo non valido");
+            $("#ImportoTotaleRimborsato").val("");
+            $("#ImportoTotaleRimborsato").valid();
+        });
+    });
+
+    $("#TotaleFatturAccettate").on("focusout", function () {
+        setTimeout(function () {
+            $("#TotaleFatturAccettate").val(toDecimalFormatEuropa($("#TotaleFatturAccettate").val()))
+        }, 10);
+    });
+
+</script>
+

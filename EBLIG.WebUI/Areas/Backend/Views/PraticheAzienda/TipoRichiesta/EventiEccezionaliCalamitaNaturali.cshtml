@@ -1,0 +1,119 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAzienda_EventiEccezionaliCalamitaNaturali
+
+@{
+    DateTime _minDate = DateTime.Now.AddDays(-30);
+    DateTime _maxDate = DateTime.Now;
+
+    if (Model.MinDate.HasValue && Model.MaxDate.HasValue)
+    {
+        _minDate = Model.MinDate.GetValueOrDefault();
+        _maxDate = Model.MaxDate.GetValueOrDefault();
+    }
+}
+
+@Html.Hidden("MinDate", _minDate.ToShortDateString())
+@Html.Hidden("MaxDate", _maxDate.ToShortDateString())
+
+<div class="row">
+    <h4>
+        <span class="badge bg-secondary">Dati richiesta</span>
+    </h4>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.DataEvento, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.DataEvento, new { @class = "form-control" }, "{0:dd/MM/yyyy}")
+                @Html.ValidationMessageFor(model => model.DataEvento, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotaleDanniStruttureAttrezzature, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.TotaleDanniStruttureAttrezzature, new { @class = "form-control" }, "{0:n}")
+                @Html.ValidationMessageFor(model => model.TotaleDanniStruttureAttrezzature, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotaleDanniScorte, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                @Html.TextBoxForReadOnly(model => model.TotaleDanniScorte, new { @class = "form-control" }, "{0:n}")
+                @Html.ValidationMessageFor(model => model.TotaleDanniScorte, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImportoRiconosciuto, htmlAttributes: new { @class = "control-label" })<span class="text-danger"> *</span>
+            <div class="col-md-12">
+                <span id="@nameof(Model.ImportoRiconosciuto)-span">@Model.ImportoRiconosciuto.GetValueOrDefault().ToString("n")</span><br />
+                @Html.HiddenFor(model => model.ImportoRiconosciuto)
+                @Html.ValidationMessageFor(model => model.ImportoRiconosciuto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+@{ Html.RenderAction("AllegatiRichiesta", "PraticheAzienda", new
+    {
+        Model.RichiestaId,
+        Model.TipoRichiesta.TipoRichiestaId,
+        Model.ReadOnly
+    });}
+
+@if (!Model.ReadOnly.GetValueOrDefault())
+{
+    <script>
+        $('#@nameof(Model.DataEvento)').inputmask();
+
+        flatpickr('#@nameof(Model.DataEvento)', {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            disableMobile: "true",
+            allowInput: true,
+            @*defaultDate:"@_minDate.ToShortDateString()",*@
+            minDate:"@_minDate.ToShortDateString()",
+            maxDate:"@_maxDate.ToShortDateString()",
+            onChange: function (selectedDates, dateStr, instance) {
+            },
+        });
+
+    </script>
+}
+
+<script>
+    $("#@nameof(Model.TotaleDanniStruttureAttrezzature)").on("keyup blur", function () {
+        getImportoRiconosciuto();
+    });
+
+    $("#@nameof(Model.TotaleDanniScorte)").on("keyup blur", function () {
+        getImportoRiconosciuto();
+    });
+
+    function getImportoRiconosciuto() {
+        disableAllBtn();
+
+        $.get("@Url.Action("GetImportoEventiEccezionaliCalamitaNaturaliImprese", "PraticheAzienda")",
+            {
+                danniAttrezzatura: $("#@nameof(Model.TotaleDanniStruttureAttrezzature)").val(),
+                danniScorte: $("#@nameof(Model.TotaleDanniScorte)").val(),
+                tipoRichiestaId: @Model.TipoRichiesta.TipoRichiestaId,
+            }, function (data) {
+                $("#@nameof(Model.ImportoRiconosciuto)-span").html(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#@nameof(Model.ImportoRiconosciuto)").val(toLocalCurrency(data.importiCalcolati.ImportoContributo));
+                $("#containerImportoCalcolati").html(data.html);
+                enableAllBtn();
+        }).fail(function (error) {
+            enableAllBtn();
+        });
+
+    }
+</script>

@@ -1,0 +1,64 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.PraticheAziendaNuovaRichiestaSportello
+
+@Scripts.Render("~/bundles/jqueryval")
+@using EBLIG.WebUI.Helpers;
+@using EBLIG.WebUI;
+
+
+@using (Ajax.BeginForm("NuovaRichiestaSportello", null, new AjaxOptions
+{
+    //UpdateTargetId = "resultRicerca",
+    OnBegin = "alertWaid()",
+    OnSuccess = "onSuccessNuovaRichiestaSportello",
+    OnFailure = "handleError"
+}, new { }))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.PraticheAziendaNuovaRichiesta_DipendenteId)
+
+    <div class="form-horizontal">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PraticheAziendaNuovaRichiesta_NominativoDipendente, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.PraticheAziendaNuovaRichiesta_NominativoDipendente, new { @class = "form-control", type = "search" })
+                        @Html.ValidationMessageFor(model => model.PraticheAziendaNuovaRichiesta_DipendenteId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            @Html.AutocompleteDipendenteSportello("PraticheAziendaNuovaRichiesta_NominativoDipendente", "PraticheAziendaNuovaRichiesta_DipendenteId", "PraticheAziendaNuovaRichiesta_DipendenteId")
+
+            <div class="col-md-12 mt-4">
+                <div class="alert alert-info fw-bold">
+                    Selezionare un dipendente. Assicurarsi di avere associato al dipendente almeno un'azienda. Per associare un'azienda cliccare nel menù laterale "Aziende associate"
+                </div>
+
+            </div>
+
+            <div class="modal-footer mt-4">
+                <button type="submit" class="btn btn-primary">Avanti</button>
+
+                <button type="button" onclick="hideModal()" class="btn btn-danger" id="buttonCloseModal">Chiudi finestra</button>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+<script>
+    function onSuccessNuovaRichiestaSportello(data) {
+        if (data.isValid == false) {
+            alertInfo(data.message)
+        }
+        else {
+            alertClose();
+            showModal_NoFooter("Nuova richiesta", data);
+        }
+    }
+</script>

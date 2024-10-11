@@ -1,0 +1,65 @@
+﻿{
+  "RegioneId": 8,
+  "Ftp": {
+    "Path": "ftp://192.168.2.45/14/",
+    "Username": null,
+    "Password": null
+  },
+  "RagioneSociale": {
+    "EnteId": 14,
+    "Nome": "E.B.LIG – ENTE BILATERALE LIGURE",
+    "Regione": "Liguria",
+    "Provincia": "GE",
+    "Indirizzo": "Via XII OTTOBRE 12/4 sc.D",
+    "Citta": "GENOVA",
+    "Cap": "16121",
+    "Telefono": "010.59.59.490",
+    "Fax": "010.55.31.173",
+    "Email": "info@eblig.it",
+    "Pec": "eblig@pec.it",
+    "PartitaIva": "95034260109",
+    "SitoWeb": "https://localhost:44386/",
+    "UriPortale": "https://localhost:44386/"
+  },
+  "Sepa": {
+    "MsgId": "L-EBLIG",
+    "InitgPty_Nm": "EBLIG LOMBARDIA",
+    "InitgPty_OrgId_Id": "1026017E",
+    "InitgPty_OrgId_Issr": "CBI",
+    "ClrSysMmbId_MmbId": "07110",
+    "PmtInf_PmtInfId": "P-EBLIG",
+    "PmtInf_PmtMtd": "TRF",
+    "PmtInf_ChrgBr": "SLEV",
+    "PmtInf_PmtTpInf_SvcLvl_Cd": "SEPA",
+    "PmtInf_DbtrAcct_Iban": "IT57J0711003400000000006942",
+    "PmtInf_Dbtr_Nm": "EBLIG LOMBARDIA",
+    "PmtInf_Dbtr_PstlAdr_StrtNm": "Via XII OTTOBRE 12/4 sc.D",
+    "PmtInf_Dbtr_PstlAdr_Ctry": "IT",
+    "PmtInf_Dbtr_PstlAdr_PstCd": "16121",
+    "PmtInf_Dbtr_PstlAdr_TwnNm": "GENOVA",
+    "PmtInf_DbtrAgt_FinInstnId_ClrSysMmbId_MmbId": "07110",
+    "PmtInf_CdtTrfTxInf_PmtTpInf_CtgyPurp_Cd": "SUPP",
+    "PmtInf_CdtTrfTxInf_PmtId_EndToEndId": "P-EBLIG",
+    "PmtInf_CdtTrfTxInf_Purp_Cd": "OTHER",
+    "PmtInf_CdtTrfTxInf_RmtInf_Ustrd": "P-EBLIG"
+  },
+  "MailSetting": {
+    "SmtpServer": "smtp.gmail.com",
+    "SmtpServerPort": 587,
+    "SmtpServerUsername": "g.tuzzolino@sediin.it",
+    "SmtpServerPassword": "W3lcometoG",
+    "SmtpServerAutentication": true,
+    "SmtpServerUseSSL": false,
+    "FromName": "E.B.LIG – ENTE BILATERALE LIGURE",
+    "FromEmail": "g.tuzzolino@sediin.it"
+  },
+  "UploadFolder": "C:\\temp\\eblig\\",
+  "Uniemens": {
+    "Colonna": [
+      "FSBA (Azienda)",
+      "FSBA (Dipendenti)",
+      "Ebna (2016)"
+    ],
+    "Scoperto": 2.0
+  }
+}

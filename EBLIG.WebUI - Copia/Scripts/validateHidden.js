@@ -1,0 +1,2 @@
+﻿
+$.validator.setDefaults({ ignore: null });

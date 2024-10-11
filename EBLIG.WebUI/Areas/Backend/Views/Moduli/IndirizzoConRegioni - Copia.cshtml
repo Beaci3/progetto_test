@@ -1,0 +1,400 @@
+﻿@model EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel
+
+@using EBLIG.Utils
+@using System.ComponentModel.DataAnnotations
+@{
+    var _id = Guid.NewGuid().ToString().Replace("-", "");
+    List<object> _l = new List<object>();
+    var _selectLidt = new SelectList(_l);
+}
+
+@{
+
+    var t = typeof(EBLIG.WebUI.Areas.Backend.Models.IndirizzoViewModel).GetProperties();
+}
+
+<div class="form-group col-md-4">
+
+    <label class="control-label" for="@Model.IndirizzoElement">@Model.IndirizzoElementNome<span class="text-danger"> *</span></label>
+
+    <input class="form-control"
+           data-val="true"
+           data-val-required="Il campo @Model.IndirizzoElementNome è obbligatorio."
+           id="@Model.IndirizzoElement"
+           name="@Model.IndirizzoElement"
+           type="text"
+           value="@Model.Indirizzo"
+           maxlength="175"
+           autocomplete="off"
+           list="autocompleteOff"
+           aria-describedby="@Model.IndirizzoElement-error">
+
+    <span class="text-danger" data-valmsg-for="@Model.IndirizzoElement" data-valmsg-replace="true">
+    </span>
+
+</div>
+
+
+
+<div class="form-group col-md-2">
+
+    <label class="control-label" for="@Model.RegioneElement">@Model.RegioneElementNome<span class="text-danger"> *</span></label>
+
+    <select class="form-control"
+            data-val="true"
+            data-val-required="Il campo @Model.RegioneElementNome è obbligatorio."
+            data-val-number="Il campo @Model.RegioneElementNome è obbligatorio."
+            id="@Model.RegioneElement"
+            name="@Model.RegioneElement"
+            aria-describedby="@Model.RegioneElement-error"
+            aria-invalid="false">
+    </select>
+
+
+
+    <span class="text-danger" data-valmsg-for="@Model.RegioneElement" data-valmsg-replace="true">
+    </span>
+
+</div>
+
+
+<div class="form-group col-md-2">
+
+    <label class="control-label" for="@Model.ProvinciaElement">@Model.ProvinciaElementNome<span class="text-danger"> *</span></label>
+
+    <select class="form-control"
+            data-val="true"
+            data-val-required="Il campo @Model.ProvinciaElementNome è obbligatorio."
+            data-val-number="Il campo @Model.ProvinciaElementNome è obbligatorio."
+            id="@Model.ProvinciaElement"
+            name="@Model.ProvinciaElement"
+            aria-describedby="@Model.ProvinciaElement-error"
+            aria-invalid="false">
+    </select>
+
+
+
+    <span class="text-danger" data-valmsg-for="@Model.ProvinciaElement" data-valmsg-replace="true">
+    </span>
+
+</div>
+
+
+
+<div class="form-group col-md-2">
+
+    <label class="control-label" for="@Model.ComuneElement">@Model.ComuneElementNome<span class="text-danger"> *</span></label>
+
+    <select class="form-control"
+            data-val="true"
+            data-val-required="Il campo @Model.ComuneElementNome è obbligatorio."
+            data-val-number="Il campo @Model.ComuneElementNome è obbligatorio."
+            id="@Model.ComuneElement"
+            name="@Model.ComuneElement"
+            aria-describedby="@Model.ComuneElement-error"
+            aria-invalid="false">
+    </select>
+
+
+
+    <span class="text-danger" data-valmsg-for="@Model.ComuneElement" data-valmsg-replace="true">
+    </span>
+
+</div>
+
+
+<div class="form-group col-md-2">
+
+    <label class="control-label" for="@Model.LocalitaElement">@Model.LocalitaElementNome<span class="text-danger"> *</span></label>
+
+    <select class="form-control"
+            data-val="true"
+            data-val-required="Il campo @Model.LocalitaElementNome è obbligatorio."
+            data-val-number="Il campo @Model.LocalitaElementNome è obbligatorio."
+            id="@Model.LocalitaElement"
+            name="@Model.LocalitaElement"
+            aria-describedby="@Model.LocalitaElement-error"
+            aria-invalid="false">
+    </select>
+
+
+
+    <span class="text-danger" data-valmsg-for="@Model.LocalitaElement" data-valmsg-replace="true">
+    </span>
+
+</div>
+
+
+<script>
+
+    $().ready(function () {
+        @Html.Raw($"getRegioni_{_id}('{Model.ProvinciaId}','{Model.ComuneId}','{Model.LocalitaId}','{Model.RegioneId}');")
+    });
+
+    $("#@Model.RegioneElement").on("change", function () {
+        @Html.Raw($"getProvince_{_id}($(this).find(':selected').data('provincia-codreg'));")
+    });
+
+    $("#@Model.ProvinciaElement").on("change", function () {
+        @Html.Raw($"getComuni_{_id}($(this).find(':selected').data('provincia-sigpro'));")
+    });
+
+    $("#@Model.ComuneElement").on("change", function () {
+        @Html.Raw($"getLocalita_{_id}($(this).find(':selected').data('provincia-codcom'));")
+    });
+
+    @Html.Raw($"function getRegioni_{_id}(provinciaId, comuneId, localitaId, val)")
+    {
+        $("#@Model.RegioneElement").empty();
+        $("#@Model.RegioneElement").attr("disabled", "disabled");
+        @Html.Raw($"filloption_{_id}('#{Model.RegioneElement}', 'Caricamento in corso...');")
+
+        $("#@Model.ProvinciaElement").removeAttr("disabled");
+        $("#@Model.ComuneElement").removeAttr("disabled");
+        $("#@Model.LocalitaElement").removeAttr("disabled");
+
+        $("#@Model.ProvinciaElement").empty();
+        $("#@Model.ComuneElement").empty();
+        $("#@Model.LocalitaElement").empty();
+
+
+        @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', '[Seleziona un valore]');")
+        @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Seleziona un valore]');")
+        @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]');")
+
+
+        $.get("@Url.Action("GetRegioni", "Metropolitane", new { area="Backend" })", function (data) {
+            $("#@Model.RegioneElement").empty();
+                if (data.length > 0) {
+                    $("#@Model.RegioneElement").removeAttr("disabled");
+
+                    @Html.Raw($"filloption_{_id}('#{Model.RegioneElement}', '[Seleziona un valore]');")
+
+                    $.each(data, function (i, item) {
+                         @Html.Raw($"filloptionRegioni_{_id}(item.RegioneId, item.CODREG, item.DENREG, val);")
+                    });
+
+                    if (provinciaId != undefined && provinciaId != 0) {
+                        @Html.Raw($"getProvince_{_id}('{Model.Codreg}', provinciaId);")
+                    }
+
+                    if (comuneId != undefined && comuneId != 0) {
+                        @Html.Raw($"getComuni_{_id}('{Model.Sigpro}', comuneId);")
+                    }
+
+                    if (localitaId != undefined && localitaId != 0) {
+                        @Html.Raw($"getLocalita_{_id}('{Model.Codcom}', localitaId);")
+                    }
+
+                }
+                else {
+                    $("#@Model.RegioneElement").empty();
+                    $("#@Model.RegioneElement").removeAttr("disabled");
+
+                    @Html.Raw($"filloption_{_id}('#{Model.RegioneElement}', '[Nessuna Località trovata]');")
+                }
+        }).fail(function (d) {
+            $("#@Model.RegioneElement").empty();
+            $("#@Model.RegioneElement").removeAttr("disabled");
+
+            @Html.Raw($"filloption_{_id}('#{Model.RegioneElement}', '[Nessuna Località trovata]');")
+        });
+    }
+
+    @Html.Raw($"function filloptionRegioni_{_id}(regioneId, codreg, denreg, val)")
+    {
+
+        $("<option/>", {
+            'data-provincia-codreg': codreg,
+            'data-provincia-regioneId': regioneId,
+            value: regioneId,
+            text: denreg,
+            selected: val == regioneId
+        }).appendTo("#@Model.RegioneElement");
+    }
+
+
+    @Html.Raw($"function getLocalita_{_id}(codcom, val)")
+    {
+        if (codcom == undefined) {
+
+            $("#@Model.LocalitaElement").removeAttr("disabled");
+            $("#@Model.LocalitaElement").empty();
+            @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]')");
+
+            return;
+        }
+
+        $("#@Model.LocalitaElement").empty();
+        $("#@Model.LocalitaElement").attr("disabled", "disabled");
+        @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', 'Caricamento in corso...');")
+
+
+        $.get("@Url.Action("GetLocalita", "Metropolitane", new { area="Backend" })", { codcom }, function (data) {
+            $("#@Model.LocalitaElement").empty();
+                if (data.length > 0) {
+                    $("#@Model.LocalitaElement").removeAttr("disabled");
+
+                    @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]');")
+
+                    $.each(data, function (i, item) {
+                        @Html.Raw($"filloptionLocalita_{_id}(item.LocalitaId, item.SIGPRO, item.CAP + ' ' + item.DENLOC, item.CODCOM, item.CAP, val);")
+                    });
+                }
+                else {
+                    $("#@Model.LocalitaElement").empty();
+                    $("#@Model.LocalitaElement").removeAttr("disabled");
+
+                    @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Nessuna Località trovata]');")
+                }
+        }).fail(function (d) {
+            $("#@Model.LocalitaElement").empty();
+            $("#@Model.LocalitaElement").removeAttr("disabled");
+
+            @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Nessuna Località trovata]');")
+        });
+    }
+
+    @Html.Raw($"function filloptionLocalita_{_id}(localitaId, sigpro, denloc, codcom, cap, val)")
+    {
+        $("<option/>", {
+            'data-provincia-sigpro': sigpro,
+            'data-provincia-localitaId': localitaId,
+            'data-provincia-codcom': codcom,
+            'data-provincia-cap': cap,
+            value: localitaId,
+            text: denloc,
+            selected: val == localitaId
+        }).appendTo("#@Model.LocalitaElement");
+    }
+
+    @Html.Raw($"function getComuni_{_id}(sigpro, val)")
+    {
+        if (sigpro == undefined) {
+
+            $("#@Model.ComuneElement").removeAttr("disabled");
+            $("#@Model.LocalitaElement").removeAttr("disabled");
+
+            $("#@Model.ComuneElement").empty();
+            $("#@Model.LocalitaElement").empty();
+
+
+            @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Seleziona un valore]');")
+            @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]');")
+
+            return;
+        }
+
+        $("#@Model.ComuneElement").empty();
+        $("#@Model.ComuneElement").attr("disabled", "disabled");
+
+        $("#@Model.LocalitaElement").empty();
+
+        @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]');")
+        @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', 'Caricamento in corso...');")
+
+
+        $.get("@Url.Action("GetComuni", "Metropolitane", new { area="Backend" })", { sigpro }, function (data) {
+            $("#@Model.ComuneElement").empty();
+            if (data.length > 0) {
+                $("#@Model.ComuneElement").removeAttr("disabled");
+
+                @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Seleziona un valore]');")
+
+                $.each(data, function (i, item) {
+                    @Html.Raw($"filloptionComuni_{_id}(item.ComuneId, item.SIGPRO, item.DENCOM, item.CODCOM, val);")
+                });
+            }
+            else {
+                $("#@Model.ComuneElement").empty();
+                $("#@Model.ComuneElement").removeAttr("disabled");
+
+                @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Nessun Comune trovato]');")
+
+            }
+        }).fail(function (d) {
+            $("#@Model.ComuneElement").empty();
+            $("#@Model.ComuneElement").removeAttr("disabled");
+
+            @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Nessun Comune trovato]');")
+
+        });
+    }
+
+    @Html.Raw($"function filloptionComuni_{_id}(comuneId, sigpro, dencom, codcom, val)")
+    {
+        $("<option/>", {
+            'data-provincia-sigpro': sigpro,
+            'data-provincia-comuneId': comuneId,
+            'data-provincia-codcom': codcom,
+            value: comuneId,
+            text: dencom,
+            selected: val == comuneId
+        }).appendTo("#@Model.ComuneElement");
+    }
+
+    @Html.Raw($"function getProvince_{_id}(codreg, val)")
+    {
+
+        $("#@Model.ProvinciaElement").removeAttr("disabled");
+        $("#@Model.ComuneElement").removeAttr("disabled");
+        $("#@Model.LocalitaElement").removeAttr("disabled");
+
+        $("#@Model.ProvinciaElement").empty();
+        $("#@Model.ComuneElement").empty();
+        $("#@Model.LocalitaElement").empty();
+
+
+        @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', '[Seleziona un valore]');")
+        @Html.Raw($"filloption_{_id}('#{Model.ComuneElement}', '[Seleziona un valore]');")
+        @Html.Raw($"filloption_{_id}('#{Model.LocalitaElement}', '[Seleziona un valore]');")
+
+        $("#@Model.ProvinciaElement").attr("disabled", "disabled");
+
+        @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', 'Caricamento in corso...');")
+
+        $.get("@Url.Action("GetProvinceByCodReg", "Metropolitane", new { area="Backend" })", { codreg }, function (data) {
+            $("#@Model.ProvinciaElement").empty();
+            if (data.length > 0) {
+                $("#@Model.ProvinciaElement").removeAttr("disabled");
+
+                @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', '[Seleziona un valore]');")
+
+                $.each(data, function (i, item) {
+                    @Html.Raw($"filloptionProvince_{_id}(item.ProvinciaId, item.SIGPRO, item.DENPRO, val);")
+                });
+            }
+            else {
+                $("#@Model.ProvinciaElement").empty();
+                $("#@Model.ProvinciaElement").removeAttr("disabled");
+
+                @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', '[Nessuna Provincia trovata]');")
+            }
+        }).fail(function (d) {
+            $("#@Model.ProvinciaElement").empty();
+            $("#@Model.ProvinciaElement").removeAttr("disabled");
+            @Html.Raw($"filloption_{_id}('#{Model.ProvinciaElement}', '[Nessuna Provincia trovata]');")
+        });
+    }
+
+    @Html.Raw($"function filloptionProvince_{_id}(provId, sigpro, denpro, val)")
+    {
+
+        $("<option/>", {
+            'data-provincia-sigpro': sigpro,
+            'data-provincia-provinciaId': provId,
+            value: provId,
+            text: denpro,
+            selected: val == provId
+        }).appendTo("#@Model.ProvinciaElement");
+    }
+
+    @Html.Raw($"function filloption_{_id}(selectElem, text)")
+    {
+        $("<option/>", {
+            text: text,
+        }).appendTo(selectElem);
+    }
+
+</script>
+
